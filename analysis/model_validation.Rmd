@@ -1,0 +1,157 @@
+```{r}
+library(knitr)
+```
+
+
+Consensus in Multiple Social Networks - Summary Report
+======================================================
+This document is intended as a reproducible report for the results 
+for our simulation model of _consensus_ in multiple _social networks_. In this model, we
+use multiple social networks to represent different social relations in which agents engage possibly at the same time.
+We consider the following network models.
+
+* _Barabasi-Albert_ scale-free networks.
+* _Gilbert_ Random graphs.
+* _Watts & Strogatz_ small-world networks.
+* _K-Regular_ Networks (which do not display complex properties but are useful to investigate the effects of connectivity and clustering in our simulations) 
+
+We conducted investigations in 3 different model variations. We use ifferent models to generate random complex social networks in which agents interact. In the first from now on called _**Context Permeability**_ model, agents interact in multiple social networks at the same time. In the second model called _**Context Switching**_ model, agents interact in multiple social networks but only in one network at a time. We use a switching probability parameter to model the time agents spend on each social network. Finally we consider a modification of the context switching model 
+and add a segregation mechanism, we called this model the _**Context Switching with Segregation**_ model. In this model agents switch between the multiple networks based on the _switching probability parameter_ and a new parameter called _tolerance_. Each network has a _tolerance_ value associated with it. This determines the ratio of neighbors with opposing opinion values that an agent tolerates on that network. For each agent, uppon completing an interaction with a neighbour in the current social network, if the neighborhood of the current agent is above the tolerance value set for the network, it immediately switches to another network. If the neighbourhood is within the tolerance threshold, the agent decides to switch or to stay based on the _switching probability_ set for the network.
+
+
+# Model and Script Testing#
+In this section I **analyse a few model runs** and **confirm if the measures that are being considered 
+are working correctly**. It is generally a good practice to confirm if what you expect to 
+be measured is actually being measured, and if the model is behaving correctly. I will also use this section to test different plots, libraries and data transformations that can be used in a more detailed analysis.
+
+## Opinion Progression ##
+One of the measurements made is the number of agents with each opinion value. So we load the following data
+from the simulation with a single network using a _Barabasi-Albert_ scale-free network model.
+
+```{r}
+params <- read.csv("../data/model_validation/ba-scale-free-network/param-space_2014-04-08_12:34:57experiment:0_.csv", header=TRUE, sep=";")
+
+
+#remove empty column at the end
+params<- params[,-ncol(params)] 
+params<-(t(params))
+colnames(params) <- c("Parameter Value")
+```
+
+
+The parameters used for this model test are the following: 
+
+```{r results='asis',message=FALSE} 
+library(stargazer)
+stargazer(params, title="Simulation Parameters", type="html", align=FALSE)
+```
+
+
+For instance, just for the sake of observing if the opinion progression is behaving correctly
+lets observe the first run of this small experiment: 
+```{r}
+opinion_progress <- read.csv("../data/model_validation/ba-scale-free-network/opinion_progress.csv", sep=";")
+op_run <- opinion_progress[opinion_progress$run == 1,]
+```
+
+From here we can plot the number of agents for each opinion value on each simulation step:
+```{r fig.width=13}
+library(ggplot2)
+library(reshape2)
+
+
+#reshape data so it is easier to plot
+r_op_data <- melt(op_run, id=(c("step")), measure.vars=(c("num.opinion.0","num.opinion.1")))
+names(r_op_data)<- c("step", "opinion", "value")
+
+
+plot <- ggplot(data = r_op_data, aes(x = r_op_data$step, y = r_op_data$value , color=r_op_data$opinion))
+plot <- plot + geom_line() + geom_point(size=0)
+plot <- plot + labs(x = "Simulation Step", y = "Number of Agents")
+#plot <- scale_fill_discrete(name="Opinion",
+ #                        breaks=c("num.opinion.0", "num.opinion.1"),
+  #                       labels=c("Opinion Value 1", "Opinion Value 2"))
+plot <- plot + labs(title = "Opinions")
+plot <- plot + theme_bw()
+plot <- plot + theme(legend.title=element_blank())
+plot
+
+```
+We can see that for this run, consensus was not achieved. The required consensus was _1.0_ and 
+the model converged to _0.8_ of consensus. It remained stable until _2000_ steps passed (maximum number of steps allowed).
+
+## Social Network Analysis ##
+To test some network analysis measures we will load the Scale-Free network from the data and take 
+some measures using the _igraph_ library.
+
+```{r}
+library(igraph)
+```
+
+```{r}
+networks <- read.csv("../data/model_validation/ba-scale-free-network/networks.csv", sep=";", quote="")
+```
+
+The network data has information about how the agents are connected for each simulation run. We have performed 
+multiple runs so lets retrieve the network for the first run. 
+
+We are just interested in the list of links between nodes, we don't want the configuration id nor the step 
+in which the network snapshot was taken so we trim the data accordingly. We also filter the data to retrieve the
+first run only.
+
+```{r}
+library(igraph)
+networksData <- as.data.frame(networks)
+network <- networks[networks$run == 1, ]
+#only the edge list
+network <- network[,4:5] 
+
+#load the edge list into an igraph object
+graph <- graph.data.frame(d=network, directed=FALSE, vertices=NULL)
+```
+
+We can print the network loaded for instance to check if it is properly constructed:
+```{r}
+plot(graph,vertex.size = 1, vertex.label=NA, layout =   layout.kamada.kawai)
+```
+We can also plot the label and node size based on the node degree. While we test this, lets also 
+test a new script that does what we previously defined above. 
+```{r}
+source(file="../R/read_network.R")
+
+#test the read network script, it loads the run 1 layer 0
+#this simple test only has one layer (1 network) anyway
+graph <- read.network(networks,1,0)
+
+V(graph)$degree <- degree(graph,mode=c("all"))
+V(graph)$label.cex <- 1.5 * V(graph)$degree / max(V(graph)$degree)+ .4
+V(graph)$size <- 10 * V(graph)$degree / max(V(graph)$degree)+ 3
+V(graph)$frame.color <- NA
+plot(graph, vertex.label=NA, layout = layout.kamada.kawai, vertex.color="Gray")
+```
+
+
+
+### Some Measures
+
+Average path length of network for run 1: 
+
+```{r}
+average.path.length(graph, directed=FALSE)
+```
+
+Network clustering coefficient
+```{r}
+transitivity(graph, type=c("globalundirected"))
+```
+The clustering coefficient is _0_ because the _scale-free_ network does not produce any triangles between its vertices. We used a model that adds only one link each time a node is added to the network. This produces a _forest_ a network composed by _tree_ structures. In our experiments, we also consider _BA_ networks with more than _1_ link added at a time. This produces networks with a higher clustering coefficient. 
+
+Finally, we look at the degree distribution. I plot the degree distribution on the log scale and we can see that the the  distribution demonstrate the power law (characteristic from scale-free networks generated with the Barabasi-Albert model).
+
+```{r}
+
+distribution<- degree(graph, V(graph),mode = c("all"))
+
+hist(log(distribution + 1), main = "Log Degree Distribution", col = "green") 
+
+```

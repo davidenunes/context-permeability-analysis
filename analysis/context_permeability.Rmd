@@ -1,0 +1,593 @@
+```{r message=FALSE}
+source("../R/experiment_utils.R")
+```
+
+Context Permeability Convergence Results
+========================================
+
+In this analysis, we analyse the context permeability model in terms of 
+convergence. This is, the percentage of times a simulation has converged to 
+total consensus and how many agent encounters were needed for this to happen. 
+
+
+# Convergence for K-Regular Networks #
+In this analysis we look at the convergence to consensus for simulations that use 
+regular networks only. We will analyse two things: the *percentage of convergence to total consensus* and the *number of encounters* necessary to achieve concensus.
+
+
+We first load the data related to convergence to consensus. In this first dataset, we can find a single boolean variable {1,0} that tells us wheather or not consensus was achieved. 
+```{r results='asis',message=FALSE}
+#Read the Parameters for this experiment
+params <- read.exp.parameters(param_file_name="../data/regular_networks/param-space_2014-05-30_16:47:53experiment:0_.csv")
+
+#read the adata related to consensus was achieved before 
+require(data.table)
+convergence_data <- fread("../data/regular_networks/consensus_achieved.csv")
+convergence_data <- as.data.frame(convergence_data)[,-ncol(convergence_data)]
+convergence_data <- merge(convergence_data, params, by="cfg.id")
+```
+We can now create a table to display the percentage of convergences to total 
+consensus **for each value of k and number of networks**.
+
+```{r message=FALSE}
+require(reshape)
+require(tables)
+
+#filter some things out
+fcdata <- melt.data.frame(convergence_data,id.vars=c("cfg.id","run","num.networks","network.0.k"), measure.vars=c("consensus-achieved"))
+
+#I can also cast to obtain multiple values like summary 
+#this will be useful later for the table with the number of encounters
+#convergence_table <- cast(fcdata, num.networks~network.0.k~value, sum)
+
+#convergence_table
+
+fcdata_table <- aggregate(data=fcdata, fcdata$value~num.networks + fcdata$network.0.k, FUN=sum)
+colnames(fcdata_table) <- c("num.networks", "k", "value")
+
+ #create a pretty table for latex
+latex_table <- tabular(cast(fcdata_table, num.networks~k, value="value"))
+
+```
+
+```{r results='asis'}
+html(latex_table)
+
+#I can also save this table to a file for later reference
+latex(latex_table,file="tex/regular_convergence.tex", booktabs=T, )
+```
+
+This table shows the percentage of simulation runs that converged to total consensus over 100 
+independent runs. 
+
+# Number of Encounters for K-Regular Networks 
+Now we analise the number of encouters necessary to achieve consensus. Or the total number of encounters that 
+were performed if consensus was not achieved. **The maximum number of simulation cycles is 2000.** The maximum
+number of encounters is thus limited by the maximum number of simulation cycles (and in consequense steps). The 
+data for the encounters contains the following variables.
+```{r}
+encounter_data <- fread("../data/regular_networks/num_encounters.csv")
+encounter_data <- as.data.frame(encounter_data)[,-ncol(encounter_data)]
+head(encounter_data)
+```
+To get the information for how many networks were in the simulation and what was the k value we 
+can merge the data like we have done previously. 
+```{r}
+encounter_data <- merge(encounter_data, params, by="cfg.id")
+```
+
+We now filter some of the variables out.
+```{r message=FALSE}
+#filter some things out
+fedata <- melt.data.frame(encounter_data,id.vars=c("cfg.id","run","num.networks","network.0.k"), measure.vars=c("total-encounters"))
+head(fedata)
+
+#filter encounter data include only num networks > 3
+fedata_net1 <- fedata[fedata$num.networks>2 & fedata$network.0.k <= 5,]
+
+fedata_net10 <- fedata[fedata$num.networks>2 & fedata$network.0.k > 5,]
+
+
+
+#create a table with avg and sd
+cast_fedata_table <- cast(data=fedata, formula=network.0.k~num.networks, c(mean, sd))
+
+fedata_table_full <- tabular(cast_fedata_table)
+
+
+```
+
+Create the tables
+```{r results='asis',message=FALSE}
+#to print the table created with tabular
+
+html(fedata_table_full)
+
+
+#print this to a file to use in the paper
+
+Hmisc::latex(fedata_table_full, file="tex/regular_encounters_full.tex",booktabs=T)
+```
+
+Now to observe the distribution of the number of encounters, necessary to achieve consensus, we look at the box plots for **k = {1,2,3,4,5}** and **k = {10,20,30,40,50}** respectively. We look at **configurations with a number of networks > 3** since less networks require more connectivity to allow consensus to be reached 100% of the time.
+
+```{r}
+plot <- plot.exp.box(data=fedata_net1,x_factor=as.factor(fedata_net1$num.networks), data_y=fedata_net1$value, fill_factor=as.factor(fedata_net1$network.0.k),fill_label="K", x_label="Number of Networks", y_label="Number of Encounters")
+
+plot
+
+plot <- plot.exp.box(data=fedata_net10,x_factor=as.factor(fedata_net10$num.networks), data_y=fedata_net10$value, fill_factor=as.factor(fedata_net10$network.0.k),fill_label="K", x_label="Number of Networks", y_label="Number of Encounters")
+
+plot
+```
+
+To try to answer the question "why do some outliers show up in the data" (simulation runs that took more time than the typical run), I look at the outlier from the configuration **(networks=3, k = 10)**. What I'm trying to find is weather the network structure is the same from the other runs. 
+
+
+```{r}
+source("../R/read_network.R")
+
+network_data <- fread("../data/regular_networks/networks.csv")
+
+#get outlier
+outlier <- fedata_net10[fedata_net10$value > 30000 & fedata_net10$network.0.k == 10,]
+normal <- fedata_net10[fedata_net10$value < 3000 & fedata_net10$network.0.k == 10,]
+
+
+
+
+#get outlier network
+network_outlier_data <- network_data[network_data$"cfg.id" == outlier$"cfg.id" & network_data$"run" == outlier$"run", ]
+outlier_net <- read.composite.network(network_data=network_outlier_data)
+
+
+fdata <- fedata_net10[fedata_net10$"network.0.k" == 10 & fedata_net10$"num.networks" == 3 & fedata_net10$value < 5000,]#filter the data
+plot <- plot.exp.box(data=fdata,x_factor=as.factor(fdata$num.networks), data_y=fdata$value, fill_factor=as.factor(fdata$network.0.k),fill_label="K", x_label="Number of Networks", y_label="Number of Encounters")
+
+plot
+
+normal <- normal[2,] #choose one possible configuration (not an outlier)
+normal
+
+
+network_normal_data <- network_data[network_data$"cfg.id" == normal$"cfg.id" & network_data$"run" == normal$"run", ]
+normal_net <- read.composite.network(network_data=network_normal_data)
+
+#outlier network properties
+outlier_net_props <- read.composite.properties(outlier_net)
+normal_net_props <- read.composite.properties(normal_net)
+
+```
+
+```{r}
+outlier_net_props
+normal_net_props
+```
+There is no significant differences between the network from the outlier simulation run and one case from a normal run. 
+This suggests that this can be a property of the game itself (see plots bellow) and some "event" leads the convergence to be slower than those of the rest of the runs. My hypothesis is that the agents reach a state from which converging towards consensus is significantly harder. This needs further analysis. One idea is to look at difference between the observations (agent memory) for both opinions throughout the simulation. 
+
+Another idea is to look at the sate of the agents and their location in the underlying networks. If networks contain some sort of self-reinforcing structures, this can cause the convergence to be slowed. Daniel Villatoro found these structures in models such as scale-free networks (see [http://dl.acm.org/citation.cfm?id=2451250](here)). Self-reinforcing structures are subgraphs that converge to consensus, and due to its structure (and the nature of the consensus game), lead the agents in that subgroup to reinforce one another. Breaking these consensus groups can be particularly difficult even if the whole society has converged to a different opinion value. 
+
+```{r}
+opinion_data <- read.opinion.progress("../data/regular_networks/opinion_progress.csv")
+#filter opinion to outlier run and normal run
+outlier_run <- opinion_data[opinion_data$"cfg.id" == outlier$"cfg.id" & opinion_data$"run" == outlier$"run",]
+normal_run <- opinion_data[opinion_data$"cfg.id" == normal$"cfg.id" & opinion_data$"run" == normal$"run",]
+
+```
+
+```{r}
+plot_run_outlier <- plot_opinion(opinion_data=outlier_run)
+plot_run_normal <- plot_opinion(opinion_data=normal_run)
+
+
+plot_run_normal + labs(title = "Normal Run")
+plot_run_outlier + labs(title = "Outlier Run")
+```
+
+
+# Convergence for Scale-Free Networks #
+We now perform the same analysis for an homogenous scale-free configuration (scale-free networks in all the layers). 
+To create the scale-free networks, we used the Barabasi-Albert model in which the networks are expanded by preferential 
+attachment. The networks have an additional parameter d which dictates how many connections are added each time a new node 
+is added to the network. We varied this parameter and considered the values ** d = {1,2,3,4,5} **.
+
+We first look at the number of convergences to total consensus in 100 simulation runs. 
+```{r results='asis',message=FALSE}
+#Read the Parameters for this experiment
+params <- read.exp.parameters(param_file_name="../data/scale-free_networks/param-space_2014-05-30_18:38:14experiment:1_.csv")
+
+#read the adata related to consensus was achieved before 
+require(data.table)
+convergence_data <- fread("../data/scale-free_networks/consensus_achieved.csv")
+convergence_data <- as.data.frame(convergence_data)[,-ncol(convergence_data)]
+convergence_data <- merge(convergence_data, params, by="cfg.id")
+```
+
+
+We can now create a table to display the percentage of convergences to total 
+consensus **for each value of d and number of networks**.
+
+```{r}
+require(reshape)
+require(tables)
+
+#filter some things out
+fcdata <- melt.data.frame(convergence_data,id.vars=c("cfg.id","run","num.networks","network.0.d"), measure.vars=c("consensus-achieved"))
+
+#I can also cast to obtain multiple values like summary 
+#this will be useful later for the table with the number of encounters
+#convergence_table <- cast(fcdata, num.networks~network.0.k~value, sum)
+
+#convergence_table
+
+fcdata_table <- aggregate(data=fcdata, fcdata$value~num.networks + fcdata$network.0.d, FUN=sum)
+colnames(fcdata_table) <- c("num.networks", "d", "value")
+
+ #create a pretty table for latex
+latex_table <- tabular(cast(fcdata_table, num.networks~d, value="value"))
+
+```
+
+```{r results='asis'}
+html(latex_table)
+
+#I can also save this table to a file for later reference
+latex(latex_table,file="tex/scale-free_convergence.tex", booktabs=T, )
+```
+
+# Number of Encounters for Scale-Free Networks #
+Now we analise the number of encouters necessary to achieve consensus. Or the total number of encounters that 
+were performed if consensus was not achieved. The data for the encounters contains the following variables.
+```{r}
+encounter_data <- fread("../data/scale-free_networks/num_encounters.csv")
+encounter_data <- as.data.frame(encounter_data)[,-ncol(encounter_data)]
+head(encounter_data)
+```
+To get the information for how many networks were in the simulation and what was the **d** value, we 
+can merge the data like we have done previously. 
+```{r}
+encounter_data <- merge(encounter_data, params, by="cfg.id")
+```
+
+We now filter some of the variables out.
+```{r message=FALSE}
+#filter some things out
+fedata <- melt.data.frame(encounter_data,id.vars=c("cfg.id","run","num.networks","network.0.d"), measure.vars=c("total-encounters"))
+head(fedata)
+
+
+
+#create a table with avg and sd
+cast_fedata_table <- cast(data=fedata, formula=network.0.d~num.networks, c(mean, sd))
+
+fedata_table_full <- tabular(cast_fedata_table)
+
+
+```
+
+Create the tables
+```{r results='asis',message=FALSE}
+#to print the table created with tabular
+
+html(fedata_table_full)
+
+
+#print this to a file to use in the paper
+
+Hmisc::latex(fedata_table_full, file="tex/scale-free_encounters_full.tex",booktabs=T)
+```
+
+Now to observe the distribution of the number of encounters, necessary to achieve consensus, we look at the box plots for **d = {1,2,3,4,5}**. We look at **configurations with a number of networks > 3** since less networks require more connectivity to allow consensus to be reached 100% of the time.
+
+```{r}
+plot <- plot.exp.box(data=fedata,x_factor=as.factor(fedata$num.networks), data_y=fedata$value, fill_factor=as.factor(fedata$network.0.d),fill_label="d", x_label="Number of Networks", y_label="Number of Encounters")
+
+plot
+
+```
+
+Focusing on the runs where the **number of encounters was < 2000** (some outliers are not present, see previous plots for that)
+
+```{r}
+fedata <- fedata[fedata$"num.networks" >= 3 & fedata$"network.0.d" > 1 & fedata$"value" < 10000, ]
+plot <- plot.exp.box(data=fedata,x_factor=as.factor(fedata$num.networks), data_y=fedata$value, fill_factor=as.factor(fedata$network.0.d),fill_label="d", x_label="Number of Networks", y_label="Number of Encounters")
+
+plot
+
+```
+
+# Convergence for Heterogeneous Configuration (K-Regular Network + Scale-free Network) #
+Now we analyse what happens when we use an heterogenous configuration, this is, each layer in the model uses different 
+network models. In a first experiment, we use a K-Regular network for one layer and a Scale-free network for the other. 
+```{r results='asis',message=FALSE}
+#Read the Parameters for this experiment
+params <- read.exp.parameters(param_file_name="../data/scale-free_regular/param-space_2014-05-30_18:40:41experiment:2_.csv")
+
+#read the adata related to consensus was achieved before 
+require(data.table)
+convergence_data <- fread("../data/scale-free_regular/consensus_achieved.csv")
+convergence_data <- as.data.frame(convergence_data)[,-ncol(convergence_data)]
+convergence_data <- merge(convergence_data, params, by="cfg.id")
+```
+
+We can now create a table to display the percentage of convergences to total 
+consensus **for each value of k and d**. The **number of networks** in this experiment is allways **2**.
+
+```{r message=FALSE}
+require(reshape)
+require(tables)
+
+#filter some things out
+fcdata <- melt.data.frame(convergence_data,id.vars=c("cfg.id","run","network.0.k","network.1.d"), measure.vars=c("consensus-achieved"))
+
+#convergence_table
+
+fcdata_table <- aggregate(data=fcdata, fcdata$value~network.1.d + fcdata$network.0.k, FUN=sum)
+colnames(fcdata_table) <- c("d", "k", "value")
+
+ #create a pretty table for latex
+latex_table <- tabular(cast(fcdata_table, d~k, value="value"))
+
+```
+
+```{r results='asis'}
+html(latex_table)
+
+#I can also save this table to a file for later reference
+latex(latex_table,file="tex/regular_scale-free_convergence.tex", booktabs=T, )
+```
+
+This table shows the percentage of simulation runs that converged to total consensus over 100 
+independent runs. 
+
+# Number of Encounters for Heterogeneous Configuration (K-Regular Network + Scale-free Network) #
+In this section, we analise the number of encouters necessary to achieve consensus with this heterogenous setup.
+The data for the encounters contains the following variables.
+```{r}
+encounter_data <- fread("../data/scale-free_regular/num_encounters.csv")
+encounter_data <- as.data.frame(encounter_data)[,-ncol(encounter_data)]
+head(encounter_data)
+```
+To get the information for the d and k values we can merge the data with the parameter space
+```{r}
+encounter_data <- merge(encounter_data, params, by="cfg.id")
+```
+
+We now filter some of the variables out.
+```{r message=FALSE}
+#filter some things out
+fedata <- melt.data.frame(encounter_data,id.vars=c("cfg.id","run","network.0.k","network.1.d"), measure.vars=c("total-encounters"))
+head(fedata)
+
+#filter encounter data include only num networks > 3
+fedata_net1 <- fedata[fedata$network.0.k <= 5,]
+
+fedata_net10 <- fedata[fedata$network.0.k > 5,]
+
+
+
+#create a table with avg and sd
+cast_fedata_table <- cast(data=fedata, formula=network.0.k~network.1.d, c(mean, sd))
+
+fedata_table_full <- tabular(cast_fedata_table)
+
+
+```
+
+Create the tables
+```{r results='asis',message=FALSE}
+#to print the table created with tabular
+
+html(fedata_table_full)
+
+
+#print this to a file to use in the paper
+
+Hmisc::latex(fedata_table_full, file="tex/regular_scale-free_encounters_full.tex",booktabs=T)
+```
+
+Now to observe the distribution of the number of encounters, necessary to achieve consensus, we look at the box plots for **k = {1,2,3,4,5}** and **k = {10,20,30,40,50}** respectively.
+
+```{r}
+plot <- plot.exp.box(data=fedata_net1,x_factor=as.factor(fedata_net1$network.1.d), data_y=fedata_net1$value, fill_factor=as.factor(fedata_net1$network.0.k),fill_label="K", x_label="D", y_label="Number of Encounters")
+
+plot
+
+plot <- plot.exp.box(data=fedata_net10,x_factor=as.factor(fedata_net10$network.1.d), data_y=fedata_net10$value, fill_factor=as.factor(fedata_net10$network.0.k),fill_label="K", x_label="D", y_label="Number of Encounters")
+
+plot
+```
+
+Focusing now on the best performing configurations and on the runs that produced a convergence in less than 50000 encounters, the distribution of the number of encounters is as follows. 
+
+```{r}
+fedata_net10 <- fedata_net10[fedata_net10$"network.1.d" > 1 & fedata_net10$value <= 10000,]
+
+plot <- plot.exp.box(data=fedata_net10,x_factor=as.factor(fedata_net10$network.1.d), data_y=fedata_net10$value, fill_factor=as.factor(fedata_net10$network.0.k),fill_label="K", x_label="D", y_label="Number of Encounters")
+
+plot
+
+```
+
+# Heterogeneous Network Properties #
+In this section we analyse the properties of this heterogenous setup. This is, what happens when you mix 
+k-regular networks with a scale-free network. 
+
+```{r}
+source("../R/read_network.R")
+network_data <- fread("../data/scale-free_regular/networks.csv")
+#filter the data, we just need the data from one simulation run
+network_data <- network_data[network_data$"cfg.id" == fedata_net10[1,]$"cfg.id" & network_data$"run" == fedata_net10[1,]$"run",]
+
+k_regular_network <- read.single.network(data=network_data, layer=0)
+scale_free_network <- read.single.network(data=network_data, layer=1)
+combined_network <- k_regular_network + scale_free_network
+
+```
+
+We combine a 10-Regular and a Scale-free network from the previous experiment (D = 2) by merging the overllaping edges. 
+```{r fig.width=15, results='asis'}
+network1 <- k_regular_network
+network2 <- scale_free_network
+
+
+
+
+color1 <- "#7D9C9F"
+color2 <- "#B1B1B1"
+color_over <- "#FF003F"
+
+E(network1)$color <- color1
+E(network2)$color <- color2
+
+el1 <- apply(get.edgelist(network1), 1, paste, collapse="-")
+el2 <- apply(get.edgelist(network2), 1, paste, collapse="-")
+elc <- apply(get.edgelist(combined_network), 1, paste, collapse="-")
+
+E(combined_network)$color <- ifelse((elc %in% el1) & (elc %in% el2), color_over, ifelse((elc %in% el1), color1, color2))
+
+
+par(mfrow=c(1,3))
+plot(network1,vertex.size = 2, vertex.label=NA, layout =   layout.kamada.kawai, main="10-Regular Network")
+plot(network2,vertex.size = 2, vertex.label=NA, layout =   layout.kamada.kawai, main="Scale-Free with D = 2")
+plot(combined_network,vertex.size = 2, vertex.label=NA, layout =   layout.kamada.kawai, main="Combined Networks")
+```
+
+We now plot the degree distribution using a log scale. We do this for the **10-Regular** Network, the **Scale-Free Network with d = 2**, and the combined network.
+
+```{r fig.width=15}
+par(mfrow=c(1,3))
+plot.degree.distribution(network=k_regular_network, "10-Regular Network")
+plot.degree.distribution(network=scale_free_network, "Scale-Free Network with D = 2")
+plot.degree.distribution(network=combined_network, "Combined network")
+```
+
+
+
+# Regular / Scale-Free / Scale-Free Configuration #
+We look at a final heterogeneous configuration. In this experiment we used 1 K-Regular network and 2 Scale-Free Networks 
+with varying k and d parameters. To analyse the convergence and number of encounters to achieve consensus, we consider 
+homogenous parameter configurations for scale-free networks (the same value of d for both networks).
+
+## CONVERGENCE FOR REG/SF/SF ##
+
+```{r results='asis',message=FALSE}
+#Read the Parameters for this experiment
+params <- read.exp.parameters(param_file_name="../data/scale-free_scale-free_regular/param-space_2014-05-30_18:43:13experiment:2_.csv")
+
+#read the adata related to consensus was achieved before 
+require(data.table)
+convergence_data <- fread("../data/scale-free_scale-free_regular/consensus_achieved.csv")
+convergence_data <- as.data.frame(convergence_data)[,-ncol(convergence_data)]
+convergence_data <- merge(convergence_data, params, by="cfg.id")
+```
+
+We can now create a table to display the percentage of convergences to total 
+consensus **for each value of k and d**. The **number of networks** in this experiment is allways **2**.
+
+```{r message=FALSE}
+require(reshape)
+require(tables)
+
+#filter some things out
+fcdata <- melt.data.frame(convergence_data,id.vars=c("cfg.id","run","network.0.k","network.1.d", "network.2.d"), measure.vars=c("consensus-achieved"))
+
+#filter the data and get the data for homogenous d configurations (network.1.d == network.2.d)
+fcdata <- fcdata[fcdata$"network.1.d" == fcdata$"network.2.d",]
+
+#convergence_table
+
+fcdata_table <- aggregate(data=fcdata, fcdata$value~network.1.d + fcdata$network.0.k, FUN=sum)
+colnames(fcdata_table) <- c("d", "k", "value")
+
+ #create a pretty table for latex
+latex_table <- tabular(cast(fcdata_table, d~k, value="value"))
+
+```
+
+```{r results='asis'}
+html(latex_table)
+
+#I can also save this table to a file for later reference
+latex(latex_table,file="tex/regular_scale-free_scale-free_convergence.tex", booktabs=T, )
+```
+
+This table shows the percentage of simulation runs that converged to total consensus over 100 
+independent runs. 
+
+# Number of Encounters for REG/SF/SF #
+In this section, we analise the number of encouters necessary to achieve consensus with this heterogenous setup.
+The data for the encounters contains the following variables.
+```{r}
+encounter_data <- fread("../data/scale-free_scale-free_regular/num_encounters.csv")
+encounter_data <- as.data.frame(encounter_data)[,-ncol(encounter_data)]
+head(encounter_data)
+```
+To get the information for the d and k values we can merge the data with the parameter space
+```{r}
+encounter_data <- merge(encounter_data, params, by="cfg.id")
+```
+
+We now filter some of the variables out.
+```{r message=FALSE}
+#filter some things out
+fedata <- melt.data.frame(encounter_data,id.vars=c("cfg.id","run","network.0.k","network.1.d","network.2.d"), measure.vars=c("total-encounters"))
+head(fedata)
+
+#filter the data and get the data for homogenous d configurations (network.1.d == network.2.d)
+fedata <- fedata[fedata$"network.1.d" == fedata$"network.2.d",]
+
+#filter encounter data include only num networks > 3
+fedata_net1 <- fedata[fedata$network.0.k <= 5,]
+
+fedata_net10 <- fedata[fedata$network.0.k > 5,]
+
+
+
+#create a table with avg and sd
+cast_fedata_table <- cast(data=fedata, formula=network.0.k~network.1.d, c(mean, sd))
+
+fedata_table_full <- tabular(cast_fedata_table)
+
+
+```
+
+Create the tables
+```{r results='asis',message=FALSE}
+#to print the table created with tabular
+
+html(fedata_table_full)
+
+
+#print this to a file to use in the paper
+
+Hmisc::latex(fedata_table_full, file="tex/regular_scale-free_scale_free_encounters_full.tex",booktabs=T)
+```
+
+Now to observe the distribution of the number of encounters, necessary to achieve consensus, we look at the box plots for **k = {1,2,3,4,5}** and **k = {10,20,30,40,50}** respectively.
+
+```{r}
+plot <- plot.exp.box(data=fedata_net1,x_factor=as.factor(fedata_net1$network.1.d), data_y=fedata_net1$value, fill_factor=as.factor(fedata_net1$network.0.k),fill_label="K", x_label="D", y_label="Number of Encounters")
+
+plot
+
+plot <- plot.exp.box(data=fedata_net10,x_factor=as.factor(fedata_net10$network.1.d), data_y=fedata_net10$value, fill_factor=as.factor(fedata_net10$network.0.k),fill_label="K", x_label="D", y_label="Number of Encounters")
+
+plot
+```
+
+Focusing now on the best performing configurations and on the runs that produced a convergence in less than 50000 encounters, the distribution of the number of encounters is as follows. 
+
+```{r}
+fedata_net10 <- fedata_net10[fedata_net10$"network.1.d" > 1 & fedata_net10$value <= 10000,]
+
+plot <- plot.exp.box(data=fedata_net10,x_factor=as.factor(fedata_net10$network.1.d), data_y=fedata_net10$value, fill_factor=as.factor(fedata_net10$network.0.k),fill_label="K", x_label="D", y_label="Number of Encounters")
+
+plot
+
+```
+
+
+
+
