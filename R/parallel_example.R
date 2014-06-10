@@ -1,9 +1,7 @@
-library(parallel)
+require(parallel)
 
 ## Number of workers (R processes) to use:
 numWorkers <- 8
-
-
 
 measure_parallel <- function(cfg,r){
   data <- network_data
