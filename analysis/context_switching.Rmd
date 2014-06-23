@@ -1,0 +1,89 @@
+Context Switching
+=================
+
+In this set of experiments we analyse a new multi-context model with a binary opinion dynamics game. In this case, the difference between the context switching model and the context permeability one is that agents no longer interact in the multiple  networks at the same time (being able to select any neighbour at a given simulation step) but rather become active in one network at a time. Agents are also able to switch to a different network at the end of each interaction with a partner. The agent switches based on a probability associated with the current network in which it is currently active. 
+
+First, we look at the influece of the new parameter in the convergence to consensus. **We span the switching probability parameter between the values 0 and 1 with intervals of 0.05**. We do this for **2** networks with **k-regular and scale-free topologies**. 
+
+We then freeze the switching probabilities and vary the number of networks. We compare the results with the context permeability in terms of percentage of convergences to consensus and average number of encounters.
+
+##Switching Probability Span##
+We set the number of networks for 2 and span the switching probabilities for each network between 0 and 1 in intervals of 0.05. 
+
+###2 10-Regular Networks###
+```{r load-parameters}
+#load some utilities
+source("../R/experiment_utils.R")
+
+#Read the Parameters for this experiment
+params <- read.exp.parameters(param_file_name="../data/context_switching/switching_span/2 10-regular networks/param-space_2014-06-17_15:44:50experiment:10_.csv")
+
+#read data for number of encounters
+
+require(data.table)
+
+encounter_data <- fread("../data/context_switching/switching_span/2 10-regular networks/num_encounters.csv")
+encounter_data <- as.data.frame(encounter_data)[,-ncol(encounter_data)]
+head(encounter_data)
+
+#merge with configuration context switching values
+require(reshape2)
+encounter_data <- merge(encounter_data, params[,c("cfg.id","network.0.cs","network.1.cs")], by="cfg.id")
+head(encounter_data)
+
+#melt data to use cast
+melted_encounters <- melt(encounter_data,id.vars=c("cfg.id","run","network.0.cs","network.1.cs"), measure.vars=c("total-encounters"))
+head(melted_encounters)
+
+#aggregate encounter data 
+agg_encounters <- aggregate(melted_encounters$value,by=list(melted_encounters$network.0.cs,melted_encounters$network.1.cs),mean)
+colnames(agg_encounters) <- c("cs0","cs1","value")
+
+#create a contour plot to visualize the data
+
+#breaks in the contour
+brks <- c(0,5000,10000, seq(20000,200000, by=50000),max(agg_encounters$"value"))
+guide_title <- "Average Encounters"
+
+encouters_contour <- create_contour_span(span = agg_encounters, brks = brks, guide_title = guide_title)
+encouters_contour
+gc()
+```
+
+```{r fig.width=16, message=FALSE}
+#reshape the data to display average number of encounters
+encounter_table <- dcast(data=melted_encounters, network.0.cs~network.1.cs, mean)
+
+#average encounters as a matrix
+encounter_matrix <- as.matrix(encounter_table[,-1])
+colnames(encounter_matrix) <- c()
+
+
+xlab<-"\n\nSwitching for Network 1"
+ylab<-"\n\nSwitching for Network 2"
+zlab<-"\n\n\n Avg. Encounters"
+
+
+
+par(mfrow=c(1,3))
+plot_persp_span(x = seq(0,1,0.05), y = seq(0,1,0.05),data_matrix = encounter_matrix, breaks=log(c(1:10)),xlab=xlab,ylab=ylab,zlab = zlab)
+plot_persp_span(x = seq(0.2,1,0.05), y = seq(0.2,1,0.05),data_matrix = encounter_matrix[-c(1:4),-c(1:4)], breaks=log(c(1:10)),xlab=xlab,ylab=ylab,zlab = zlab)
+plot_persp_span(x = seq(0.4,1,0.05), y = seq(0.4,1,0.05),data_matrix = encounter_matrix[-c(1:8),-c(1:8)], breaks=log(c(1:10)),xlab=xlab,ylab=ylab,zlab = zlab)
+gc()
+```
+
+```{r fig.width=10}
+par(mfrow=c(1,1))
+plot_persp_span(x = seq(0,1,0.05), y = seq(0,1,0.05),data_matrix = log(encounter_matrix), breaks=log(c(1:10)),xlab=xlab,ylab=ylab,zlab=zlab,pallete="PRGn")
+```
+**Note** I don't need custom breaks, its simpler to apply a logarithm to a set of n numbers, normalize them inside the plotting function and multiply this by the maximum value in the dataset, this will get the effect I'm looking for in both the filling and contour lines.
+
+
+
+
+
+###2 Scale-Free Networks with D=1###
+
+###1 10-Regular + 1 Scale-Free with D=1###
+
+
