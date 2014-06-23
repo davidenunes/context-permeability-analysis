@@ -73,3 +73,69 @@ read.opinion.progress <- function(filename){
   return(opinion_data)
 }
 
+plot_persp_span <- function(x,y,data_matrix,breaks,xlab,ylab,zlab, pallete="YlOrBr"){ 
+    z<- data_matrix
+    nrz <- nrow(z)
+    ncz <- ncol(z)
+    
+    jet.colors <- colorRampPalette(brewer.pal(n=9, name=pallete))
+
+    nbcol <- 9
+    color <- jet.colors(nbcol)
+    
+    #range normalization function
+    normal.range <- function(x){
+      (x-min(x))/(max(x)-min(x))
+    }
+    
+    #normalized breaks
+    normbreaks <- normal.range(unique(breaks))
+
+    zfacet <- z[-1, -1] + z[-1, -ncz] + z[-nrz, -1] + z[-nrz, -ncz]
+    # Recode facet z-values into color indices
+    facetcol <- cut(zfacet, breaks=normbreaks*max(zfacet))
+  
+  
+    persp_plot <- persp(x, y, z,expand=1, ylab=ylab, xlab=xlab, zlab=zlab,ticktype="detailed", col=color[facetcol], phi=45, theta=135,  cex=2)
+    return(persp_plot)
+}
+
+
+
+#'Takes the aggregated data for the number of encounters containing 3 columns ("cs0", "cs1", and "value")
+#'and returns a contour plot. The contour lines and filling are based on the breaks which are also supplied.
+#'The cusom breaks are the values for which the user desires a contour line. 
+#'
+#'@param data a data frame with 3 columns:
+#'cs0 - the switching probability for network 0
+#'cs1 - the switching probability for network 1
+#'value - the value we are plotting
+#'
+#'@param brks the breaks for wich we want the contour lines
+#'
+#'@param the title for the colourband guide which goes with the filling 
+#'(the colour filling is also constructed based on the breaks)
+#'
+#'
+create_contour_span <- function(span,brks,guide_title){
+  require(ggplot2)
+  require(RColorBrewer)
+  require(directlabels)
+  
+  jet.colors <- colorRampPalette(brewer.pal(n=9, name="YlOrBr"))  
+  nbcol <- 9
+  color <- jet.colors(nbcol)
+  
+  #I have to do this otherwise ggplot cant find the variables in this function environmnet
+  .e <- environment()
+  
+  v <- ggplot(span, aes(x=span$"cs0", y=span$"cs1", z=span$"value"), environment=.e)
+  #v <- v + geom_tile(aes(fill = span$"value"),breaks=brks) + scale_fill_gradientn(colours=brewer.pal(n=10, name="Paired"), breaks=brks)
+  v <- v + geom_tile(aes(fill = span$"value"),breaks=brks) + scale_fill_gradientn(colours=color)
+  v <- v + guides(fill = guide_colorbar(barwidth = 0.5, barheight = 20, title = guide_title))
+  v <- v + stat_contour(aes(colour = ..level..), breaks=brks) + scale_colour_gradient(low = "black", high ="black")
+  v <- v + labs(x="Switching probability from network 1", y="Switching probability from network 2")
+  
+  plot <- direct.label(v,method="top.pieces")
+  return(plot)
+}

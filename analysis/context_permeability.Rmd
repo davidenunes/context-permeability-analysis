@@ -18,11 +18,11 @@ regular networks only. We will analyse two things: the *percentage of convergenc
 We first load the data related to convergence to consensus. In this first dataset, we can find a single boolean variable {1,0} that tells us wheather or not consensus was achieved. 
 ```{r results='asis',message=FALSE}
 #Read the Parameters for this experiment
-params <- read.exp.parameters(param_file_name="../data/regular_networks/param-space_2014-05-30_16:47:53experiment:0_.csv")
+params <- read.exp.parameters(param_file_name="../data/context_permeability/regular_networks/param-space_2014-05-30_16:47:53experiment:0_.csv")
 
 #read the adata related to consensus was achieved before 
 require(data.table)
-convergence_data <- fread("../data/regular_networks/consensus_achieved.csv")
+convergence_data <- fread("../data/context_permeability/regular_networks/consensus_achieved.csv")
 convergence_data <- as.data.frame(convergence_data)[,-ncol(convergence_data)]
 convergence_data <- merge(convergence_data, params, by="cfg.id")
 ```
@@ -66,7 +66,7 @@ were performed if consensus was not achieved. **The maximum number of simulation
 number of encounters is thus limited by the maximum number of simulation cycles (and in consequense steps). The 
 data for the encounters contains the following variables.
 ```{r}
-encounter_data <- fread("../data/regular_networks/num_encounters.csv")
+encounter_data <- fread("../data/context_permeability/regular_networks/num_encounters.csv")
 encounter_data <- as.data.frame(encounter_data)[,-ncol(encounter_data)]
 head(encounter_data)
 ```
@@ -127,7 +127,7 @@ To try to answer the question "why do some outliers show up in the data" (simula
 ```{r}
 source("../R/read_network.R")
 
-network_data <- fread("../data/regular_networks/networks.csv")
+network_data <- fread("../data/context_permeability/regular_networks/networks.csv")
 
 #get outlier
 outlier <- fedata_net10[fedata_net10$value > 30000 & fedata_net10$network.0.k == 10,]
@@ -169,7 +169,7 @@ This suggests that this can be a property of the game itself (see plots bellow) 
 Another idea is to look at the sate of the agents and their location in the underlying networks. If networks contain some sort of self-reinforcing structures, this can cause the convergence to be slowed. Daniel Villatoro found these structures in models such as scale-free networks (see [http://dl.acm.org/citation.cfm?id=2451250](here)). Self-reinforcing structures are subgraphs that converge to consensus, and due to its structure (and the nature of the consensus game), lead the agents in that subgroup to reinforce one another. Breaking these consensus groups can be particularly difficult even if the whole society has converged to a different opinion value. 
 
 ```{r}
-opinion_data <- read.opinion.progress("../data/regular_networks/opinion_progress.csv")
+opinion_data <- read.opinion.progress("../data/context_permeability/regular_networks/opinion_progress.csv")
 #filter opinion to outlier run and normal run
 outlier_run <- opinion_data[opinion_data$"cfg.id" == outlier$"cfg.id" & opinion_data$"run" == outlier$"run",]
 normal_run <- opinion_data[opinion_data$"cfg.id" == normal$"cfg.id" & opinion_data$"run" == normal$"run",]
@@ -195,11 +195,11 @@ is added to the network. We varied this parameter and considered the values ** d
 We first look at the number of convergences to total consensus in 100 simulation runs. 
 ```{r results='asis',message=FALSE}
 #Read the Parameters for this experiment
-params <- read.exp.parameters(param_file_name="../data/scale-free_networks/param-space_2014-05-30_18:38:14experiment:1_.csv")
+params <- read.exp.parameters(param_file_name="../data/context_permeability/scale-free_networks/param-space_2014-05-30_18:38:14experiment:1_.csv")
 
 #read the adata related to consensus was achieved before 
 require(data.table)
-convergence_data <- fread("../data/scale-free_networks/consensus_achieved.csv")
+convergence_data <- fread("../data/context_permeability/scale-free_networks/consensus_achieved.csv")
 convergence_data <- as.data.frame(convergence_data)[,-ncol(convergence_data)]
 convergence_data <- merge(convergence_data, params, by="cfg.id")
 ```
@@ -240,7 +240,7 @@ latex(latex_table,file="tex/scale-free_convergence.tex", booktabs=T, )
 Now we analise the number of encouters necessary to achieve consensus. Or the total number of encounters that 
 were performed if consensus was not achieved. The data for the encounters contains the following variables.
 ```{r}
-encounter_data <- fread("../data/scale-free_networks/num_encounters.csv")
+encounter_data <- fread("../data/context_permeability/scale-free_networks/num_encounters.csv")
 encounter_data <- as.data.frame(encounter_data)[,-ncol(encounter_data)]
 head(encounter_data)
 ```
@@ -302,11 +302,11 @@ Now we analyse what happens when we use an heterogenous configuration, this is, 
 network models. In a first experiment, we use a K-Regular network for one layer and a Scale-free network for the other. 
 ```{r results='asis',message=FALSE}
 #Read the Parameters for this experiment
-params <- read.exp.parameters(param_file_name="../data/scale-free_regular/param-space_2014-05-30_18:40:41experiment:2_.csv")
+params <- read.exp.parameters(param_file_name="../data/context_permeability/scale-free_regular/param-space_2014-05-30_18:40:41experiment:2_.csv")
 
 #read the adata related to consensus was achieved before 
 require(data.table)
-convergence_data <- fread("../data/scale-free_regular/consensus_achieved.csv")
+convergence_data <- fread("../data/context_permeability/scale-free_regular/consensus_achieved.csv")
 convergence_data <- as.data.frame(convergence_data)[,-ncol(convergence_data)]
 convergence_data <- merge(convergence_data, params, by="cfg.id")
 ```
@@ -345,7 +345,7 @@ independent runs.
 In this section, we analise the number of encouters necessary to achieve consensus with this heterogenous setup.
 The data for the encounters contains the following variables.
 ```{r}
-encounter_data <- fread("../data/scale-free_regular/num_encounters.csv")
+encounter_data <- fread("../data/context_permeability/scale-free_regular/num_encounters.csv")
 encounter_data <- as.data.frame(encounter_data)[,-ncol(encounter_data)]
 head(encounter_data)
 ```
@@ -416,7 +416,7 @@ k-regular networks with a scale-free network.
 
 ```{r}
 source("../R/read_network.R")
-network_data <- fread("../data/scale-free_regular/networks.csv")
+network_data <- fread("../data/context_permeability/scale-free_regular/networks.csv")
 #filter the data, we just need the data from one simulation run
 network_data <- network_data[network_data$"cfg.id" == fedata_net10[1,]$"cfg.id" & network_data$"run" == fedata_net10[1,]$"run",]
 
@@ -474,11 +474,11 @@ homogenous parameter configurations for scale-free networks (the same value of d
 
 ```{r results='asis',message=FALSE}
 #Read the Parameters for this experiment
-params <- read.exp.parameters(param_file_name="../data/scale-free_scale-free_regular/param-space_2014-05-30_18:43:13experiment:2_.csv")
+params <- read.exp.parameters(param_file_name="../data/context_permeability/scale-free_scale-free_regular/param-space_2014-05-30_18:43:13experiment:2_.csv")
 
 #read the adata related to consensus was achieved before 
 require(data.table)
-convergence_data <- fread("../data/scale-free_scale-free_regular/consensus_achieved.csv")
+convergence_data <- fread("../data/context_permeability/scale-free_scale-free_regular/consensus_achieved.csv")
 convergence_data <- as.data.frame(convergence_data)[,-ncol(convergence_data)]
 convergence_data <- merge(convergence_data, params, by="cfg.id")
 ```
@@ -520,7 +520,7 @@ independent runs.
 In this section, we analise the number of encouters necessary to achieve consensus with this heterogenous setup.
 The data for the encounters contains the following variables.
 ```{r}
-encounter_data <- fread("../data/scale-free_scale-free_regular/num_encounters.csv")
+encounter_data <- fread("../data/context_permeability/scale-free_scale-free_regular/num_encounters.csv")
 encounter_data <- as.data.frame(encounter_data)[,-ncol(encounter_data)]
 head(encounter_data)
 ```

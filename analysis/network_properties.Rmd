@@ -25,7 +25,7 @@ In a first experiment we performed experiment with _k-regular_ networks with dif
 source("../R/experiment_utils.R")
 
 #shows the k values explored and the number of networks
-params <- read.exp.parameters("../data/regular_networks/param-space_2014-05-30_16:47:53experiment:0_.csv")
+params <- read.exp.parameters("../data/context_permeability/regular_networks/param-space_2014-05-30_16:47:53experiment:0_.csv")
 params <- params[,c("cfg.id","num.networks","network.0.k")]
 
 
@@ -48,7 +48,7 @@ is more efficient in terms of memory management.
 ```{r message=FALSE}
 source("../R/network.utils.R")
 require(bigmemory)
-network_data <- read.big.matrix(filename="../data/regular_networks/networks.csv", header=T, sep=";")
+network_data <- read.big.matrix(filename="../data/context_permeability/regular_networks/networks.csv", header=T, sep=";")
 ```
 
 Before a more detailed analysis lets consider an example. Lets consider 
