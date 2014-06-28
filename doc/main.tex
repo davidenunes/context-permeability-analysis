@@ -1,0 +1,113 @@
+\documentclass[preprint,number]{elsarticle}
+\usepackage[utf8]{inputenc}
+\usepackage{multirow}
+
+\begin{document}
+\begin{frontmatter}
+
+\author[ul]{Davide Nunes\corref{cor1}}
+\ead{davide.nunes@di.fc.ul.pt}
+\author[ul]{Luis Antunes}
+\ead{xarax@di.fc.ul.pt}
+
+\cortext[cor1]{Corresponding author}
+
+
+
+\address[ul]{Group of Studies in Social Simulation (GUESS), Laboratory of Agent Modelling, University of Lisbon, 1749-016 Lisbon, Portugal}
+\title{Modelling Structured Societies: a Multi-relational Approach to Context Permeability}
+
+\begin{abstract}
+The structure of social relations is fundamental for the construction of plausible simulation scenarios. It shapes the way actors interact and create their identity within overlapping social contexts. Each actor interacts in multiple contexts located within relations that constitute their social space. We present a modelling approach to construct structured agent societies with multiple concomitant social networks. We study the notion of context permeability using a consensus game in which agents try to achieve global consensus. We design and analyse models of permeability with three model different configurations. In the first model agents interact concurrently in multiple social networks. The second model uses a context switching mechanism that adds temporal dynamics to agent interaction. They switch between the different networks spending more or less time in each network. Finally we use a strategic neighbourhood selection by segregation that acts as a regulatory mechanism in the societal self-organisation process to achieve consensus. We compare each model and analyse the influence of different social topologies in the speed of convergence to global consensus.
+%TODO abstract: brief strong conclusion
+\end{abstract}
+
+\begin{keyword}
+Social Simulation and Modelling \sep Agent Societies \sep Consensus \sep Context \sep Social Networks
+\end{keyword}
+
+\end{frontmatter}
+\newpage
+%********************************************
+%				INTRODUCTION
+%********************************************
+\section{Introduction and Related Work}
+\label{sec:introduction}
+%Social simulation view oever consensus
+\noindent In social simulation, studying models of consensus formation helps us to investigate real-world phenomena. This can be done not only by constructing data-driven simulation but also with the help of abstract models that permit the assembly of \textit{what-if-scenarios}. Examples of real-world target phenomena in this domain include: the joint assessments of social policies or, in the context of economics and politics, \textit{the voting problem}. Herbert Simon investigated this last problem in an early model described in~\cite{Simon1954}.
+
+Formal opinion dynamics models provide an understanding if not an analysis of opinion formation processes.  An early formulation of these models was designed to comprehend complex phenomena found empirically in groups \cite{French1956}. In particular, the work on consensus building in the context of decision-making was first studied by DeGroot \cite{Degroot74} and Lehrer \cite{Lehrer1975}. Empirical studies of opinion formation in large populations have methodological limitations, as such, we use simulation, in particular Multi-Agent Simulation (MAS), as a methodological framework to study such phenomena in a larger scale. Most opinion dynamics simulation models are based either on binary opinions \cite{Galam1997,Antunes2009} or on opinions with continuous values \cite{Deffuant2000,Deffuant2002}. In these models, agents update their opinions either under social influence or according to their own experience. For a detailed analysis over some opinion dynamics model analytical and simulation results, refer to \cite{Hegselmann2002}.
+
+In agent-based opinion dynamics models, agent interactions are guided by social space abstractions. In some models, dimensionality is irrelevant. Typically, all agents can participate in interactions with all other agents. Axelrod, takes a different approach in his model of dissemination of culture \cite{Axelrod1997} and represents agents in a bi-dimensional grid which provides the structure that shapes how they interact. In Weisbuch's bounded confidence model with social networks \cite{Weisbuch2004}, the agents are bound by network structures. A first definition for these types of bounded confidence models was given in \cite{Krause1997}. 
+
+%position, most agent-based models don't take into account  social relations and this is important
+In real-world scenarios, actors engage in a multitude of social relations different in kind and quality. Most simulation models don't explore social space designs that take into account the differentiation between coexisting social networks. Modelling multiple concomitant relations was an idea pioneered by Peter Albin in \cite{Albin1975} but without significant further development. The complex social structures that result from interacting in these different dimensions form the basis for the formation of social identity \cite{Roccas2002,Ellemers2002}.
+
+
+%A broader view over consensus formation
+\subsection{On Consensus}
+Opinion dynamics models try to study under which circumstances convergence to consensus can be achieved. These agent-based models can have broader applications outside social simulation. In distributed systems in general, consensus is a means by which processes agree on some data value that is needed during computation, typically, this agreement is the result of a negotiation process often with the aid of a mediator. In human societies, social conventions emerge to deal with coordination and subsequently with cooperation problems \cite{Lewis1969}, these conventions are regularities of behaviour that can turn normative with time due to their being persistent solutions to such problems. Moreover, conventions typically originate from the necessity to resolve conflict. Mult-Agent Systems (MAS) can also benefit from being capable of produce emergent conventions as they might need to coordinate or cooperate in order to solve different problems \cite{Delgado2002}. 
+
+The decentralised nature of these models of consensus is highly desirable for problems where dynamic control is needed. In these scenarios, creating conventions before hand (off-line) or developing a central control mechanism for generating them can be a difficult and intractable task. MAS can be designed to update their values and strategies based on this local information. Consequently, the guarantee of achieving a global consensus and the efficiency of convergence towards it has been a natural concerns in the design of local interaction behaviours. Shoham and Tennenholtz compared several strategy update rules in %paper urbano
+
+%TODO this was the last thing I wrote
+
+
+
+. This explains the interest on the design of
+emergent conventions through a co-learning process [13]: individual agents occasionally meet and observe each
+other, and they may . 
+
+
+%TODO present the literature related to norms and consensus and motivate the problem
+
+%TODO distributed systems need consensus to perform reliable sets of actions (tolerance to faults etc) such as transations
+%Agents that co-exist need to coordinate to perform certain tasks or choose appropriate strategies, science a particular behaviour can 
+%have an impact on the each agent not only on the environment, and even when agents have an impact on the environment, this is reflected
+%in the performance of other agents that co-habit the same environment. 
+
+
+
+%TODO as in human societies, consensus is not an intentional end result but rather an emergent process which arises 
+%without a central authority
+
+%TODO see Emergent Conventions and the Structure of Multi{Agent Systems
+%TODO see On the synhesis of useful social laws for artificial agent societies
+
+
+
+In the field of Distributed Artificial Intelligence (DAI) in general and in Multi-Agent Systems (MAS) in particular, achieving a global agreement on some strategy, convention or norm is fundamental 
+\cite{Delgado2002}
+
+
+
+
+
+%Objective of this paper
+This paper is aimed at extending the line of research regarding the representation of social spaces by modelling these with explicit multiple networks.
+
+
+
+%****************************************
+%			PAPER STRUCTURE
+%****************************************
+\subsection{Paper Structure}
+This paper is organised as follows. In the next section we define our modelling approach that uses multiple social networks. We describe our game of consensus and introduce multiple model variations designed to study the notion of context permeability and the process of consensus formation. Section \ref{sec:experimental-setup} describes the experimental set-up for our series of experiments. Finally, in section \ref{sec:results-discussion}, we discuss our results and compare the different simulation models.
+
+
+
+\section{Experimental Setup}
+\label{sec:experimental-setup}
+
+\section{Results and Discussion}
+\label{sec:results-discussion}
+
+
+
+\section*{References}
+\bibliographystyle{elsarticle-num}
+\bibliography{main}
+
+
+\end{document}
+
