@@ -1,7 +1,3 @@
-```{r message=FALSE}
-source("../R/experiment_utils.R")
-```
-
 Context Permeability Convergence Results
 ========================================
 
@@ -17,6 +13,8 @@ regular networks only. We will analyse two things: the *percentage of convergenc
 
 We first load the data related to convergence to consensus. In this first dataset, we can find a single boolean variable {1,0} that tells us wheather or not consensus was achieved. 
 ```{r results='asis',message=FALSE}
+source("../R/experiment_utils.R")
+
 #Read the Parameters for this experiment
 params <- read.exp.parameters(param_file_name="../data/context_permeability/regular_networks/param-space_2014-05-30_16:47:53experiment:0_.csv")
 
@@ -30,11 +28,12 @@ We can now create a table to display the percentage of convergences to total
 consensus **for each value of k and number of networks**.
 
 ```{r message=FALSE}
-require(reshape)
-require(tables)
+
+require(reshape2)
 
 #filter some things out
-fcdata <- melt.data.frame(convergence_data,id.vars=c("cfg.id","run","num.networks","network.0.k"), measure.vars=c("consensus-achieved"))
+fcdata <- melt(convergence_data,id.vars=c("cfg.id","run","num.networks","network.0.k"), measure.vars=c("consensus-achieved"))
+
 
 #I can also cast to obtain multiple values like summary 
 #this will be useful later for the table with the number of encounters
@@ -42,19 +41,25 @@ fcdata <- melt.data.frame(convergence_data,id.vars=c("cfg.id","run","num.network
 
 #convergence_table
 
-fcdata_table <- aggregate(data=fcdata, fcdata$value~num.networks + fcdata$network.0.k, FUN=sum)
+fcdata_table <- aggregate(data=fcdata, fcdata$value~fcdata$num.networks + fcdata$network.0.k, FUN=sum)
 colnames(fcdata_table) <- c("num.networks", "k", "value")
 
+require(reshape)
  #create a pretty table for latex
-latex_table <- tabular(cast(fcdata_table, num.networks~k, value="value"))
+table <- cast(fcdata, num.networks~network.0.k, sum)
+
+require(tables)
+latex_table <- tabular.cast_df(table)
 
 ```
 
 ```{r results='asis'}
 html(latex_table)
 
+
+
 #I can also save this table to a file for later reference
-latex(latex_table,file="tex/regular_convergence.tex", booktabs=T, )
+Hmisc::latex(latex_table, file="tex/regular_convergence.tex",booktabs=T)
 ```
 
 This table shows the percentage of simulation runs that converged to total consensus over 100 
@@ -78,8 +83,9 @@ encounter_data <- merge(encounter_data, params, by="cfg.id")
 
 We now filter some of the variables out.
 ```{r message=FALSE}
+
 #filter some things out
-fedata <- melt.data.frame(encounter_data,id.vars=c("cfg.id","run","num.networks","network.0.k"), measure.vars=c("total-encounters"))
+fedata <- melt(encounter_data,id.vars=c("cfg.id","run","num.networks","network.0.k"), measure.vars=c("total-encounters"))
 head(fedata)
 
 #filter encounter data include only num networks > 3
@@ -88,13 +94,11 @@ fedata_net1 <- fedata[fedata$num.networks>2 & fedata$network.0.k <= 5,]
 fedata_net10 <- fedata[fedata$num.networks>2 & fedata$network.0.k > 5,]
 
 
-
+require(reshape)
 #create a table with avg and sd
 cast_fedata_table <- cast(data=fedata, formula=network.0.k~num.networks, c(mean, sd))
 
-fedata_table_full <- tabular(cast_fedata_table)
-
-
+fedata_table_full <- tabular.cast_df(cast_fedata_table)
 ```
 
 Create the tables
@@ -109,7 +113,16 @@ html(fedata_table_full)
 Hmisc::latex(fedata_table_full, file="tex/regular_encounters_full.tex",booktabs=T)
 ```
 
-Now to observe the distribution of the number of encounters, necessary to achieve consensus, we look at the box plots for **k = {1,2,3,4,5}** and **k = {10,20,30,40,50}** respectively. We look at **configurations with a number of networks > 3** since less networks require more connectivity to allow consensus to be reached 100% of the time.
+Now to observe the distribution of the number of encounters, necessary to achieve consensus, we look at the box plots for **k = {1,2,3,4,5}** and **k = {10,20,30,40,50}** respectively. We look at **configurations with a number of networks > 3** since less networks tab1 <- tabular(Heading()*RowFactor(rowFactor2, spacing = 1, 
+                        levelnames = c("rowLabel1", "rowLabel2"))*
+                Heading()*RowFactor(rowFactor1, 
+                        levelnames = c("b1", "b2")) ~ 
+                Heading()*Factor(colFactor2, 
+                        levelnames = c("colLabel1", "colLabel2") )*
+                Heading()*Factor(colFactor1, 
+                        levelnames = c("a1", "a2"))*
+                Heading()*(x)*Heading()*(mean), 
+        data = mydf)require more connectivity to allow consensus to be reached 100% of the time.
 
 ```{r}
 plot <- plot.exp.box(data=fedata_net1,x_factor=as.factor(fedata_net1$num.networks), data_y=fedata_net1$value, fill_factor=as.factor(fedata_net1$network.0.k),fill_label="K", x_label="Number of Networks", y_label="Number of Encounters")

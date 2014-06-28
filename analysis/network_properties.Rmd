@@ -320,3 +320,137 @@ In the previous plots we can see that as we increase the number of overllaping n
 
 The different behaviour for k = {10,20} and k = {30,40,50} can be explained by the fact that networks are overlapped in a random fashion, as such, 
 by overlapping networks with less connectivity makes so that our composite networks have shortcuts between different points without the end points of these shortcuts being clustered together. This obviously changes as we add increase k towards 50, which is the configuration where the networks are fully connected. 
+
+# Properties for Scale-Free Networks #
+We now look at the properties we get when we merge scale-free networks with different values of **D** (number of edges added with preferential attachement each time a new node is added to the network).
+
+```{r}
+#shows the d values explored and the number of networks
+params <- read.exp.parameters("../data/context_permeability/scale-free_networks/param-space_2014-05-30_18:38:14experiment:1_.csv")
+params <- params[,c("cfg.id","num.networks","network.0.d")]
+
+#read the network data
+require(bigmemory)
+network_data <- read.big.matrix(filename="../data/context_permeability/scale-free_networks/networks.csv", header=T, sep=";")
+
+#Collect the network data and create a data table to hold the network properties
+require(parallel)
+
+## Number of workers (R processes) to use:
+numWorkers <- 8
+
+measure_parallel <- function(cfg,r){
+  data <- network_data
+  network <- read.big.network(data,cfg,r)
+  properties <- measure.network(network)
+  properties <- cbind(r,properties)
+  return(properties)
+}
+
+props <- NULL
+num_networks <- c(1,2,3,4,5)
+d_values <- c(1,2,3,4,5)
+runs <- sort(unique(network_data[,"run"]))
+
+require(BBmisc)#for progress bar
+pb <- makeProgressBar(min=0, max=(length(num_networks)*length(d_values)), label="network analysis")
+
+#pre-alocate a matrix for the network properties
+props <- matrix(nrow=(length(num_networks)*length(d_values)*length(runs)), ncol=7)
+i <- 0
+
+
+for(n in num_networks){
+  #reads the properties for all the k-regular networks with the given k and num_networks 
+  for(d in d_values){
+    cfg <- params[params$"num.network" == n & params$"network.0.d" == d,][[1]]
+    
+    properties <- mcmapply(cfg=cfg, r=runs, measure_parallel, mc.cores = numWorkers)
+    properties <- t(properties)
+    
+      
+    props[(i+1):(i+100),] <- cbind(d,n,properties)
+    i <- i + 100  
+    #some progress feddback
+    pb$inc(1,paste("reading n=",n,"d=",d,"\n"))
+    gc()
+  } 
+}
+pb$kill()
+
+colnames(props)<-c("d","networks","run","nodes","edges","clustering-coefficient","average-path-length")
+
+#clean up
+rm(pb)
+gc()
+
+```
+
+Creating boxplots to observe the average path length and the clustering coefficient, we can see that these values don't varie much within each configuration with the exception of the configuration: **d=1 networks=1**. This happens because the generative process is stochastic by nature and thus depends on the preferential attachement node selection. Within scale-free networks we can thus assume certain property values for specific combinations of networks much like what happens with the k-regular networks.
+
+
+```{r}
+props <- as.data.frame(props)
+
+require(ggplot2)
+
+
+#create average path length box plots for d = 1,2,3,4,5
+net_props <- props
+
+plot <- plot <- ggplot(net_props, aes(x=as.factor(net_props$networks), y=net_props$"average-path-length",fill=as.factor(net_props$d)) ) 
+plot <- plot + geom_boxplot()
+plot <- plot + labs(fill="D", y="Average Path Length", x="Number of Networks")
+plot 
+
+
+#create clustering coefficient box plots for d = 1,2,3,4,5
+
+plot <- plot <- ggplot(net_props, aes(x=as.factor(net_props$networks), y=net_props$"clustering-coefficient",fill=as.factor(net_props$d)) ) 
+plot <- plot + geom_boxplot()
+plot <- plot + labs(fill="D", y="Clustering Coefficient", x="Number of Networks")
+plot 
+```
+
+We now plot the average value of **average path length** and **clustering coefficient** for a total of 100 Scale-Free Networks. We analyse the properties of networks with different levels of **D**.
+
+```{r}
+#aggregate run data by k and networks
+require(reshape2)
+
+apl_data <- melt(props, id=c("d","networks","run"),measure.vars=c("average-path-length"))
+clustering_data <- melt(props, id=c("d","networks","run"),measure.vars=c("clustering-coefficient"))
+
+
+average_apl_data <- dcast(apl_data, d + networks ~ variable, mean)
+average_clustering_data <- dcast(clustering_data, d + networks ~ variable, mean)
+
+
+#plot average path length for d = 1,2,3,4,5
+net_props <- average_apl_data
+plot <- ggplot(net_props, aes(x=as.factor(net_props$networks), y=net_props$"average-path-length",)) 
+plot <- plot +  geom_point(aes(shape=as.factor(net_props$d), color=as.factor(net_props$d)),size = 3.5)
+plot <- plot +  geom_line(aes(color=as.factor(net_props$d), group=as.factor(net_props$d), linetype=as.factor(net_props$d)),size=1)   
+plot <- plot + labs(color="D", shape="D", linetype="D", y="Average Path Length", x="Number of Networks")
+plot
+
+#clean up
+rm(apl_data,average_apl_data)
+gc()
+```
+
+```{r}
+#plot for D = 1,2,3,4,5
+net_props <- average_clustering_data
+
+plot <- ggplot(net_props, aes(x=as.factor(net_props$networks), y=net_props$"clustering-coefficient",)) 
+plot <- plot +  geom_point(aes(shape=as.factor(net_props$d), color=as.factor(net_props$d)),size = 3.5)
+plot <- plot +  geom_line(aes(color=as.factor(net_props$d), group=as.factor(net_props$d), linetype=as.factor(net_props$d)),size=1)   
+plot <- plot + labs(color="D", shape="D", linetype="D", y="Clustering Coefficient", x="Number of Networks")
+plot
+
+#clean up
+rm(clustering_data,average_clustering_data,props, net_props,plot)
+gc()
+```
+

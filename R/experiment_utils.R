@@ -1,3 +1,8 @@
+#range normalization function
+normal.range <- function(x){
+  (x-min(x))/(max(x)-min(x))
+}
+
 #*******************************************************************************
 # Reads a parameter file (normaly each experiment has an associated
 # Parameter Space File) with all the parameter values used.
@@ -83,10 +88,7 @@ plot_persp_span <- function(x,y,data_matrix,breaks,xlab,ylab,zlab, pallete="YlOr
     nbcol <- 9
     color <- jet.colors(nbcol)
     
-    #range normalization function
-    normal.range <- function(x){
-      (x-min(x))/(max(x)-min(x))
-    }
+   
     
     #normalized breaks
     normbreaks <- normal.range(unique(breaks))
@@ -117,7 +119,7 @@ plot_persp_span <- function(x,y,data_matrix,breaks,xlab,ylab,zlab, pallete="YlOr
 #'(the colour filling is also constructed based on the breaks)
 #'
 #'
-create_contour_span <- function(span,brks,guide_title){
+create_contour_span <- function(span,brks,guide_title,xlab,ylab){
   require(ggplot2)
   require(RColorBrewer)
   require(directlabels)
@@ -134,8 +136,112 @@ create_contour_span <- function(span,brks,guide_title){
   v <- v + geom_tile(aes(fill = span$"value"),breaks=brks) + scale_fill_gradientn(colours=color)
   v <- v + guides(fill = guide_colorbar(barwidth = 0.5, barheight = 20, title = guide_title))
   v <- v + stat_contour(aes(colour = ..level..), breaks=brks) + scale_colour_gradient(low = "black", high ="black")
-  v <- v + labs(x="Switching probability from network 1", y="Switching probability from network 2")
+  v <- v + labs(x=xlab, y=ylab)
   
   plot <- direct.label(v,method="top.pieces")
   return(plot)
 }
+
+
+tabular.cast_df <- function(xx,...)
+{
+  # a bunch of assumptions that must be met for this function to work:
+  if(!require(reshape)) stop("The {reshape} package must be installed for this function to work")
+  if(!require(tables)) stop("The {tables} package must be installed for this function to work")
+  if(! any(class(xx) == "cast_df")) stop("This function only works for cast_df objects")
+  # xx is a casted object
+  
+  m_xx <- melt(xx)
+  rdimnames_xx <- attr(xx, "rdimnames")
+  if(length(rdimnames_xx)>2) stop("This function only works for 2D tables")
+  
+  ROWS <- colnames(rdimnames_xx[[1]])
+  COLUMNS <- colnames(rdimnames_xx[[2]])
+  colnames_m_xx <- colnames(m_xx)
+  
+  # This is for cases when one of the equations has "(all)" in them due to something like cast(DATA, x ~.)
+  if(all(ROWS == "value")) ROWS <- 1
+  if(all(COLUMNS == "value")) COLUMNS <- 1
+  
+  if(any(colnames_m_xx == "value.1")) {	# then we are supposed to have a "(all)" case (e.g: cast(DATA, .~x)  ) 
+    # m_xx <- m_xx[, -c(which(colnames_m_xx == "value")[-1])] # then remove the column with no value but "(all)"	# This would only work for cast(DATA, x~.) and not for cast(DATA, .~x)
+    m_xx[,"value"]   <- m_xx[,"value.1"]
+    column_where_all_is <- which(colnames_m_xx  == "value.1")
+    m_xx <- m_xx[, -column_where_all_is] # then remove the column with no value but "(all)"
+    colnames_m_xx <- colnames(m_xx)
+  }
+  if(sum(colnames_m_xx == "value") > 1 ) {	# then we are supposed to have a "(all)" case (e.g: cast(DATA, x~.)  ) 
+    # m_xx <- m_xx[, -c(which(colnames_m_xx == "value")[-1])] # then remove the column with no value but "(all)"	# This would only work for cast(DATA, x~.) and not for cast(DATA, .~x)
+    column_where_all_is <- which(m_xx[1,] == "(all)")
+    m_xx <- m_xx[, -column_where_all_is] # then remove the column with no value but "(all)"
+    colnames_m_xx <- colnames(m_xx)
+  }
+  
+  LEFT <- paste(ROWS , collapse="*")
+  RIGHT <- paste(COLUMNS , collapse="*")
+  
+  # turn all ROWS/COLUMNS variables into factors - so to make sure that the tabular will work on them as we expect
+  column_to_turn_into_factor <- intersect(c(ROWS, COLUMNS), colnames_m_xx)	# this removes the "1"s in case of cast(DATA, x~.) 
+  for(i in column_to_turn_into_factor) m_xx[,i] <- factor(m_xx[,i])
+  
+  # Further motivation for the above two lines have been given by Duncan (on 11.12.11): 
+  # The problem here is that tabular() needs to figure out what you want to do with each variable.  value and month are both numeric, so it can't tell which one you want as an analysis variable.  temp2 is a character variable; those are also treated as possible analysis variables, but perhaps they should be treated like factors instead.  (But then there would need to be syntax to say "don't treat this character as a factor".)
+  # So another way to get what you want would be to change the table spec to
+  # tabular(value*v*factor(month)*factor(temp2) ~ variable2*result_variable, data = m_xx)
+  # but this changes the headings too; so maybe I should have a function Factor that does what factor() does without changing the heading. Here's a quick definition:
+  # Factor <- function( x ) substitute(Heading(xname)*x, list(xname = as.name(substitute(x)), x = factor(x)))
+  # tabular(value*v*Factor(month)*Factor(temp2)~variable2*result_variable, data = melt(xx), suppress=2)
+  
+  v <- function(x) x[1L]
+  txt <- paste("tabular(value*v*", LEFT , "~" ,RIGHT ,", data = m_xx, suppressLabels  = 2,...)", sep = "")
+  # suppressLabels is in order to remove the value and the v labels (which are added so to make sure the information inside the table is presented)	
+  eval(parse(text = txt ))
+}
+
+# Multiple plot function
+#
+# ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
+# - cols:   Number of columns in layout
+# - layout: A matrix specifying the layout. If present, 'cols' is ignored.
+#
+# If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
+# then plot 1 will go in the upper left, 2 will go in the upper right, and
+# 3 will go all the way across the bottom.
+#
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+  require(grid)
+  
+  # Make a list from the ... arguments and plotlist
+  plots <- c(list(...), plotlist)
+  
+  numPlots = length(plots)
+  
+  # If layout is NULL, then use 'cols' to determine layout
+  if (is.null(layout)) {
+    # Make the panel
+    # ncol: Number of columns of plots
+    # nrow: Number of rows needed, calculated from # of cols
+    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                     ncol = cols, nrow = ceiling(numPlots/cols))
+  }
+  
+  if (numPlots==1) {
+    print(plots[[1]])
+    
+  } else {
+    # Set up the page
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+    
+    # Make each plot, in the correct location
+    for (i in 1:numPlots) {
+      # Get the i,j matrix positions of the regions that contain this subplot
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+      
+      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                      layout.pos.col = matchidx$col))
+    }
+  }
+}
+
+
