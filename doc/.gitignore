@@ -1,14 +1,22 @@
-# ignore everything in doc except tex and bib files
-./*
-!*.tex
-!*.bib
-!*.bst
-
-./model descriptions/*
-!/model descriptions/*.tex
-!/model descriptions/*.bib
-!/model descriptions/*.bst
-
-
-
-
+# LaTeX temporary files
+*.aux
+*.log
+*.toc
+*.spl
+ 
+# PDF output, we don't want this on git
+*.pdf
+ 
+# SyncTeX
+*.synctex.gz
+ 
+# LaTeX Beamer
+*.snm
+*.vrb
+*.nav
+*.out
+ 
+# BibTeX
+*.bbl
+*.blg
+*.bib.bak

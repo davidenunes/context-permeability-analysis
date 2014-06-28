@@ -1,0 +1,149 @@
+  \documentclass{article}
+ \usepackage[utf8]{inputenc}
+ \usepackage{amsmath}
+ \usepackage{algorithmic}
+ \usepackage{algorithm}
+ \usepackage{graphicx}
+ \usepackage{subfig}
+ 
+ 
+ \usepackage{float}
+ \floatname{algorithm}{Model}
+ \newcommand{\algorithmname}{Model}
+
+ 
+
+ 
+ \title{Context Permeability Model Description}
+ \author{Davide Nunes, Luis Antunes}
+ 
+ \begin{document}
+ 
+ \maketitle
+ 
+ \begin{algorithm}
+ \caption{Context Permeability}
+ \label{model:context_permeability}
+ \algsetup{indent=2em}
+ \begin{algorithmic}
+ \vspace{0.5em}
+ \STATE $M$ \COMMENT{Simulation Model / Environmnet}
+ \STATE $A$ \COMMENT{Current Agent in Execution}
+ \\ \hrulefill 
+ 
+ \STATE\COMMENT{\textbf{Randomly select a network}}
+ \STATE $r$ $\leftarrow$ randomUniform(0,$ M.networks.length() $)
+ \STATE network $\leftarrow$ $M.networks[r]$
+ 
+ \STATE
+ \STATE \COMMENT{\textbf{Randomly select a neighbour}}
+ \STATE neighbours $\leftarrow$ network.neighboursOf($A$) 
+ \STATE $r$ $\leftarrow$ randomUniform(0,neighbours.length())
+ \STATE partner $\leftarrow$ neighbours[r]
+ \STATE
+ \STATE \COMMENT{\textbf{Update opinion and memory}}
+ \STATE \COMMENT{opinions take the values \{0,1\}--so they can be used as an index}
+ \STATE A.memory[partner.opinion]++
+ \IF {(A.memory[partner.opinion] $>$ A.memory[A.opinion])}
+ \STATE A.opinion $\leftarrow$ partner.opinion
+ \ENDIF
+ \end{algorithmic}
+ \end{algorithm}
+ 
+ 
+  \begin{algorithm}
+  \caption{Context Switching}
+  \label{model:context_switching}
+  \algsetup{indent=2em}
+  \begin{algorithmic}
+  \vspace{0.5em}
+  \STATE $M$ \COMMENT{Simulation Model / Environmnet}
+  \STATE $A$ \COMMENT{Current Agent in Execution}
+  \\ \hrulefill 
+  
+  \STATE\COMMENT{\textbf{Get the current network (\textit{context} is a network index)}}
+  \STATE cNetwork $\leftarrow$ M.networks[A.context]
+  \STATE 
+  \STATE \COMMENT{\textbf{Get the neighbours for the current network}}
+  \STATE neighbours $\leftarrow$ cNetwork.neighboursOf($A$) 
+  \STATE \COMMENT {filter by agents active in the same network}
+  \STATE neighbours $\leftarrow$ \{n $|$ n $\in$ neighbours $\wedge$ (n.context = A.context)\}
+  \STATE
+   \STATE\COMMENT{\textbf{Randomly select a neighbour}} 
+  \STATE $r$ $\leftarrow$ randomUniform(0,neighbours.length())
+  \STATE partner $\leftarrow$ neighbours[r]
+  \STATE
+  \STATE \COMMENT{\textbf{Update opinion and memory}}
+   \STATE \COMMENT{opinions take the values \{0,1\}--so they can be used as an index}
+  \STATE A.memory[partner.opinion]++
+  \IF {(A.memory[partner.opinion] $>$ A.memory[A.opinion])}
+  \STATE A.opinion $\leftarrow$ partner.opinion
+  \ENDIF
+  \STATE
+  \STATE \COMMENT{\textbf{Switch to another network}}
+  \STATE switchingProb $\leftarrow$ M.params.switchingProb(A.context)
+  \STATE $r \leftarrow $ randomUniform(0,1)
+  \IF{($r < $ switchingProb)}
+  \STATE numNets $\leftarrow$ M.networks.length()
+  \STATE nextNetworks $\leftarrow$ \{i $|$ (i $\in$ [0,numNets[) $\wedge$ (M.networks[i] != A.context)\}
+  \STATE $r$ $\leftarrow$ randomUniform(0,nextNetworks.length())
+  \STATE A.context $\leftarrow$ nextNetworks[r]
+  \ENDIF
+  \end{algorithmic}
+  \end{algorithm}
+  
+  
+    \begin{algorithm}
+    \caption{Context Segregation}
+    \label{model:context_segregation}
+    \algsetup{indent=2em}
+    \begin{algorithmic}
+    \vspace{0.5em}
+    \STATE $M$ \COMMENT{Simulation Model / Environmnet}
+    \STATE $A$ \COMMENT{Current Agent in Execution}
+    \\ \hrulefill 
+    
+    \STATE\COMMENT{\textbf{Get the current network (\textit{context} is a network index)}}
+    \STATE cNetwork $\leftarrow$ M.networks[A.context]
+    \STATE 
+    \STATE \COMMENT{\textbf{Get the neighbours for the current network}}
+    \STATE neighbours $\leftarrow$ cNetwork.neighboursOf($A$) 
+    \STATE \COMMENT {filter by agents active in the same network}
+    \STATE neighbours $\leftarrow$ \{n $|$ n $\in$ neighbours $\wedge$ (n.context = A.context)\}
+    \STATE
+     \STATE\COMMENT{\textbf{Randomly select a neighbour}} 
+    \STATE $r$ $\leftarrow$ randomUniform(0,neighbours.length())
+    \STATE partner $\leftarrow$ neighbours[r]
+    \STATE
+    \STATE \COMMENT{\textbf{Update opinion and memory}}
+     \STATE \COMMENT{opinions take the values \{0,1\}--so they can be used as an index}
+    \STATE A.memory[partner.opinion]++
+    \IF {(A.memory[partner.opinion] $>$ A.memory[A.opinion])}
+    \STATE A.opinion $\leftarrow$ partner.opinion
+    \ENDIF
+    \STATE
+    \STATE \COMMENT{\textbf{Segregation}}
+    \STATE \COMMENT{Compute the ratio of neighbours with opposing opinion}
+    \STATE oNeighbours $\leftarrow$ \{n $|$ n $\in$ neighbours $\wedge$ (n.opinion != A.opinion)\}
+    \STATE
+    \STATE oRatio $\leftarrow \frac{\text{oNeighbours.length()}}{\text{neighbours.length()}}$
+    \STATE
+    \STATE tolerance $\leftarrow$ M.params.tolerance(A.context)
+    \STATE switch $\leftarrow$ (oRatio $>$ tolerance) 
+    \STATE \COMMENT{If \textit{switching by tolerance} fails, \textit{A} can still \textit{switch by probability}}
+    \STATE switchingProb $\leftarrow$ M.params.switchingProb(A.context)
+    \STATE switch $\leftarrow$ switch $\lor$ (randomUniform(0,1) $<$ switchingProb)  
+    \STATE 
+    \STATE \COMMENT{\textbf{Switch to another network}}
+    \IF{(switch)}
+  	\STATE numNets $\leftarrow$ M.networks.length()
+   \STATE nextNetworks $\leftarrow$ \{i $|$ (i $\in$ [0,numNets[) $\wedge$ (M.networks[i] != A.context)\}
+    \STATE $r$ $\leftarrow$ randomUniform(0,nextNetworks.length())
+    \STATE A.context $\leftarrow$ nextNetworks[r]
+    \ENDIF
+    \end{algorithmic}
+    \end{algorithm}
+  
+ 
+ 
+ \end{document}

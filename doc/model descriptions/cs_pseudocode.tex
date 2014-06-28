@@ -1,0 +1,57 @@
+  \documentclass{article}
+ \usepackage[utf8]{inputenc}
+ \usepackage{amsmath}
+ \usepackage{algorithmic}
+ \usepackage{algorithm}
+ \usepackage{graphicx}
+ \usepackage{subfig}
+ 
+ 
+ \usepackage{float}
+ \floatname{algorithm}{Model}
+ \newcommand{\algorithmname}{Model}
+
+ 
+
+ 
+ \title{Context Permeability Model Description}
+ \author{Davide Nunes, Luis Antunes}
+ 
+ \begin{document}
+ 
+ \maketitle
+ 
+ \begin{algorithm}
+ \caption{Context Permeability}
+ \label{alg:gencontevo}
+ \algsetup{indent=2em}
+ \begin{algorithmic}
+ \vspace{0.5em}
+ \STATE $M$ \COMMENT{Simulation Model / Environmnet}
+ \STATE $A$ \COMMENT{Current Agent in Execution}
+ \\ \hrulefill 
+ 
+ \STATE\COMMENT{randomly select a neighbour}
+ \STATE $r$ $\leftarrow$ randomUniform(0,$ M.networks.length() $)
+ \STATE network $\leftarrow$ $M.networks[r]$
+ 
+ \STATE
+ \STATE \COMMENT{randomly select a network}
+ \STATE neighbours $\leftarrow$ network.neighboursOf($A$) 
+ \STATE $r$ $\leftarrow$ randomUniform(0,neighbours.length())
+ \STATE partner $\leftarrow$ neighbours[r]
+ \STATE
+ \STATE \COMMENT{Update Opinion and Memory}
+ \STATE A.memory[partner.opinion]++
+ \IF {(A.memory[partner.opinion] $>$ A.memory[A.opinion])}
+ \STATE A.opinion $\leftarrow$ partner.opinion
+ \ENDIF
+ 
+ 
+ 
+ \end{algorithmic}
+ \end{algorithm}
+ 
+ 
+ \end{document}
+ 
