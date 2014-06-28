@@ -1,0 +1,17 @@
+# ignore generated html files,
+*.html
+
+# ignore everything in analysis except Rmd files
+/analysis/*
+!/analysis/*.Rmd
+
+# ignore data
+*.csv
+
+# ignore files from RStudio
+*.Rhistory
+*.directory
+
+
+
+

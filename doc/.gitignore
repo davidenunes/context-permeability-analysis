@@ -1,0 +1,14 @@
+# ignore everything in doc except tex and bib files
+./*
+!*.tex
+!*.bib
+!*.bst
+
+./model descriptions/*
+!/model descriptions/*.tex
+!/model descriptions/*.bib
+!/model descriptions/*.bst
+
+
+
+
