@@ -1,0 +1,334 @@
+Context Segregation
+===================
+In this set of experiments, we analyse the impact of a new parameter called context tolerance in the convergence to consensus. 
+In the previous experiments agents switched between networks using a __*switching probability*__. In the model of *context segregation*, agents switchich using a *segregation criteria* first--**based on a tolerance threshold**--and the same *switching probability* as follows.
+
+At the end of each interaction an agent computes the *ratio of agents with an opposing opinion values* in its current neighbourhood. If this ratio is greater than the *threshold* defined for the current network, the agent switches to a different network immediately; if not, the agent switches using the *switching probability*. 
+
+Load the dependencies for this report.
+```{r}
+source("../R/experiment_utils.R")
+
+library(data.table)
+library(reshape2)
+library(ggplot2)
+```
+
+
+# Exploring the Tolerance Threshold Span #
+To explore the effect of adding the context threshold to the previous model of context switching, we fixed the **switching probability values in the values {0.25, 0.5, 0.75}** and varied the **context threshold from 0 to 1 in intervals of 0.05**.
+
+## Tolerance Threshold Span for Regular Networks ##
+In these experiments we wanted to observe the effect of the context tolerance parameter with scale-free networks. We used *2 networks*. We tested configurations with **switching probability set to 0.25 and 0.75** and **2 k-regular networks with k=5,10,30**. We adjusted the connectivity to observe the effect of the different in the clustering coefficient (and average path length although the difference in clustering coefficient for two networks is more prominent--see [network properties experiment](http://rpubs.com/davidelnunes/socsim_network_properties)).
+
+```{r}
+contour_analysis <- function(prop_name,prop_value,cs_values,encounter_data,brks){
+  for(cs in cs_values){
+    col <- paste("network.0.",prop_name, sep = "")
+    current_data <- encounter_data[encounter_data[col] == prop_value & encounter_data$"network.0.cs" == cs,]
+    melted_encounters <- melt(current_data,id.vars=c("cfg.id","run","network.0.ct","network.1.ct","network.0.cs",col), measure.vars=c("total-encounters"))
+  
+    #aggregate encounter data
+    agg_encounters <- aggregate(melted_encounters$value,by=list(melted_encounters$network.0.ct,melted_encounters$network.1.ct),mean)
+    colnames(agg_encounters) <- c("ct0","ct1","value")
+    
+    #breaks in the contour
+    guide_title <- "Average Encounters"
+    net1label <- paste("\n\nTolerance for Network 1 \n Regular Network, ",prop_name,"=",prop_value,sep="") 
+    net2label <- paste("\n\nTolerance for Network 2 \n Regular Network, ",prop_name,"=",prop_value,sep="") 
+  
+    
+    encouters_contour <- create_tolerance_contour_span(span = agg_encounters, brks = brks, guide_title = guide_title,xlab=net1label, ylab=net2label)
+
+
+    print(encouters_contour)
+  }
+}
+
+```
+
+
+# Opinion Segregation #
+```{r}
+#Read the Parameters for this experiment
+params <- read.exp.parameters(param_file_name="../data/context_segregation/regular_networks/param-space_2014-07-25_19:46:42experiment:20_.csv")
+
+#read data for number of encounters
+encounter_data <- fread("../data/context_segregation/regular_networks/num_encounters.csv")
+encounter_data <- as.data.frame(encounter_data)[,-ncol(encounter_data)]
+
+#merge with configuration context switching values
+encounter_data <- merge(encounter_data, params[,c("cfg.id","network.0.ct","network.1.ct","network.0.cs","network.0.k")], by="cfg.id")
+head(encounter_data)
+```
+### Regular Network with K = 5 ###
+
+```{r}
+csvalues <- c(0.25,0.5,0.75)
+contour_analysis(prop_name = "k",prop_value = 5, cs_values = csvalues, encounter_data = encounter_data, brks=c(30000,50000,70000,100000,120000,180000))
+```
+
+```{r}
+csvalues <- c(0.25,0.5,0.75)
+contour_analysis(prop_name = "k",prop_value = 10, cs_values = csvalues, encounter_data = encounter_data, brks=c(10000,20000,40000,120000))
+
+```
+
+```{r}
+csvalues <- c(0.25,0.5,0.75)
+contour_analysis(prop_name = "k",prop_value = 30, cs_values = csvalues, encounter_data = encounter_data, brks=c(2000,4000,10000,70000))
+```
+
+```{r}
+#we don't need the persp plots here for now
+#reshape the data to display average number of encounters
+#encounter_table <- dcast(data=melted_encounters, network.0.ct~network.1.ct, mean)
+
+#average encounters as a matrix
+#encounter_matrix <- as.matrix(encounter_table[,-1])
+#colnames(encounter_matrix) <- c()
+
+#xlab<- net1label
+#ylab<- net2label
+#zlab<-"\n\n\n Avg. Encounters"
+#plot_persp_span(x = seq(0,1,0.05), y = seq(0,1,0.05),data_matrix = encounter_matrix, breaks=log(c(1:10)),xlab=xlab,ylab=ylab,zlab = zlab)
+```
+
+## Scale-Free Networks ##
+```{r}
+#Read the Parameters for this experiment
+params <- read.exp.parameters(param_file_name="../data/context_segregation/scale-free_networks/param-space_2014-06-30_01:40:06experiment:20_.csv")
+
+#read data for number of encounters
+encounter_data <- fread("../data/context_segregation/scale-free_networks/num_encounters.csv")
+encounter_data <- as.data.frame(encounter_data)[,-ncol(encounter_data)]
+head(encounter_data)
+
+#merge with configuration context switching values
+encounter_data <- merge(encounter_data, params[,c("cfg.id","network.0.ct","network.1.ct","network.0.cs","network.0.d")], by="cfg.id")
+head(encounter_data)
+
+```
+### D = 1 ###
+```{r}
+csvalues <- c(0.25,0.75)
+contour_analysis(prop_name = "d",prop_value = 1, cs_values = csvalues, encounter_data = encounter_data, brks=c(104000,110000,120000))
+```
+
+### D = 5 ###
+```{r}
+csvalues <- c(0.25,0.75)
+contour_analysis(prop_name = "d",prop_value = 5, cs_values = csvalues, encounter_data = encounter_data, brks=c(3000,5000,10000,20000))
+```
+
+# Conformism Segregation #
+In this model we did the opposite of segregation from opposite opinions, the agents switch to avoid conformism. If the number of agents
+with the same opinion rises above the tolerance threshold the agents switch to another context. 
+
+## K-Regular Networks ##
+```{r}
+#Read the Parameters for this experiment
+params <- read.exp.parameters(param_file_name="../data/context_segregation_conformism/regular_networks/param-space_2014-07-23_20:20:09experiment:50_.csv")
+
+#read data for number of encounters
+encounter_data <- fread("../data/context_segregation_conformism/regular_networks/num_encounters.csv")
+encounter_data <- as.data.frame(encounter_data)[,-ncol(encounter_data)]
+head(encounter_data)
+
+#merge with configuration context switching values
+encounter_data <- merge(encounter_data, params[,c("cfg.id","network.0.ct","network.1.ct","network.0.cs","network.0.k")], by="cfg.id")
+head(encounter_data)
+```
+
+### K = 5 ###
+```{r}
+csvalues <- c(0.25,0.5,0.75)
+contour_analysis(prop_name = "k",prop_value = 5, cs_values = csvalues, encounter_data = encounter_data, brks=c(5000,10000,15000))
+```
+
+### K = 10 ###
+```{r}
+csvalues <- c(0.25,0.5,0.75)
+contour_analysis(prop_name = "k",prop_value = 10, cs_values = csvalues, encounter_data = encounter_data, brks=c(5000,10000,15000))
+```
+
+### K = 30 ###
+```{r}
+csvalues <- c(0.25,0.5,0.75)
+contour_analysis(prop_name = "k",prop_value = 30, cs_values = csvalues, encounter_data = encounter_data, brks=c(1500,1800,2000))
+```
+
+## Scale-Free Networks ##
+```{r}
+#Read the Parameters for this experiment
+params <- read.exp.parameters(param_file_name="../data/context_segregation_conformism/scale-free_networks/param-space_2014-07-24_14:56:15experiment:51_.csv")
+
+#read data for number of encounters
+encounter_data <- fread("../data/context_segregation_conformism/scale-free_networks/num_encounters.csv")
+encounter_data <- as.data.frame(encounter_data)[,-ncol(encounter_data)]
+head(encounter_data)
+
+#merge with configuration context switching values
+encounter_data <- merge(encounter_data, params[,c("cfg.id","network.0.ct","network.1.ct","network.0.cs","network.0.d")], by="cfg.id")
+head(encounter_data)
+
+```
+### D = 1 ###
+```{r}
+csvalues <- c(0.25,0.5,0.75)
+contour_analysis(prop_name = "d",prop_value = 1, cs_values = csvalues, encounter_data = encounter_data, brks=c(20000,40000,50000,70000))
+```
+
+### D = 5 ###
+```{r}
+csvalues <- c(0.25,0.5,0.75)
+contour_analysis(prop_name = "d",prop_value = 5, cs_values = csvalues, encounter_data = encounter_data, brks=c(2000,3000))
+```
+
+# Analysis with Multiple Networks #
+We now look at the influence of multiple network by "freezing" the value of tolerance in an optimal configuration --in terms of speed of convergence. We compare the effects of having multiple networks 
+for switching values of **0.25, 0.5 and 0.75**.
+
+```{r}
+params <- "../data/context_segregation/multiple-networks/regular-networks/param-space_2014-07-27_18:49:08experiment:20_.csv"
+
+encounters <- "../data/context_segregation/multiple-networks/regular-networks/num_encounters.csv"
+
+params <- read.exp.parameters(param_file_name=params)
+
+encounter_data <- fread(encounters)
+encounter_data <- as.data.frame(encounter_data)[,-ncol(encounter_data)]
+head(encounter_data)
+
+#merge with configuration context switching values
+encounter_data <- merge(encounter_data, params[,c("cfg.id","network.0.cs","network.0.k","num.networks")], by="cfg.id")
+head(encounter_data)
+
+#melt data to use cast
+melted_encounters <- melt(encounter_data,id.vars=c("cfg.id","run","network.0.cs","network.0.k","num.networks"), measure.vars=c("total-encounters"))
+head(melted_encounters)
+```
+
+##K-regular networks with k = 5##
+```{r}
+for(cs in c(0.25,0.75)){
+  #plot for 2 networks
+  current_encounters<-melted_encounters[melted_encounters$"network.0.cs" == cs,]
+
+  
+  plot_data <- dcast(current_encounters, network.0.k + num.networks ~ variable, mean)
+  colnames(plot_data) <- c("k","num-networks","avg-encounters")
+
+
+  plot <- ggplot(plot_data, aes(x=as.factor(plot_data$k), y=plot_data$"avg-encounters")) 
+  plot <- plot +  geom_point(aes(shape=as.factor(plot_data$"num-networks"), color=as.factor(plot_data$"num-networks")),size = 3.5)
+  plot <- plot +  geom_line(aes(color=as.factor(plot_data$"num-networks"), group=as.factor(plot_data$"num-networks"), linetype=as.factor(plot_data$"num-networks")),size=1)   
+   
+  
+  plot <- plot + labs(color="Num. Networks", shape="Num. Networks", linetype="Num. Networks", y="Average Encounters", x="K",
+                      title=paste("K-Regular Networks With CS =",cs))
+  
+  
+   print(plot)
+}
+
+```
+
+##Context Switching with Conformism Segregation##
+```{r}
+params <- "../data/context_segregation_conformism/multiple-networks/regular-networks/param-space_2014-07-27_18:51:59experiment:20_.csv"
+
+encounters <- "../data/context_segregation_conformism/multiple-networks/regular-networks/num_encounters.csv"
+
+params <- read.exp.parameters(param_file_name=params)
+
+
+encounter_data <- fread(encounters)
+encounter_data <- as.data.frame(encounter_data)[,-ncol(encounter_data)]
+head(encounter_data)
+
+#merge with configuration context switching values
+encounter_data <- merge(encounter_data, params[,c("cfg.id","network.0.cs","network.0.k","num.networks")], by="cfg.id")
+head(encounter_data)
+
+#melt data to use cast
+melted_encounters <- melt(encounter_data,id.vars=c("cfg.id","run","network.0.cs","network.0.k","num.networks"), measure.vars=c("total-encounters"))
+head(melted_encounters)
+```
+
+```{r}
+
+
+for(cs in c(0.25,0.5,0.75)){
+  #plot for 2 networks
+  current_encounters<-melted_encounters[melted_encounters$"network.0.cs" == cs,]
+
+  
+  plot_data <- dcast(current_encounters, network.0.k + num.networks ~ variable, mean)
+  colnames(plot_data) <- c("k","num-networks","avg-encounters")
+
+
+  plot <- ggplot(plot_data, aes(x=as.factor(plot_data$k), y=plot_data$"avg-encounters")) 
+  plot <- plot +  geom_point(aes(shape=as.factor(plot_data$"num-networks"), color=as.factor(plot_data$"num-networks")),size = 3.5)
+  plot <- plot +  geom_line(aes(color=as.factor(plot_data$"num-networks"), group=as.factor(plot_data$"num-networks"), linetype=as.factor(plot_data$"num-networks")),size=1)   
+   
+  
+  plot <- plot + labs(color="Num. Networks", shape="Num. Networks", linetype="Num. Networks", y="Average Encounters", x="K",
+                      title=paste("K-Regular Networks With CS =",cs))
+  
+  
+   print(plot)
+}
+
+```
+
+##Context Switching with Segregation and Selective Switching##
+In this model, agents keep a record of how many times they have switched from each network. The **switch to** a particular network based with a probability inversely proportional to the number of times they have switched from that network **using segregation**.
+
+```{r}
+params <- "../data/context_segregation_selective/multiple-networks/regular-networks/param-space_2014-07-27_18:58:16experiment:20_.csv"
+
+encounters <- "../data/context_segregation_selective/multiple-networks/regular-networks/num_encounters.csv"
+
+params <- read.exp.parameters(param_file_name=params)
+
+
+encounter_data <- fread(encounters)
+encounter_data <- as.data.frame(encounter_data)[,-ncol(encounter_data)]
+head(encounter_data)
+
+#merge with configuration context switching values
+encounter_data <- merge(encounter_data, params[,c("cfg.id","network.0.cs","network.0.k","num.networks")], by="cfg.id")
+head(encounter_data)
+
+#melt data to use cast
+melted_encounters <- melt(encounter_data,id.vars=c("cfg.id","run","network.0.cs","network.0.k","num.networks"), measure.vars=c("total-encounters"))
+head(melted_encounters)
+```
+
+```{r}
+for(cs in c(0.25,0.5,0.75)){
+  #plot for 2 networks
+  current_encounters<-melted_encounters[melted_encounters$"network.0.cs" == cs,]
+
+  
+  plot_data <- dcast(current_encounters, network.0.k + num.networks ~ variable, mean)
+  colnames(plot_data) <- c("k","num-networks","avg-encounters")
+
+
+  plot <- ggplot(plot_data, aes(x=as.factor(plot_data$k), y=plot_data$"avg-encounters")) 
+  plot <- plot +  geom_point(aes(shape=as.factor(plot_data$"num-networks"), color=as.factor(plot_data$"num-networks")),size = 3.5)
+  plot <- plot +  geom_line(aes(color=as.factor(plot_data$"num-networks"), group=as.factor(plot_data$"num-networks"), linetype=as.factor(plot_data$"num-networks")),size=1)   
+   
+  
+  plot <- plot + labs(color="Num. Networks", shape="Num. Networks", linetype="Num. Networks", y="Average Encounters", x="K",
+                      title=paste("K-Regular Networks With CS =",cs))
+  
+  
+   print(plot)
+}
+
+```
+
+
+

@@ -1,0 +1,81 @@
+Context Segregation With Selective Neighbourhoods
+=================================================
+
+```{r}
+contour_analysis <- function(prop_name,prop_value,cs_values,encounter_data,brks){
+  for(cs in cs_values){
+    col <- paste("network.0.",prop_name, sep = "")
+    current_data <- encounter_data[encounter_data[col] == prop_value & encounter_data$"network.0.cs" == cs,]
+    melted_encounters <- melt(current_data,id.vars=c("cfg.id","run","network.0.ct","network.1.ct","network.0.cs",col), measure.vars=c("total-encounters"))
+  
+    #aggregate encounter data
+    agg_encounters <- aggregate(melted_encounters$value,by=list(melted_encounters$network.0.ct,melted_encounters$network.1.ct),mean)
+    colnames(agg_encounters) <- c("ct0","ct1","value")
+    
+    #breaks in the contour
+    guide_title <- "Average Encounters"
+    net1label <- paste("\n\nTolerance for Network 1 \n Regular Network, ",prop_name,"=",prop_value,sep="") 
+    net2label <- paste("\n\nTolerance for Network 2 \n Regular Network, ",prop_name,"=",prop_value,sep="") 
+  
+    
+    encouters_contour <- create_tolerance_contour_span(span = agg_encounters, brks = brks, guide_title = guide_title,xlab=net1label, ylab=net2label)
+
+
+    print(encouters_contour)
+  }
+}
+
+```
+
+
+# Opinion Segregation #
+```{r}
+#load some utilities
+source("../R/experiment_utils.R")
+#Read the Parameters for this experiment
+params <- read.exp.parameters(param_file_name="../data/context_segregation_selective/regular_networks/regular_networks_5/param-space_2014-07-26_16:13:32experiment:20_.csv")
+
+#read data for number of encounters
+
+require(data.table)
+
+encounter_data <- fread("../data/context_segregation_selective/regular_networks/regular_networks_5/num_encounters.csv")
+encounter_data <- as.data.frame(encounter_data)[,-ncol(encounter_data)]
+head(encounter_data)
+
+#merge with configuration context switching values
+require(reshape2)
+encounter_data <- merge(encounter_data, params[,c("cfg.id","network.0.ct","network.1.ct","network.0.cs","network.0.k")], by="cfg.id")
+head(encounter_data)
+```
+### Regular Network with K = 5 ###
+
+```{r}
+csvalues <- c(0.25,0.75)
+contour_analysis(prop_name = "k",prop_value = 5, cs_values = csvalues, encounter_data = encounter_data, brks=c(30000,50000,70000,100000,120000,180000))
+```
+
+### Regular Networks with K = 10 ###
+```{r}
+#Read the Parameters for this experiment
+params <- read.exp.parameters(param_file_name="../data/context_segregation_selective/regular_networks/regular_networks_10/param-space_2014-07-26_21:24:37experiment:20_.csv")
+
+#read data for number of encounters
+
+require(data.table)
+
+encounter_data <- fread("../data/context_segregation_selective/regular_networks/regular_networks_10/num_encounters.csv")
+encounter_data <- as.data.frame(encounter_data)[,-ncol(encounter_data)]
+head(encounter_data)
+
+#merge with configuration context switching values
+require(reshape2)
+encounter_data <- merge(encounter_data, params[,c("cfg.id","network.0.ct","network.1.ct","network.0.cs","network.0.k")], by="cfg.id")
+head(encounter_data)
+```
+
+```{r}
+csvalues <- c(0.25,0.75)
+contour_analysis(prop_name = "k",prop_value = 10, cs_values = csvalues, encounter_data = encounter_data, brks=c(10000,20000,40000,120000))
+
+```

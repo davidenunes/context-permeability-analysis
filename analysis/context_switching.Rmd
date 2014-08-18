@@ -1,119 +1,118 @@
 Context Switching
 =================
-
 In this set of experiments we analyse a new multi-context model with a binary opinion dynamics game. In this case, the difference between the context switching model and the context permeability one is that agents no longer interact in the multiple  networks at the same time (being able to select any neighbour at a given simulation step) but rather become active in one network at a time. Agents are also able to switch to a different network at the end of each interaction with a partner. The agent switches based on a probability associated with the current network in which it is currently active. 
 
 First, we look at the influece of the new parameter in the convergence to consensus. **We span the switching probability parameter between the values 0 and 1 with intervals of 0.05**. We do this for **2** networks with **k-regular and scale-free topologies**. 
 
-We then freeze the switching probabilities and vary the number of networks. We compare the results with the context permeability in terms of percentage of convergences to consensus and average number of encounters.
+We then freeze the switching probabilities and vary the number of networks. We compare the results with the context permeability in terms of average number of encounters to achieve consensus.
+
+We will start by loading the dependencies for this report.
+```{r}
+source("../R/experiment_utils.R")
+
+library(data.table)
+library(reshape2)
+library(ggplot2)
+
+```
+
+
+
+
+
 
 ##Switching Probability Span##
 We set the number of networks for 2 and span the switching probabilities for each network between 0 and 1 in intervals of 0.05. 
 
-The analysis for each context switching probability span is as follows: 
+We will use the following procedures to construct the contour plots and perspective "3D" plots.
 ```{r load-parameters}
 analyse_contour <- function(paramfile, encountersfile, net1label, net2label){
-  #load some utilities
-source("../R/experiment_utils.R")
+  #Read the Parameters for this experiment
+  params <- read.exp.parameters(param_file_name=paramfile)
 
-#Read the Parameters for this experiment
-params <- read.exp.parameters(param_file_name=paramfile)
+  #read data for number of encounters
+  encounter_data <- fread(encountersfile)
+  encounter_data <- as.data.frame(encounter_data)[,-ncol(encounter_data)]
 
-#read data for number of encounters
+  #merge with configuration context switching values
+  encounter_data <- merge(encounter_data, params[,c("cfg.id","network.0.cs","network.1.cs")], by="cfg.id")
 
-require(data.table)
+  #melt data to use cast
+  melted_encounters <- melt(encounter_data,id.vars=c("cfg.id","run","network.0.cs","network.1.cs"), measure.vars=c("total-encounters"))
 
-encounter_data <- fread(encountersfile)
-encounter_data <- as.data.frame(encounter_data)[,-ncol(encounter_data)]
-head(encounter_data)
+  #aggregate encounter data 
+  agg_encounters <- aggregate(melted_encounters$value,by=list(melted_encounters$network.0.cs,melted_encounters$network.1.cs),mean)
+  colnames(agg_encounters) <- c("cs0","cs1","value")
 
-#merge with configuration context switching values
-require(reshape2)
-encounter_data <- merge(encounter_data, params[,c("cfg.id","network.0.cs","network.1.cs")], by="cfg.id")
-head(encounter_data)
+  #create a contour plot to visualize the data
 
-#melt data to use cast
-melted_encounters <- melt(encounter_data,id.vars=c("cfg.id","run","network.0.cs","network.1.cs"), measure.vars=c("total-encounters"))
-head(melted_encounters)
+  #breaks in the contour
+  brks <- c(0,5000,10000, seq(20000,200000, by=50000),max(agg_encounters$"value"))
+  guide_title <- "Average Encounters"
 
-#aggregate encounter data 
-agg_encounters <- aggregate(melted_encounters$value,by=list(melted_encounters$network.0.cs,melted_encounters$network.1.cs),mean)
-colnames(agg_encounters) <- c("cs0","cs1","value")
+  encouters_contour <- create_contour_span(span = agg_encounters, brks = brks, guide_title = guide_title,xlab=net1label, ylab=net2label)
+  pdf(paste("./pdf/",output_prefix,"_switching_contour.pdf"), width=7, height=5)
+  par(mfrow=c(1,1))
+  print(encouters_contour)
 
-#create a contour plot to visualize the data
-
-#breaks in the contour
-brks <- c(0,5000,10000, seq(20000,200000, by=50000),max(agg_encounters$"value"))
-guide_title <- "Average Encounters"
-
-encouters_contour <- create_contour_span(span = agg_encounters, brks = brks, guide_title = guide_title,xlab=net1label, ylab=net2label)
-pdf(paste("./pdf/",output_prefix,"_switching_contour.pdf"), width=7, height=5)
-par(mfrow=c(1,1))
-print(encouters_contour)
-
-dev.off() 
-print(encouters_contour)
-gc()
-}
-
-analyse_persp <- function(paramfile, encountersfile,output_prefix,net1label,net2label){
-    #load some utilities
-source("../R/experiment_utils.R")
-
-#Read the Parameters for this experiment
-params <- read.exp.parameters(param_file_name=paramfile)
-
-#read data for number of encounters
-
-require(data.table)
-
-encounter_data <- fread(encountersfile)
-encounter_data <- as.data.frame(encounter_data)[,-ncol(encounter_data)]
-head(encounter_data)
-
-#merge with configuration context switching values
-require(reshape2)
-encounter_data <- merge(encounter_data, params[,c("cfg.id","network.0.cs","network.1.cs")], by="cfg.id")
-head(encounter_data)
-
-#melt data to use cast
-melted_encounters <- melt(encounter_data,id.vars=c("cfg.id","run","network.0.cs","network.1.cs"), measure.vars=c("total-encounters"))
-head(melted_encounters)
-  #reshape the data to display average number of encounters
-encounter_table <- dcast(data=melted_encounters, network.0.cs~network.1.cs, mean)
-
-#average encounters as a matrix
-encounter_matrix <- as.matrix(encounter_table[,-1])
-colnames(encounter_matrix) <- c()
-
-
-xlab<- net1label
-ylab<- net2label
-zlab<-"\n\n\n Avg. Encounters"
-
-pdf(paste("./pdf/",output_prefix,"_switching_persp.pdf"), width=15, height=5)
-par(mfrow=c(1,3))
-plot_persp_span(x = seq(0,1,0.05), y = seq(0,1,0.05),data_matrix = encounter_matrix, breaks=log(c(1:10)),xlab=xlab,ylab=ylab,zlab = zlab)
-
-plot_persp_span(x = seq(0.2,1,0.05), y = seq(0.2,1,0.05),data_matrix = encounter_matrix[-c(1:4),-c(1:4)], breaks=log(c(1:10)),xlab=xlab,ylab=ylab,zlab = zlab)
-
-plot_persp_span(x = seq(0.4,1,0.05), y = seq(0.4,1,0.05),data_matrix = encounter_matrix[-c(1:8),-c(1:8)], breaks=log(c(1:10)),xlab=xlab,ylab=ylab,zlab = zlab)
-
-dev.off() 
-par(mfrow=c(1,3))
-plot_persp_span(x = seq(0,1,0.05), y = seq(0,1,0.05),data_matrix = encounter_matrix, breaks=log(c(1:10)),xlab=xlab,ylab=ylab,zlab = zlab)
-
-plot_persp_span(x = seq(0.2,1,0.05), y = seq(0.2,1,0.05),data_matrix = encounter_matrix[-c(1:4),-c(1:4)], breaks=log(c(1:10)),xlab=xlab,ylab=ylab,zlab = zlab)
-
-plot_persp_span(x = seq(0.4,1,0.05), y = seq(0.4,1,0.05),data_matrix = encounter_matrix[-c(1:8),-c(1:8)], breaks=log(c(1:10)),xlab=xlab,ylab=ylab,zlab = zlab)
-
-zlab<-"\n\n\n Log(Avg. Encounters)"
-pdf(paste("./pdf/",output_prefix,"_switching_log_persp.pdf"), width=5, height=5)
-plot_persp_span(x = seq(0,1,0.05), y = seq(0,1,0.05),data_matrix = log(encounter_matrix), breaks=log(c(1:10)),xlab=xlab,ylab=ylab,zlab=zlab,pallete="PRGn")
-dev.off()
-plot_persp_span(x = seq(0,1,0.05), y = seq(0,1,0.05),data_matrix = log(encounter_matrix), breaks=log(c(1:10)),xlab=xlab,ylab=ylab,zlab=zlab,pallete="PRGn")
+  dev.off() 
+  print(encouters_contour)
+  gc()
 }
 ```
+
+```{r}
+analyse_persp <- function(paramfile, encountersfile,output_prefix,net1label,net2label){
+  #Read the Parameters for this experiment
+  params <- read.exp.parameters(param_file_name=paramfile)
+
+  #read data for number of encounters
+  encounter_data <- fread(encountersfile)
+  encounter_data <- as.data.frame(encounter_data)[,-ncol(encounter_data)]
+
+
+  #merge with configuration context switching values 
+  encounter_data <- merge(encounter_data, params[,c("cfg.id","network.0.cs","network.1.cs")], by="cfg.id")
+ 
+  #melt data to use cast
+  melted_encounters <- melt(encounter_data,id.vars=c("cfg.id","run","network.0.cs","network.1.cs"), measure.vars=c("total-encounters"))
+ 
+  #reshape the data to display average number of encounters
+  encounter_table <- dcast(data=melted_encounters, network.0.cs~network.1.cs, mean)
+  
+  #average encounters as a matrix
+  encounter_matrix <- as.matrix(encounter_table[,-1])
+  colnames(encounter_matrix) <- c()
+  
+  xlab<- net1label
+  ylab<- net2label
+  zlab<-"\n\n\n Avg. Encounters"
+  
+  pdf(paste("./pdf/",output_prefix,"_switching_persp.pdf"), width=15, height=5)
+  par(mfrow=c(1,3))
+  plot_persp_span(x = seq(0,1,0.05), y = seq(0,1,0.05),data_matrix = encounter_matrix, breaks=log(c(1:10)),xlab=xlab,ylab=ylab,zlab = zlab)
+  
+  plot_persp_span(x = seq(0.2,1,0.05), y = seq(0.2,1,0.05),data_matrix = encounter_matrix[-c(1:4),-c(1:4)], breaks=log(c(1:10)),xlab=xlab,ylab=ylab,zlab = zlab)
+  
+  plot_persp_span(x = seq(0.4,1,0.05), y = seq(0.4,1,0.05),data_matrix = encounter_matrix[-c(1:8),-c(1:8)], breaks=log(c(1:10)),xlab=xlab,ylab=ylab,zlab = zlab)
+  
+  dev.off() 
+  par(mfrow=c(1,3))
+  plot_persp_span(x = seq(0,1,0.05), y = seq(0,1,0.05),data_matrix = encounter_matrix, breaks=log(c(1:10)),xlab=xlab,ylab=ylab,zlab = zlab)
+  
+  plot_persp_span(x = seq(0.2,1,0.05), y = seq(0.2,1,0.05),data_matrix = encounter_matrix[-c(1:4),-c(1:4)], breaks=log(c(1:10)),xlab=xlab,ylab=ylab,zlab = zlab)
+  
+  plot_persp_span(x = seq(0.4,1,0.05), y = seq(0.4,1,0.05),data_matrix = encounter_matrix[-c(1:8),-c(1:8)], breaks=log(c(1:10)),xlab=xlab,ylab=ylab,zlab = zlab)
+  
+  zlab<-"\n\n\n Log(Avg. Encounters)"
+  pdf(paste("./pdf/",output_prefix,"_switching_log_persp.pdf"), width=5, height=5)
+  plot_persp_span(x = seq(0,1,0.05), y = seq(0,1,0.05),data_matrix = log(encounter_matrix), breaks=log(c(1:10)),xlab=xlab,ylab=ylab,zlab=zlab,pallete="PRGn")
+  dev.off()
+  plot_persp_span(x = seq(0,1,0.05), y = seq(0,1,0.05),data_matrix = log(encounter_matrix), breaks=log(c(1:10)),xlab=xlab,ylab=ylab,zlab=zlab,pallete="PRGn")
+}
+
+```
+
 
 ###2 10-Regular Networks###
 ```{r}
@@ -134,7 +133,7 @@ analyse_persp(params, encounters,output_prefix,net1label,net2label)
 
 
 
-**Note** I don't need custom breaks for the **persp plots**, its simpler to apply a logarithm to a set of n numbers, normalize them inside the plotting function, and multiply this by the maximum value in the dataset, this gets me the effect I'm looking for both the filling and contour lines.
+**Note** I don't need custom breaks for some **persp plots**, its simpler to apply a logarithm to a set of n numbers, normalize them inside the plotting function, and multiply this by the maximum value in the dataset, this gets me the effect I'm looking for both the filling and contour lines.
 
 ###2 30-Regular Networks###
 ```{r}
@@ -185,6 +184,23 @@ With 2 scale-free networks with **d=5**, similarly to the 2 k-regular networks, 
 analyse_persp(params, encounters,output_prefix,net1label,net2label)
 ```
 
+### Scale-Free Network with D=5 and Scale-free Network with D=1 ###
+
+```{r}
+params <- "../data/context_switching/switching_span/scale-free d=1 scale-free d=5/param-space_2014-07-22_20:33:49experiment:12_.csv"
+encounters <- "../data/context_switching/switching_span/scale-free d=1 scale-free d=5/num_encounters.csv"
+output_prefix <- "context_switching_sf_d5_d1"
+
+net1label <- "\n\nSwitching for Network 1 \n scale-free network, d=5"
+net2label <- "\n\nSwitching for Network 2 \n scale-free network, d=1"
+
+analyse_contour(params, encounters,net1label,net2label)
+```
+
+```{r fig.width=15}
+analyse_persp(params, encounters,output_prefix,net1label,net2label)
+```
+
 
 ###1 10-Regular + 1 Scale-Free with D=1###
 In this experiment, network 1 has a 10-Regular Topology while network 2 has a scale-free topology with d=1. 
@@ -197,7 +213,7 @@ output_prefix <- "context_switching_1_10regular_1_scale-free_d1"
 net1label <- "\n\nSwitching for Network 1 \n regular network, k=10"
 net2label <- "\n\nSwitching for Network 2 \n scale-free network, d=1"
 
-analyse_contour(params, encounters,net1label,net2label)
+analyse_contour(params,encounters,net1label,net2label)
 ```
 
 ```{r fig.width=15}
@@ -252,25 +268,27 @@ analyse_persp(params, encounters,output_prefix,net1label,net2label)
 #**************************************************************************
 #   read encounter results for context permeability (for comparison)
 #**************************************************************************
-params <- "../data/context_permeability/regular_networks/param-space_2014-05-30_16:47:53experiment:0_.csv"
+params <- "../data/context_permeability/regular_networks/param-space_2014-07-23_11:40:44experiment:0_.csv"
 encounters <- "../data/context_permeability/regular_networks/num_encounters.csv"
 
 params <- read.exp.parameters(param_file_name=params)
 
-require(data.table)
+
 
 encounter_data <- fread(encounters)
 encounter_data <- as.data.frame(encounter_data)[,-ncol(encounter_data)]
 #merge with configuration context switching values
-require(reshape2)
 encounter_data <- merge(encounter_data, params[,c("cfg.id","network.0.k","num.networks")], by="cfg.id")
 head(encounter_data)
 #melt data to use cast
 melted_encounters <- melt(encounter_data,id.vars=c("cfg.id","run","network.0.k","num.networks"), measure.vars=c("total-encounters"))
 head(melted_encounters)
 permeability_encounters <- melted_encounters
+```
 
-
+Now we get the data for the k-regular networks with homogenous values of switching probability (the same probability in all the networks). --We have seen previously that for less connected networks 
+simetry helps with the convergence: as such we take 0.25 0.5 and 0.75 as switching probabilities representing low, medium, and high switching respectively. 
+```{r}
 #***************************************************************
 #   read encounter results for context switching
 #***************************************************************
@@ -280,14 +298,11 @@ encounters <- "../data/context_switching/multiple_networks/regular_networks/num_
 
 params <- read.exp.parameters(param_file_name=params)
 
-require(data.table)
-
 encounter_data <- fread(encounters)
 encounter_data <- as.data.frame(encounter_data)[,-ncol(encounter_data)]
 head(encounter_data)
 
 #merge with configuration context switching values
-require(reshape2)
 encounter_data <- merge(encounter_data, params[,c("cfg.id","network.0.cs","network.0.k","num.networks")], by="cfg.id")
 head(encounter_data)
 
@@ -322,6 +337,12 @@ for(n in 2:5){
   
   print(plot)
   
+  #export to pdf
+  pdf(paste("./pdf/"," context_switching_encounters_comp_kregular_groupedbynets_",n,".pdf",sep = ""), width=7, height=5)
+  print(plot)
+  dev.off()
+  
+  
 }
 gc()
 
@@ -334,32 +355,141 @@ for(cs in c(0.25,0.5,0.75)){
   plot_data <- dcast(current_encounters, network.0.k + num.networks ~ variable, mean)
   colnames(plot_data) <- c("k","num-networks","avg-encounters")
 
-  #gets too messy with permeability data 
-  #perm_data <- dcast(perm_encounters, network.0.k + num.networks ~ variable, mean)
-  #colnames(perm_data) <- c("k","num-networks", "avg-encounters")
-  
-  
-
-
   plot <- ggplot(plot_data, aes(x=as.factor(plot_data$k), y=plot_data$"avg-encounters")) 
   plot <- plot +  geom_point(aes(shape=as.factor(plot_data$"num-networks"), color=as.factor(plot_data$"num-networks")),size = 3.5)
   plot <- plot +  geom_line(aes(color=as.factor(plot_data$"num-networks"), group=as.factor(plot_data$"num-networks"), linetype=as.factor(plot_data$"num-networks")),size=1)   
-  
-  #add line for permeability
-  #plot <- plot +  geom_point(data=perm_data, aes(x=as.factor(perm_data$k), y=perm_data$"avg-encounters", shape="permeability", color=as.factor(perm_data$"num-networks")),size = 3.5)
-  #plot +  geom_line(data=perm_data, aes(x=as.factor(perm_data$k), y=perm_data$"avg-encounters",group=as.factor(perm_data$"num-networks"),linetype=as.factor(plot_data$"num-networks"),color=as.factor(perm_data$"num-networks")),size=1)   
   
   plot <- plot + labs(color="Num. Networks", shape="Num. Networks", linetype="Num. Networks", y="Average Encounters", x="K",
                       title=paste("K-Regular Networks With CS =",cs))
   
   
    print(plot)
+  
+  pdf(paste("./pdf/"," context_switching_encounters_comp_kregular_groupedbycs_",cs,".pdf",sep=""), width=7, height=5)
+  print(plot)
+  dev.off()
+}
+gc()
+```
+
+## Comparison for Scale-Free Networks ##
+
+First, we get the permeability results for scale-free networks for comparison.
+```{r}
+#**************************************************************************
+#   read encounter results for context permeability (for comparison)
+#**************************************************************************
+params <- "../data/context_permeability/scale-free_networks/param-space_2014-05-30_18:38:14experiment:1_.csv"
+encounters <- "../data/context_permeability/scale-free_networks/num_encounters.csv"
+
+params <- read.exp.parameters(param_file_name=params)
+
+
+
+encounter_data <- fread(encounters)
+encounter_data <- as.data.frame(encounter_data)[,-ncol(encounter_data)]
+#merge with configuration context switching values
+encounter_data <- merge(encounter_data, params[,c("cfg.id","network.0.d","num.networks")], by="cfg.id")
+head(encounter_data)
+#melt data to use cast
+melted_encounters <- melt(encounter_data,id.vars=c("cfg.id","run","network.0.d","num.networks"), measure.vars=c("total-encounters"))
+head(melted_encounters)
+permeability_encounters <- melted_encounters
+```
+
+We now create the plots to compare scale-free networks with context permeability. 
+```{r}
+#***************************************************************
+#   read encounter results for context switching
+#***************************************************************
+params <- "../data/context_switching/multiple_networks/scale-free_networks/param-space_2014-06-22_00:30:57experiment:10_.csv"
+
+encounters <- "../data/context_switching/multiple_networks/scale-free_networks/num_encounters.csv"
+
+params <- read.exp.parameters(param_file_name=params)
+
+encounter_data <- fread(encounters)
+encounter_data <- as.data.frame(encounter_data)[,-ncol(encounter_data)]
+head(encounter_data)
+
+#merge with configuration context switching values
+encounter_data <- merge(encounter_data, params[,c("cfg.id","network.0.cs","network.0.d","num.networks")], by="cfg.id")
+head(encounter_data)
+
+#melt data to use cast
+melted_encounters <- melt(encounter_data,id.vars=c("cfg.id","run","network.0.cs","network.0.d","num.networks"), measure.vars=c("total-encounters"))
+head(melted_encounters)
+
+```
+
+
+```{r}
+for(n in 2:5){
+  #plot for 2 networks
+  current_encounters<-melted_encounters[melted_encounters$"num.networks" == n,]
+  perm_encounters<-permeability_encounters[permeability_encounters$"num.networks" == n,]
+
+  plot_data <- dcast(current_encounters, network.0.d + network.0.cs ~ variable, mean)
+  colnames(plot_data) <- c("d","cs","avg-encounters")
+  
+  perm_data <- dcast(perm_encounters, network.0.d ~ variable, mean)
+  colnames(perm_data) <- c("d","avg-encounters")
+
+  
+  plot <- NULL
+  
+  plot <- ggplot(plot_data, aes(x=as.factor(plot_data$d), y=plot_data$"avg-encounters")) 
+  plot <- plot +  geom_point(aes(shape=as.factor(plot_data$cs), color=as.factor(plot_data$cs)),size = 3.5)
+  plot <- plot +  geom_line(aes(color=as.factor(plot_data$cs), group=as.factor(plot_data$cs), linetype=as.factor(plot_data$cs)),size=1)   
+  #add line for permeability baseline
+  plot <- plot + geom_point(data=perm_data, aes(x=as.factor(perm_data$d), y=perm_data$"avg-encounters", shape="permeability", color="permeability"),size = 3.5)
+  plot <- plot + geom_line(data=perm_data, aes(x=as.factor(perm_data$d), y=perm_data$"avg-encounters", group="Permeability", linetype="permeability", color="permeability"),size=1)   
+  
+  plot <- plot + labs(color="CS", shape="CS", linetype="CS", y="Average Encounters", x="D",
+                       title=paste("Scale-Free Networks With Number of Networks =",n))
+  
+  print(plot)
+  
+  pdf(paste("./pdf/"," context_switching_encounters_comp_sf_groupedbynets_",n,".pdf", sep=""), width=7, height=5)
+  print(plot)
+  dev.off()
+  
 }
 gc()
 
+```
 
+
+
+```{r}
+
+for(cs in c(0.25,0.5,0.75)){
+  #plot for 2 networks
+  current_encounters<-melted_encounters[melted_encounters$"network.0.cs" == cs,]
+  #perm_encounters<-permeability_encounters[permeability_encounters$"num.networks" > 1,]
+  
+  plot_data <- dcast(current_encounters, network.0.d + num.networks ~ variable, mean)
+  colnames(plot_data) <- c("d","num-networks","avg-encounters")
+
+  plot <- ggplot(plot_data, aes(x=as.factor(plot_data$d), y=plot_data$"avg-encounters")) 
+  plot <- plot +  geom_point(aes(shape=as.factor(plot_data$"num-networks"), color=as.factor(plot_data$"num-networks")),size = 3.5)
+  plot <- plot +  geom_line(aes(color=as.factor(plot_data$"num-networks"), group=as.factor(plot_data$"num-networks"), linetype=as.factor(plot_data$"num-networks")),size=1)   
+  
+  plot <- plot + labs(color="Num. Networks", shape="Num. Networks", linetype="Num. Networks", y="Average Encounters", x="D",
+                      title=paste("Scale-Free Networks With CS =",cs))
+  
+  
+   print(plot)
+  
+  pdf(paste("./pdf/"," context_switching_encounters_comp_sf_groupedbycs_",cs,".pdf",sep=""), width=7, height=5)
+  print(plot)
+  dev.off()
+}
+gc()
 
 ```
+
+
 
 
 

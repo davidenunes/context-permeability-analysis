@@ -1,0 +1,292 @@
+
+\renewcommand\thefigure{\thesection.\arabic{figure}}    
+\setcounter{figure}{0}   
+
+\renewcommand\thetable{\thesection.\arabic{table}}    
+\setcounter{table}{0}     
+
+\section{Overlapping Network Properties}
+
+\subsection{Homogeneous Network Topology Configurations}
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.49\linewidth}
+  \centering
+ \includegraphics[width=1\linewidth]{"../analysis/pdf/ network_properties_apl_kreg_12345"}
+ \caption{}
+ \label{append_fig:network_properties_apl_kreg_12345}
+\end{subfigure}%
+\begin{subfigure}{.49\linewidth}
+  \centering
+ \includegraphics[width=1\linewidth]{"../analysis/pdf/ network_properties_apl_kreg_1020304050"}
+ \caption{}
+ \label{append_fig:network_properties_apl_kreg_1020304050}
+\end{subfigure}
+\begin{minipage}{0.9\linewidth}
+\vspace{0.2cm}
+\caption{\textit{Average path length} for 100 instances of overlapping \textit{k-regular} networks(containing 100 nodes each) with ~$k=\{1,2,3,4,5\}$~(\ref{append_fig:network_properties_apl_kreg_12345}), and  $k= \{10,20,30,40,50\}$ (\ref{append_fig:network_properties_apl_kreg_1020304050}). Since there is barely any variation in the property values for each configuration, the colours cannot be seen correctly, they are presented in the same order as the legend nonetheless.}
+\label{append_fig:network_properties_apl_kreg}
+\end{minipage}
+
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.5\linewidth}
+  \centering
+ \includegraphics[width=1\linewidth]{"../analysis/pdf/ network_properties_cc_kreg_12345"}
+ \caption{}
+ \label{append_fig:network_properties_cc_kreg_12345}
+\end{subfigure}%
+\begin{subfigure}{.5\linewidth}
+  \centering
+ \includegraphics[width=1\linewidth]{"../analysis/pdf/ network_properties_cc_kreg_1020304050"}
+ \caption{}
+ \label{append_fig:network_properties_cc_kreg_1020304050}
+\end{subfigure}
+\begin{minipage}{0.9\linewidth}
+\vspace{0.2cm}
+\caption{\textit{Clustering coefficient} for 100 instances of overlapping \textit{k-regular} networks (containing 100 nodes each) with ~$k=\{1,2,3,4,5\}$~(\ref{append_fig:network_properties_cc_kreg_12345}) and  $k= \{10,20,30,40,50\}$ (\ref{append_fig:network_properties_cc_kreg_1020304050}). Note that the variation is bigger for networks with less connectivity. Also, for $k=50$, the network is fully connected.}
+\label{append_fig:network_properties_cc_kreg}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.5\linewidth}
+  \centering
+ \includegraphics[width=1\linewidth]{"../analysis/pdf/ network_properties_apl_sf_12345"}
+ \caption{Average path length}
+ \label{append_fig:network_properties_apl_sf_12345}
+\end{subfigure}%
+\begin{subfigure}{.5\linewidth}
+  \centering
+ \includegraphics[width=1\linewidth]{"../analysis/pdf/ network_properties_cc_sf_12345"}
+ \caption{Clustering Coefficient}
+ \label{append_fig:network_properties_cc_sf_12345}
+\end{subfigure}
+\begin{minipage}{0.9\linewidth}
+	\vspace{0.2cm}
+	\caption{\textit{Average path length} and \textit{clustering coefficient} for 100 instances of overlapping \textit{scale-free} networks. D is a parameter used to construct the network. It dictates how many edges are added by preferential attachment each time a new node is added to the networks. For more details refer to \cite{Barabasi1999}.}
+	\label{append_fig:network_properties_sf}
+\end{minipage}
+\end{figure}
+
+
+\subsection{Heterogeneous Network Topology Configurations}
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.49\linewidth}
+  \centering
+ \includegraphics[width=1\linewidth]{"../analysis/pdf/ network_properties_apl_sf_kregular_12345"}
+ \caption{}
+ \label{append_fig:network_properties_apl_sf_kreg_12345}
+\end{subfigure}%
+\begin{subfigure}{.49\linewidth}
+  \centering
+ \includegraphics[width=1\linewidth]{"../analysis/pdf/ network_properties_apl_sf_kregular_1020304050"}
+ \caption{}
+ \label{append_fig:network_properties_apl_sf_kreg_1020304050}
+\end{subfigure}
+
+\begin{minipage}{0.9\linewidth}
+\vspace{0.2cm}
+\caption{\textit{Average path length} for 100 instances of two overlapping networks: 1 \textit{scale-free} with $d=\{1,2,3,4,5\}$ and 1 \textit{k-regular} network with ~$k=\{1,2,3,4,5\}$~(\ref{append_fig:network_properties_apl_sf_kreg_12345}), and  $k=\{10,20,30,40,50\}$ (\ref{append_fig:network_properties_apl_sf_kreg_1020304050}). Since there is barely any variation in the property values for each configuration, the colours cannot be seen correctly in some cases, they are presented in the same order as the legend nonetheless.}
+\label{append_fig:network_properties_apl_sf_kreg}
+\end{minipage}
+
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.49\linewidth}
+  \centering
+ \includegraphics[width=1\linewidth]{"../analysis/pdf/ network_properties_cc_sf_kregular_12345"}
+ \caption{}
+ \label{append_fig:network_properties_cc_sf_kreg_12345}
+\end{subfigure}%
+\begin{subfigure}{.49\linewidth}
+  \centering
+ \includegraphics[width=1\linewidth]{"../analysis/pdf/ network_properties_cc_sf_kregular_1020304050"}
+ \caption{}
+ \label{append_fig:network_properties_cc_sf_kreg_1020304050}
+\end{subfigure}
+
+\begin{minipage}{0.9\linewidth}
+\vspace{0.2cm}
+\caption{\textit{Clustering coefficient} for 100 instances of two overlapping networks: 1 \textit{scale-free} with $d=\{1,2,3,4,5\}$ and 1 \textit{k-regular} network with ~$k=\{1,2,3,4,5\}$~(\ref{append_fig:network_properties_apl_sf_kreg_12345}), and  $k=\{10,20,30,40,50\}$ (\ref{append_fig:network_properties_apl_sf_kreg_1020304050}). Since there is barely any variation in the property values for each configuration, the colours cannot be seen correctly in some cases, they are presented in the same order as the legend nonetheless.}
+\label{append_fig:network_properties_cc_sf_kreg}
+\end{minipage}
+
+\end{figure}
+\clearpage
+
+
+\renewcommand\thefigure{\thesection.\arabic{figure}}    
+\setcounter{figure}{0}   
+
+\renewcommand\thetable{\thesection.\arabic{table}}    
+\setcounter{table}{0}     
+
+
+\begin{landscape}
+	\section{Context Permeability Analysis}
+	\label{append_ctx_permeability}
+	\vspace{-0.1cm}
+\begin{table}[H]
+	\centering
+\begin{minipage}{0.9\linewidth}	
+	\caption{Average number of meetings during a simulation run for 100 agents and a maximum of 2000 simulation cycles for different configuration of \textit{k-regular} networks.}
+	\label{append_tab:enc_ctx_permeability_k}
+\end{minipage}
+
+\renewcommand{\arraystretch}{0.85}
+\begin{tabular}{lcccccccccc}
+	\toprule
+	& \multicolumn{10}{c}{Number of Networks} \\ 
+	& \multicolumn{2}{c}{1} & \multicolumn{2}{c}{2} & \multicolumn{2}{c}{3} & \multicolumn{2}{c}{4} & \multicolumn{2}{c}{5} \\ 
+	
+	k  & avg. & sd & avg. & sd & avg. & sd & avg. & sd & avg. & \multicolumn{1}{c}{sd} \\ 
+\midrule
+	1  & $200000$ & $\phantom{0000}0.0$ & $191237$ & $35780.6$ & $97770$ & $86648.0$ & $44827$ & $71714.8$ & $14210$ & $31633.6$ \\
+	2  & $200000$ & $\phantom{0000}0.0$ & $\phantom{0}99744$ & $89096.9$ & $22690$ & $50813.5$ & $\phantom{0}7514$ & $21352.6$ & $\phantom{0}4602$ & $\phantom{0}6116.7$ \\
+	3  & $198033$ & $19670.0$ & $\phantom{0}68555$ & $82808.5$ & $10217$ & $33963.1$ & $\phantom{0}6539$ & $22227.3$ & $\phantom{0}2828$ & $\phantom{0}2283.6$ \\
+	4  & $198093$ & $19070.0$ & $\phantom{0}38359$ & $69305.4$ & $\phantom{0}5028$ & $10680.0$ & $\phantom{0}3710$ & $\phantom{0}4618.7$ & $\phantom{0}2678$ & $\phantom{0}2127.4$ \\
+	5  & $196042$ & $27845.6$ & $\phantom{0}21287$ & $48141.1$ & $\phantom{0}3444$ & $\phantom{0}5144.0$ & $\phantom{0}2834$ & $\phantom{0}4334.5$ & $\phantom{0}2278$ & $\phantom{0}1921.5$ \\
+	10  & $178207$ & $62301.7$ & $\phantom{00}8066$ & $28298.4$ & $\phantom{0}2894$ & $\phantom{0}6424.5$ & $\phantom{0}1800$ & $\phantom{0}1148.2$ & $\phantom{0}2180$ & $\phantom{0}2078.3$ \\
+	20  & $\phantom{0}75541$ & $95871.3$ & $\phantom{00}2338$ & $\phantom{0}2739.9$ & $\phantom{0}2178$ & $\phantom{0}1588.3$ & $\phantom{0}1936$ & $\phantom{00}989.4$ & $\phantom{0}1802$ & $\phantom{00}823.6$ \\
+	30  & $\phantom{0}11703$ & $43425.0$ & $\phantom{00}1952$ & $\phantom{0}1087.9$ & $\phantom{0}1726$ & $\phantom{00}936.6$ & $\phantom{0}1930$ & $\phantom{0}1096.3$ & $\phantom{0}1956$ & $\phantom{0}1273.5$ \\
+	40  & $\phantom{00}1694$ & $\phantom{00}954.5$ & $\phantom{00}1646$ & $\phantom{00}821.9$ & $\phantom{0}1862$ & $\phantom{00}872.3$ & $\phantom{0}1806$ & $\phantom{00}884.6$ & $\phantom{0}1686$ & $\phantom{00}647.1$ \\
+	50  & $\phantom{00}1788$ & $\phantom{00}786.9$ & $\phantom{00}1724$ & $\phantom{00}744.7$ & $\phantom{0}1776$ & $\phantom{00}827.7$ & $\phantom{0}1842$ & $\phantom{00}896.8$ & $\phantom{0}1896$ & $\phantom{00}911.4$ \\
+\bottomrule
+\end{tabular}
+
+\end{table}
+
+
+\begin{table}[H]
+	\centering
+	\begin{minipage}{0.9\linewidth}
+		\caption{Average number of meetings during a simulation run for 100 agents and a maximum of 2000 simulation cycles for different configuration of \textit{scale-free} networks.}
+		\label{append_tab:enc_ctx_permeability_d}
+	\end{minipage}
+	
+	\renewcommand{\arraystretch}{0.85}
+	\begin{tabular}{lcccccccccc}
+		\toprule
+		& \multicolumn{10}{c}{Number of Networks} \\ 
+		& \multicolumn{2}{c}{1} & \multicolumn{2}{c}{2} & \multicolumn{2}{c}{3} & \multicolumn{2}{c}{4} & \multicolumn{2}{c}{5} \\ 
+		
+		d  & avg. & sd & avg. & sd & avg. & sd & avg. & sd & avg. & \multicolumn{1}{c}{sd} \\ 
+		\midrule
+		1  & $200000$ & $\phantom{0000}0$ & $141085$ & $83720$ & $66020$ & $82601$ & $17712$ & $42444$ & $14917$ & $38343.6$ \\
+		2  & $150632$ & $78710$ & $\phantom{0}21654$ & $41341$ & $\phantom{0}7555$ & $21407$ & $\phantom{0}5890$ & $10889$ & $\phantom{0}3638$ & $\phantom{0}5127.0$ \\
+		3  & $\phantom{0}37824$ & $64073$ & $\phantom{0}12309$ & $36441$ & $\phantom{0}5299$ & $20035$ & $\phantom{0}2804$ & $\phantom{0}3791$ & $\phantom{0}2618$ & $\phantom{0}2445.4$ \\
+		4  & $\phantom{0}13751$ & $33295$ & $\phantom{00}4846$ & $\phantom{0}7921$ & $\phantom{0}2852$ & $\phantom{0}2766$ & $\phantom{0}2370$ & $\phantom{0}1441$ & $\phantom{0}2200$ & $\phantom{0}1433.4$ \\
+		5  & $\phantom{00}8802$ & $18754$ & $\phantom{00}2536$ & $\phantom{0}1880$ & $\phantom{0}3204$ & $11008$ & $\phantom{0}2166$ & $\phantom{0}1269$ & $\phantom{0}1958$ & $\phantom{00}971.6$ \\
+	\bottomrule
+	\end{tabular}
+	
+\end{table}
+
+\begin{table}[H]
+\centering
+\begin{minipage}{0.9\linewidth}	
+	\caption{Average number of meetings during a simulation run for 100 agents and a maximum of 2000 simulation cycles for different configuration of 1 \textit{k-regular} and 1 \textit{scale-free} networks.}
+	\label{append_tab:ctx_perm_kreg_sf_encounters}
+\end{minipage}
+
+\renewcommand{\arraystretch}{0.85}
+\begin{tabular}{lcccccccccc}
+\toprule
+ & \multicolumn{10}{c}{d} \\ 
+ & \multicolumn{2}{c}{1} & \multicolumn{2}{c}{2} & \multicolumn{2}{c}{3} & \multicolumn{2}{c}{4} & \multicolumn{2}{c}{5} \\ 
+k  & avg. & sd & avg. & sd & avg. & sd & avg. & sd & avg. & \multicolumn{1}{c}{sd} \\ 
+\midrule
+1  & $173312$ & $61519$ & $100175$ & $88406$ & $63191$ & $81071$ & $73715$ & $84549$ & $51313$ & $67704$ \\
+2  & $118591$ & $90107$ & $\phantom{0}72054$ & $86077$ & $43308$ & $70318$ & $31756$ & $58760$ & $43281$ & $72182$ \\
+3  & $109155$ & $88722$ & $\phantom{0}38270$ & $66714$ & $34899$ & $65533$ & $26412$ & $55589$ & $23436$ & $49978$ \\
+4  & $\phantom{0}80035$ & $88719$ & $\phantom{0}33339$ & $64075$ & $21289$ & $45725$ & $15575$ & $39516$ & $24034$ & $52407$ \\
+5  & $\phantom{0}89179$ & $91823$ & $\phantom{0}31044$ & $62485$ & $13908$ & $36791$ & $14112$ & $39490$ & $\phantom{0}9252$ & $28404$ \\
+10  & $\phantom{0}62416$ & $81036$ & $\phantom{0}11017$ & $35071$ & $\phantom{0}9095$ & $27266$ & $12182$ & $39798$ & $\phantom{0}5559$ & $20448$ \\
+20  & $\phantom{0}61371$ & $81409$ & $\phantom{00}6680$ & $17900$ & $\phantom{0}6944$ & $27826$ & $\phantom{0}4721$ & $19832$ & $\phantom{0}2390$ & $\phantom{0}2313$ \\
+30  & $\phantom{0}51559$ & $77468$ & $\phantom{00}4980$ & $12740$ & $\phantom{0}5095$ & $20028$ & $\phantom{0}2268$ & $\phantom{0}1355$ & $\phantom{0}2046$ & $\phantom{0}1225$ \\
+40  & $\phantom{0}58625$ & $83049$ & $\phantom{00}5483$ & $20169$ & $\phantom{0}2726$ & $\phantom{0}3735$ & $\phantom{0}2346$ & $\phantom{0}1503$ & $\phantom{0}2412$ & $\phantom{0}1874$ \\
+50  & $\phantom{0}48702$ & $74718$ & $\phantom{00}6568$ & $22611$ & $\phantom{0}2566$ & $\phantom{0}1716$ & $\phantom{0}2362$ & $\phantom{0}1619$ & $\phantom{0}1980$ & $\phantom{0}1081$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+	
+\end{landscape}
+\clearpage
+
+\renewcommand\thefigure{\thesection.\arabic{figure}}    
+\setcounter{figure}{0}   
+
+\renewcommand\thetable{\thesection.\arabic{table}}    
+\setcounter{table}{0}     
+
+
+\section{Context Switching Analysis}
+\label{append_ctx_switching}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"../analysis/pdf/   context_switching_2_10_regular _switching_persp"}
+	\begin{minipage}{0.9\textwidth}
+		\caption{Perpective plot for the average number of meets during a simulation for 100 independent runs: 2 \textit{10-regular} networks ($k = 30$).}
+		\label{append_fig:ctx_cs_2_10kreg}
+	\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"../analysis/pdf/   context_switching_2_30_regular _switching_persp"}
+	\begin{minipage}{0.9\textwidth}
+		\caption{Perpective plot for the average number of meets during a simulation for 100 independent runs: 2 \textit{30-regular} networks ($k = 30$).}
+		\label{append_fig:ctx_cs_2_30kreg}
+	\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"../analysis/pdf/   context_switching_2_sf_d1 _switching_persp"}
+	\begin{minipage}{0.9\textwidth}
+		\caption{Perpective plot for the average number of meets during a simulation for 100 independent runs: 2 \textit{scale-free} networks with $d=1$.}
+		\label{append_fig:ctx_cs_2_sd_d1}
+	\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"../analysis/pdf/   context_switching_2_sf_d5 _switching_persp"}
+	\begin{minipage}{0.9\textwidth}
+		\caption{Perpective plot for the average number of meets during a simulation for 100 independent runs: 2 \textit{scale-free} networks with $d=5$.}
+		\label{append_fig:ctx_cs_2_sd_d5}
+	\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"../analysis/pdf/ context_switching_sf_d5_d1 _switching_persp"}
+	\begin{minipage}{0.9\textwidth}
+		\caption{Perspective plot for the average number of meets during a simulation for 100 independent runs: 2 \textit{scale-free} networks, the first with $d=5$ and the second with $d=1$.}
+		\label{append_fig:ctx_cs_sf_d5_d1}
+	\end{minipage}
+\end{figure}
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"../analysis/pdf/ context_switching_1_10regular_1_scale-free_d1 _switching_persp"}
+	\begin{minipage}{0.9\textwidth}
+		\caption{Perspective plot for the average number of meets during a simulation for 100 independent runs: 1 \textit{10-regular} network ($k=10$) and a scale-free network with $d=1$.
+		}
+		\label{append_fig:ctx_cs_kreg10_sfd1}
+	\end{minipage}
+\end{figure}
+
+
+

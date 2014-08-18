@@ -6,6 +6,23 @@ models and the number of networks in which each agent interacts. Obviously, addi
 adding more connections. We show that what is important is not exactly the number of connections but rather the properties the 
 networks display when they are merged. 
 
+Load the dependencies for this report.
+```{r}
+source("../R/experiment_utils.R")
+source("../R/network.utils.R")
+
+library(stargazer)
+library(reshape2)
+library(ggplot2)
+
+library(bigmemory)
+library(parallel)
+#to create a progress bar 
+library(BBmisc)
+
+```
+
+
 
 # Properties for K-Regular Networks #
 We first investigate the properties of regular networks. We use a _K-Regular_ network model 
@@ -22,10 +39,8 @@ We generate multiple _k-regular_ networks and agents are allowed to interact in 
 In a first experiment we performed experiment with _k-regular_ networks with different _k_ values. We also varied the number of concomitant networks as follows: 
 
 ```{r results='asis',echo=FALSE}
-source("../R/experiment_utils.R")
-
 #shows the k values explored and the number of networks
-params <- read.exp.parameters("../data/context_permeability/regular_networks/param-space_2014-05-30_16:47:53experiment:0_.csv")
+params <- read.exp.parameters("../data/context_permeability/regular_networks/param-space_2014-07-23_11:40:44experiment:0_.csv")
 params <- params[,c("cfg.id","num.networks","network.0.k")]
 
 
@@ -34,7 +49,7 @@ colnames(k_values) <- c("k values")
 num_networks <- as.data.frame(unique(params[,"num.networks"]))
 colnames(num_networks) <- c("number of networks")
 
-require(stargazer)
+
 stargazer(t(k_values), type="html", summary = FALSE)
 stargazer(t(num_networks), type="html", summary = FALSE)
 
@@ -46,8 +61,6 @@ gc()
 We load the network data from the regular networks experiment with the `bigmemory` package which 
 is more efficient in terms of memory management.
 ```{r message=FALSE}
-source("../R/network.utils.R")
-require(bigmemory)
 network_data <- read.big.matrix(filename="../data/context_permeability/regular_networks/networks.csv", header=T, sep=";")
 ```
 
@@ -105,10 +118,18 @@ elc <- apply(get.edgelist(combined_network), 1, paste, collapse="-")
 E(combined_network)$color <- ifelse((elc %in% el1) & (elc %in% el2), color_over, ifelse((elc %in% el1), color1, color2))
 
 
+
+plot(network1,vertex.size = 2, vertex.label=NA, layout =   layout.kamada.kawai, main="10-Regular 1")
+plot(network2,vertex.size = 2, vertex.label=NA, layout =   layout.kamada.kawai, main="10-Regular 2")
+plot(combined_network,vertex.size = 2, vertex.label=NA, layout =   layout.kamada.kawai, main="Combined 10-Regulars")
+
+#print to pdf
+pdf(paste("./pdf/","network_properties_merge_2_10regular.pdf"), width=15, height=5)
 par(mfrow=c(1,3))
 plot(network1,vertex.size = 2, vertex.label=NA, layout =   layout.kamada.kawai, main="10-Regular 1")
 plot(network2,vertex.size = 2, vertex.label=NA, layout =   layout.kamada.kawai, main="10-Regular 2")
 plot(combined_network,vertex.size = 2, vertex.label=NA, layout =   layout.kamada.kawai, main="Combined 10-Regulars")
+dev.off()
 
 stargazer(netprop.table, type="html", summary = FALSE)
 
@@ -125,8 +146,17 @@ cfg <- params[params$"num.network" == 1 & params$"network.0.k" == 20,][[1]]
 #use the configuration id to filter the data
 network_k_20 <- read.big.network.layer(data=network_data,cfg=cfg,run=1, layer=0)
 
+#print to report
 par(mfrow=c(1,1))
 plot(network_k_20,vertex.size = 2, vertex.label=NA, layout =   layout.kamada.kawai, main="K-Regular with K=20")
+
+#print to pdf
+
+pdf(paste("./pdf/","network_properties_1_20regular.pdf"), width=7, height=5)
+par(mfrow=c(1,1))
+plot(network_k_20,vertex.size = 2, vertex.label=NA, layout =   layout.kamada.kawai, main="K-Regular with K=20")
+dev.off()
+
 ```
 
 As you can see in the following table, while the clustering coefficient of a _20-Regular_ network is approximately the same as the _10-Regulars_, it is higher than this particular combination of regular networks, the average path length also decreases 
@@ -146,7 +176,6 @@ netprop.table <- as.data.frame(rbind(net1,net2,combnet,network_k_20.props))
 colnames(netprop.table)<- c("Number of Nodes","Number of Edges","Clustering Coefficient", "Average Path Length")
 rownames(netprop.table) <- c("10-Regular 1", "10-Regular 2", "Combined 10-Regulars", "20-Regular Network")
 
-require(stargazer)
 stargazer(netprop.table, type="html", summary = FALSE)
 ```
 
@@ -160,7 +189,6 @@ empirically by taking the network instances used in the simulation and analysing
 
 ```{r}
 #Collect the network data and create a data table to hold the network properties
-require(parallel)
 
 ## Number of workers (R processes) to use:
 numWorkers <- 8
@@ -178,7 +206,6 @@ num_networks <- c(1,2,3,4,5)
 k_values <- c(1:5,seq(10,50,10))
 runs <- sort(unique(network_data[,"run"]))
 
-require(BBmisc)#for progress bar
 pb <- makeProgressBar(min=0, max=(length(num_networks)*length(k_values)), label="network analysis")
 
 #pre-alocate a matrix for the network properties
@@ -217,7 +244,8 @@ within each configuration. Within K-Regular networks we can thus assume certain 
 ```{r}
 props <- as.data.frame(props)
 
-require(ggplot2)
+#save this for later use
+write.table(props, "../data/context_permeability/regular_networks/network_properties.csv", quote = FALSE, sep = ",", row.names = FALSE)
 
 
 #create average path length box plots for k = 1,2,3,4,5
@@ -226,7 +254,16 @@ net_props <- props[props$k <= 5,]
 plot <- plot <- ggplot(net_props, aes(x=as.factor(net_props$networks), y=net_props$"average-path-length",fill=as.factor(net_props$k)) ) 
 plot <- plot + geom_boxplot()
 plot <- plot + labs(fill="K", y="Average Path Length", x="Number of Networks")
+
+#print to report
 plot 
+
+#print to pdf
+pdf(paste("./pdf/","network_properties_apl_kreg_12345.pdf"), width=7, height=5)
+par(mfrow=c(1,1))
+plot 
+dev.off()
+
 
 #create average path length box plots for k = 10, 20,30,40,50
 net_props <- props[props$k > 5,]
@@ -235,6 +272,12 @@ plot <- plot <- ggplot(net_props, aes(x=as.factor(net_props$networks), y=net_pro
 plot <- plot + geom_boxplot()
 plot <- plot + labs(fill="K", y="Average Path Length", x="Number of Networks")
 plot 
+
+#print to pdf
+pdf(paste("./pdf/","network_properties_apl_kreg_1020304050.pdf"), width=7, height=5)
+par(mfrow=c(1,1))
+plot 
+dev.off()
 
 
 
@@ -246,6 +289,14 @@ plot <- plot + geom_boxplot()
 plot <- plot + labs(fill="K", y="Clustering Coefficient", x="Number of Networks")
 plot 
 
+#print to pdf
+pdf(paste("./pdf/","network_properties_cc_kreg_12345.pdf"), width=7, height=5)
+par(mfrow=c(1,1))
+plot 
+dev.off()
+
+
+
 #create clustering coefficient box plots for k = 10,20,30,40,50
 net_props <- props[props$k > 5,]
 
@@ -253,6 +304,13 @@ plot <- plot <- ggplot(net_props, aes(x=as.factor(net_props$networks), y=net_pro
 plot <- plot + geom_boxplot()
 plot <- plot + labs(fill="K", y="Clustering Coefficient", x="Number of Networks")
 plot 
+
+
+#print to pdf
+pdf(paste("./pdf/","network_properties_cc_kreg_1020304050.pdf"), width=7, height=5)
+par(mfrow=c(1,1))
+plot 
+dev.off()
 ```
 
 We now plot the average value of **average path length** and **clustering coefficient** for a total of 100 K-Regular Networks. We analyse the properties of networks with different levels of **K**. The **number of networks** refers to the number of networks in which the agents
@@ -261,8 +319,6 @@ between nodes.
 
 ```{r}
 #aggregate run data by k and networks
-require(reshape2)
-
 apl_data <- melt(props, id=c("k","networks","run"),measure.vars=c("average-path-length"))
 clustering_data <- melt(props, id=c("k","networks","run"),measure.vars=c("clustering-coefficient"))
 
@@ -276,16 +332,31 @@ net_props <- average_apl_data[average_apl_data$"k" <= 5,]
 plot <- ggplot(net_props, aes(x=as.factor(net_props$networks), y=net_props$"average-path-length",)) 
 plot <- plot +  geom_point(aes(shape=as.factor(net_props$k), color=as.factor(net_props$k)),size = 3.5)
 plot <- plot +  geom_line(aes(color=as.factor(net_props$k), group=as.factor(net_props$k), linetype=as.factor(net_props$k)),size=1)   
-plot <- plot + labs(color="K", shape="K", linetype="K", y="Average Path Length", x="Number of Networks")
+plot <- plot + labs(color="K", shape="K", linetype="K", y="Average of Average Path Length", x="Number of Networks")
 plot
+
+#print to pdf
+pdf(paste("./pdf/","network_properties_apl_line_kreg_12345.pdf"), width=7, height=5)
+par(mfrow=c(1,1))
+plot 
+dev.off()
+
+
 
 #plot for k = 10,20,30,40,50
 net_props <- average_apl_data[average_apl_data$"k" >5,]
 plot <- ggplot(net_props, aes(x=as.factor(net_props$networks), y=net_props$"average-path-length",)) 
 plot <- plot +  geom_point(aes(shape=as.factor(net_props$k), color=as.factor(net_props$k)),size = 3.5)
 plot <- plot +  geom_line(aes(color=as.factor(net_props$k), group=as.factor(net_props$k), linetype=as.factor(net_props$k)),size=1)   
-plot <- plot + labs(color="K", shape="K", linetype="K", y="Average Path Length", x="Number of Networks")
+plot <- plot + labs(color="K", shape="K", linetype="K", y="Average of Average Path Length", x="Number of Networks")
 plot
+
+#print to pdf
+pdf(paste("./pdf/","network_properties_apl_line_kreg_1020304050.pdf"), width=7, height=5)
+par(mfrow=c(1,1))
+plot 
+dev.off()
+
 
 #clean up
 rm(apl_data,average_apl_data)
@@ -299,8 +370,15 @@ net_props <- average_clustering_data[average_clustering_data$"k" <= 5, ]
 plot <- ggplot(net_props, aes(x=as.factor(net_props$networks), y=net_props$"clustering-coefficient",)) 
 plot <- plot +  geom_point(aes(shape=as.factor(net_props$k), color=as.factor(net_props$k)),size = 3.5)
 plot <- plot +  geom_line(aes(color=as.factor(net_props$k), group=as.factor(net_props$k), linetype=as.factor(net_props$k)),size=1)   
-plot <- plot + labs(color="K", shape="K", linetype="K", y="Clustering Coefficient", x="Number of Networks")
+plot <- plot + labs(color="K", shape="K", linetype="K", y="Average of Clustering Coefficient", x="Number of Networks")
 plot
+
+#print to pdf
+pdf(paste("./pdf/","network_properties_cc_line_kreg_12345.pdf"), width=7, height=5)
+par(mfrow=c(1,1))
+plot 
+dev.off()
+
 
 #plot for k = 10,20,30,40,50
 net_props <- average_clustering_data[average_clustering_data$"k" > 5, ]
@@ -308,8 +386,14 @@ net_props <- average_clustering_data[average_clustering_data$"k" > 5, ]
 plot <- ggplot(net_props, aes(x=as.factor(net_props$networks), y=net_props$"clustering-coefficient",)) 
 plot <- plot +  geom_point(aes(shape=as.factor(net_props$k), color=as.factor(net_props$k)),size = 3.5)
 plot <- plot +  geom_line(aes(color=as.factor(net_props$k), group=as.factor(net_props$k), linetype=as.factor(net_props$k)),size=1)   
-plot <- plot + labs(color="K", shape="K", linetype="K", y="Clustering Coefficient", x="Number of Networks")
+plot <- plot + labs(color="K", shape="K", linetype="K", y="Average of Clustering Coefficient", x="Number of Networks")
 plot
+
+#print to pdf
+pdf(paste("./pdf/","network_properties_cc_line_kreg_1020304050.pdf"), width=7, height=5)
+par(mfrow=c(1,1))
+plot 
+dev.off()
 
 #clean up
 rm(clustering_data,average_clustering_data,props, net_props,plot)
@@ -330,12 +414,9 @@ params <- read.exp.parameters("../data/context_permeability/scale-free_networks/
 params <- params[,c("cfg.id","num.networks","network.0.d")]
 
 #read the network data
-require(bigmemory)
 network_data <- read.big.matrix(filename="../data/context_permeability/scale-free_networks/networks.csv", header=T, sep=";")
 
 #Collect the network data and create a data table to hold the network properties
-require(parallel)
-
 ## Number of workers (R processes) to use:
 numWorkers <- 8
 
@@ -352,7 +433,6 @@ num_networks <- c(1,2,3,4,5)
 d_values <- c(1,2,3,4,5)
 runs <- sort(unique(network_data[,"run"]))
 
-require(BBmisc)#for progress bar
 pb <- makeProgressBar(min=0, max=(length(num_networks)*length(d_values)), label="network analysis")
 
 #pre-alocate a matrix for the network properties
@@ -391,8 +471,8 @@ Creating boxplots to observe the average path length and the clustering coeffici
 
 ```{r}
 props <- as.data.frame(props)
-
-require(ggplot2)
+#save this for later use
+write.table(props, "../data/context_permeability/scale-free_networks/network_properties.csv", quote = FALSE, sep = ",", row.names = FALSE)
 
 
 #create average path length box plots for d = 1,2,3,4,5
@@ -403,6 +483,12 @@ plot <- plot + geom_boxplot()
 plot <- plot + labs(fill="D", y="Average Path Length", x="Number of Networks")
 plot 
 
+#print to pdf
+pdf(paste("./pdf/","network_properties_apl_sf_12345.pdf"), width=7, height=5)
+par(mfrow=c(1,1))
+plot 
+dev.off()
+
 
 #create clustering coefficient box plots for d = 1,2,3,4,5
 
@@ -410,14 +496,18 @@ plot <- plot <- ggplot(net_props, aes(x=as.factor(net_props$networks), y=net_pro
 plot <- plot + geom_boxplot()
 plot <- plot + labs(fill="D", y="Clustering Coefficient", x="Number of Networks")
 plot 
+
+#print to pdf
+pdf(paste("./pdf/","network_properties_cc_sf_12345.pdf"), width=7, height=5)
+par(mfrow=c(1,1))
+plot 
+dev.off()
 ```
 
 We now plot the average value of **average path length** and **clustering coefficient** for a total of 100 Scale-Free Networks. We analyse the properties of networks with different levels of **D**.
 
 ```{r}
 #aggregate run data by k and networks
-require(reshape2)
-
 apl_data <- melt(props, id=c("d","networks","run"),measure.vars=c("average-path-length"))
 clustering_data <- melt(props, id=c("d","networks","run"),measure.vars=c("clustering-coefficient"))
 
@@ -431,8 +521,14 @@ net_props <- average_apl_data
 plot <- ggplot(net_props, aes(x=as.factor(net_props$networks), y=net_props$"average-path-length",)) 
 plot <- plot +  geom_point(aes(shape=as.factor(net_props$d), color=as.factor(net_props$d)),size = 3.5)
 plot <- plot +  geom_line(aes(color=as.factor(net_props$d), group=as.factor(net_props$d), linetype=as.factor(net_props$d)),size=1)   
-plot <- plot + labs(color="D", shape="D", linetype="D", y="Average Path Length", x="Number of Networks")
+plot <- plot + labs(color="D", shape="D", linetype="D", y="Average of Average Path Length", x="Number of Networks")
 plot
+
+#print to pdf
+pdf(paste("./pdf/","network_properties_apl_line_sf_12345.pdf"), width=7, height=5)
+par(mfrow=c(1,1))
+plot 
+dev.off()
 
 #clean up
 rm(apl_data,average_apl_data)
@@ -446,11 +542,225 @@ net_props <- average_clustering_data
 plot <- ggplot(net_props, aes(x=as.factor(net_props$networks), y=net_props$"clustering-coefficient",)) 
 plot <- plot +  geom_point(aes(shape=as.factor(net_props$d), color=as.factor(net_props$d)),size = 3.5)
 plot <- plot +  geom_line(aes(color=as.factor(net_props$d), group=as.factor(net_props$d), linetype=as.factor(net_props$d)),size=1)   
-plot <- plot + labs(color="D", shape="D", linetype="D", y="Clustering Coefficient", x="Number of Networks")
+plot <- plot + labs(color="D", shape="D", linetype="D", y="Average of Clustering Coefficient", x="Number of Networks")
 plot
+
+#print to pdf
+pdf(paste("./pdf/","network_properties_cc_line_sf_12345.pdf"), width=7, height=5)
+par(mfrow=c(1,1))
+plot 
+dev.off()
 
 #clean up
 rm(clustering_data,average_clustering_data,props, net_props,plot)
 gc()
 ```
+
+#Properties for Scale-free + Regular Configuration#
+
+```{r}
+#shows the d values explored and the number of networks
+params <- read.exp.parameters("../data/context_permeability/scale-free_regular/param-space_2014-05-30_18:40:41experiment:2_.csv")
+params <- params[,c("cfg.id","network.0.k","network.1.d")]
+
+#read the network data
+network_data <- read.big.matrix(filename="../data/context_permeability/scale-free_regular/networks.csv", header=T, sep=";")
+
+#Collect the network data and create a data table to hold the network properties
+## Number of workers (R processes) to use:
+numWorkers <- 8
+
+measure_parallel <- function(cfg,r){
+  data <- network_data
+  network <- read.big.network(data,cfg,r)
+  properties <- measure.network(network)
+  properties <- cbind(r,properties)
+  return(properties)
+}
+
+props <- NULL
+
+k_values <- c(1:5,seq(10,50,10))
+d_values <- c(1,2,3,4,5)
+
+runs <- sort(unique(network_data[,"run"]))
+
+pb <- makeProgressBar(min=0, max=(length(k_values)*length(d_values)), label="network analysis")
+
+#pre-alocate a matrix for the network properties
+props <- matrix(nrow=(length(k_values)*length(d_values)*length(runs)), ncol=7)
+i <- 0
+
+
+for(k in k_values){
+  #reads the properties for all the k-regular networks with the given k and num_networks 
+  for(d in d_values){
+    cfg <- params[params$"network.0.k" == k & params$"network.1.d" == d,][[1]]
+    
+    properties <- mcmapply(cfg=cfg, r=runs, measure_parallel, mc.cores = numWorkers)
+    properties <- t(properties)
+    
+      
+    props[(i+1):(i+100),] <- cbind(d,k,properties)
+    i <- i + 100  
+    #some progress feddback
+    pb$inc(1,paste("reading k=",k,"d=",d,"\n"))
+    gc()
+  } 
+}
+pb$kill()
+
+colnames(props)<-c("d","k","run","nodes","edges","clustering-coefficient","average-path-length")
+
+#clean up
+rm(pb)
+gc()
+
+props <- as.data.frame(props)
+
+#save this for later use
+write.table(props, "../data/context_permeability/scale-free_regular/network_properties.csv", quote = FALSE, sep = ",", row.names = FALSE, append=FALSE)
+
+
+#props <- read.table("../data/context_permeability/scale-free_regular/network_properties.csv", sep = ",", header = T)
+
+
+#create average path length box plots for k = 1,2,3,4,5
+net_props <- props[props$k <= 5,]
+
+plot <- plot <- ggplot(net_props, aes(x=as.factor(net_props$d), y=net_props$"average-path-length",fill=as.factor(net_props$k)) ) 
+plot <- plot + geom_boxplot()
+plot <- plot + labs(fill="K", y="Average Path Length", x="D")
+
+#print to report
+plot 
+
+pdf(paste("./pdf/","network_properties_apl_sf_kregular_12345.pdf"), width=7, height=5)
+plot
+dev.off()
+
+net_props <- props[props$k >5,]
+
+plot <- plot <- ggplot(net_props, aes(x=as.factor(net_props$d), y=net_props$"average-path-length",fill=as.factor(net_props$k)) ) 
+plot <- plot + geom_boxplot()
+plot <- plot + labs(fill="K", y="Average Path Length", x="D")
+
+#print to report
+plot 
+
+pdf(paste("./pdf/","network_properties_apl_sf_kregular_1020304050.pdf"), width=7, height=5)
+plot
+dev.off()
+
+```
+
+Create box plots for clustering coefficient
+```{r}
+#create average path length box plots for k = 1,2,3,4,5
+net_props <- props[props$k <= 5,]
+
+plot <- plot <- ggplot(net_props, aes(x=as.factor(net_props$d), y=net_props$"clustering-coefficient",fill=as.factor(net_props$k)) ) 
+plot <- plot + geom_boxplot()
+plot <- plot + labs(fill="K", y="Clustering Coefficient", x="D")
+
+#print to report
+plot 
+
+pdf(paste("./pdf/","network_properties_cc_sf_kregular_12345.pdf"), width=7, height=5)
+plot
+dev.off()
+
+net_props <- props[props$k >5,]
+
+plot <- plot <- ggplot(net_props, aes(x=as.factor(net_props$d), y=net_props$"clustering-coefficient",fill=as.factor(net_props$k)) ) 
+plot <- plot + geom_boxplot()
+plot <- plot + labs(fill="K", y="Clustering Coefficient", x="D")
+
+#print to report
+plot 
+
+pdf(paste("./pdf/","network_properties_cc_sf_kregular_1020304050.pdf"), width=7, height=5)
+plot
+dev.off()
+
+```
+
+
+```{r}
+#aggregate run data by k and networks
+apl_data <- melt(props, id=c("k","d","run"),measure.vars=c("average-path-length"))
+clustering_data <- melt(props, id=c("k","d","run"),measure.vars=c("clustering-coefficient"))
+
+
+average_apl_data <- dcast(apl_data, k + d ~ variable, mean)
+average_clustering_data <- dcast(clustering_data, k + d ~ variable, mean)
+
+
+#plot average path length for k = 1,2,3,4,5
+net_props <- average_apl_data[average_apl_data$"k" <= 5,]
+plot <- ggplot(net_props, aes(x=as.factor(net_props$d), y=net_props$"average-path-length",)) 
+plot <- plot +  geom_point(aes(shape=as.factor(net_props$k), color=as.factor(net_props$k)),size = 3.5)
+plot <- plot +  geom_line(aes(color=as.factor(net_props$k), group=as.factor(net_props$k), linetype=as.factor(net_props$k)),size=1)   
+plot <- plot + labs(color="K", shape="K", linetype="K", y="Average of Average Path Length", x="D")
+plot
+
+#print to pdf
+pdf(paste("./pdf/","network_properties_apl_line_sf_kreg_12345.pdf"), width=7, height=5)
+par(mfrow=c(1,1))
+plot 
+dev.off()
+
+
+net_props <- average_apl_data[average_apl_data$"k" > 5,]
+plot <- ggplot(net_props, aes(x=as.factor(net_props$d), y=net_props$"average-path-length",)) 
+plot <- plot +  geom_point(aes(shape=as.factor(net_props$k), color=as.factor(net_props$k)),size = 3.5)
+plot <- plot +  geom_line(aes(color=as.factor(net_props$k), group=as.factor(net_props$k), linetype=as.factor(net_props$k)),size=1)   
+plot <- plot + labs(color="K", shape="K", linetype="K", y="Average of Average Path Length", x="D")
+plot
+
+#print to pdf
+pdf(paste("./pdf/","network_properties_apl_line_sf_kreg_1020304050.pdf"), width=7, height=5)
+par(mfrow=c(1,1))
+plot 
+dev.off()
+
+
+
+```
+
+```{r}
+#plot average path length for k = 1,2,3,4,5
+net_props <- average_clustering_data[average_clustering_data$"k" <= 5,]
+plot <- ggplot(net_props, aes(x=as.factor(net_props$d), y=net_props$"clustering-coefficient",)) 
+plot <- plot +  geom_point(aes(shape=as.factor(net_props$k), color=as.factor(net_props$k)),size = 3.5)
+plot <- plot +  geom_line(aes(color=as.factor(net_props$k), group=as.factor(net_props$k), linetype=as.factor(net_props$k)),size=1)   
+plot <- plot + labs(color="K", shape="K", linetype="K", y="Average of Clustering Coefficient", x="D")
+plot
+
+#print to pdf
+pdf(paste("./pdf/","network_properties_cc_line_sf_kreg_12345.pdf"), width=7, height=5)
+par(mfrow=c(1,1))
+plot 
+dev.off()
+
+
+net_props <- average_clustering_data[average_clustering_data$"k" > 5,]
+plot <- ggplot(net_props, aes(x=as.factor(net_props$d), y=net_props$"clustering-coefficient",)) 
+plot <- plot +  geom_point(aes(shape=as.factor(net_props$k), color=as.factor(net_props$k)),size = 3.5)
+plot <- plot +  geom_line(aes(color=as.factor(net_props$k), group=as.factor(net_props$k), linetype=as.factor(net_props$k)),size=1)   
+plot <- plot + labs(color="K", shape="K", linetype="K", y="Average of Clustering Coefficient", x="D")
+plot
+
+#print to pdf
+pdf(paste("./pdf/","network_properties_cc_line_sf_kreg_1020304050.pdf"), width=7, height=5)
+par(mfrow=c(1,1))
+plot 
+dev.off()
+
+
+#clean up
+rm(apl_data,average_apl_data)
+gc()
+```
+
 

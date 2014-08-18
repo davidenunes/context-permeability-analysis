@@ -1,0 +1,128 @@
+Context Permeability Convergence Correlation
+============================================
+In this report we will do a quick analysis of the correlation between simulation convergence and 
+network properties. We will compute the **pearman's rank correlation coefficient** to analyse our data. 
+
+```{r}
+source("../R/experiment_utils.R")
+library(reshape)
+library(reshape2)
+library(data.table)
+
+# Correlations with significance levels
+library(Hmisc)
+
+```
+
+
+
+## K-Regular Networks ##
+```{r}
+#read the network properties
+props <- read.table(file="../data/context_permeability/regular_networks/network_properties.csv", sep = ",", header = T)
+head(props)
+
+apl_data <- melt(props, id=c("k","networks","run"),measure.vars=c("average.path.length"))
+clustering_data <- melt(props, id=c("k","networks","run"),measure.vars=c("clustering.coefficient"))
+
+average_apl_data <- dcast(apl_data, k + networks ~ variable, mean)
+average_clustering_data <- dcast(clustering_data, k + networks ~ variable, mean)
+head(average_apl_data)
+head(average_clustering_data)
+
+#read the convergence data
+params <- read.exp.parameters(param_file_name="../data/context_permeability/regular_networks/convergence/param-space_2014-08-01_00:09:09experiment:0_.csv")
+
+#read the adata related to consensus was achieved before 
+
+convergence_data <- fread("../data/context_permeability/regular_networks/convergence/consensus_achieved.csv")
+convergence_data <- as.data.frame(convergence_data)[,-ncol(convergence_data)]
+convergence_data <- merge(convergence_data, params, by="cfg.id")
+
+convergence_data <- melt(convergence_data,id.vars=c("cfg.id","run","num.networks","network.0.k"), measure.vars=c("consensus-achieved"))
+
+convergence_data <- aggregate(data=convergence_data, convergence_data$value~convergence_data$num.networks + convergence_data$network.0.k, FUN=function(x) sum(x)/length(x)*100 )
+
+
+
+
+colnames(convergence_data) <- c("networks", "k", "convergence")
+head(convergence_data)
+
+
+table <- cast(convergence_data, networks~k, value="convergence")
+latex_table <- tabular.cast_df(table)
+
+
+full_data <- merge(convergence_data,average_apl_data, by=c("networks","k"))
+full_data <- merge(full_data, average_clustering_data, by=c("networks","k"))
+head(full_data)
+```
+
+```{r}
+pairs(full_data)
+
+
+#Spearman's correlation applies to ranks and so provides a measure of a monotonic relationship between two continuous random variables. It is also useful with ordinal data and is robust to outliers (unlike Pearson's correlation).
+apl_test <- cor.test(normal.range(full_data$convergence), normal.range(full_data$average.path.length), type="spearman", conf.level = 0.95)
+library(ggplot2)
+clustering_test <- cor.test(normal.range(full_data$convergence), normal.range(full_data$clustering.coefficient), type="spearman", conf.level = 0.95)
+qplot(normal.range(full_data$convergence), normal.range(full_data$average.path.length)) +xlab("Convergence Ratio") + ylab("Normalised Average Path Length")
+
+
+apl_test
+clustering_test
+```
+
+## Scale-free Networks ##
+```{r}
+#read the network properties
+props <- read.table(file="../data/context_permeability/scale-free_networks/network_properties.csv", sep = ",", header = T)
+head(props)
+
+apl_data <- melt(props, id=c("d","networks","run"),measure.vars=c("average.path.length"))
+clustering_data <- melt(props, id=c("d","networks","run"),measure.vars=c("clustering.coefficient"))
+
+average_apl_data <- dcast(apl_data, d + networks ~ variable, mean)
+average_clustering_data <- dcast(clustering_data, d + networks ~ variable, mean)
+head(average_apl_data)
+head(average_clustering_data)
+
+#read the convergence data
+params <- read.exp.parameters(param_file_name="../data/context_permeability/scale-free_networks/convergence/param-space_2014-08-01_00:47:12experiment:0_.csv")
+
+#read the adata related to consensus was achieved before 
+
+convergence_data <- fread("../data/context_permeability/scale-free_networks/convergence/consensus_achieved.csv")
+convergence_data <- as.data.frame(convergence_data)[,-ncol(convergence_data)]
+convergence_data <- merge(convergence_data, params, by="cfg.id")
+
+convergence_data <- melt(convergence_data,id.vars=c("cfg.id","run","num.networks","network.0.d"), measure.vars=c("consensus-achieved"))
+convergence_data <- aggregate(data=convergence_data, convergence_data$value~convergence_data$num.networks + convergence_data$network.0.d, FUN=function(x) sum(x)/length(x)*100)
+colnames(convergence_data) <- c("networks", "d", "convergence")
+head(convergence_data)
+
+
+
+full_data <- merge(convergence_data,average_apl_data, by=c("networks","d"))
+full_data <- merge(full_data, average_clustering_data, by=c("networks","d"))
+head(full_data)
+```
+
+```{r}
+pairs(full_data)
+
+
+#Spearman's correlation applies to ranks and so provides a measure of a monotonic relationship between two continuous random variables. It is also useful with ordinal data and is robust to outliers (unlike Pearson's correlation).
+apl_test <- cor.test(normal.range(full_data$convergence), normal.range(full_data$average.path.length), type="spearman",conf.level = 0.95)
+library(ggplot2)
+clustering_test <- cor.test(normal.range(full_data$convergence), normal.range(full_data$clustering.coefficient), type="spearman",conf.level = 0.95)
+qplot(normal.range(full_data$convergence), normal.range(full_data$average.path.length)) +xlab("Convergence Ratio") + ylab("Normalised Average Path Length")
+
+
+apl_test
+clustering_test
+```
+
+
+

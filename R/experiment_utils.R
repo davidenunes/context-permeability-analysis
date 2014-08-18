@@ -10,6 +10,7 @@ normal.range <- function(x){
 #@param param_file_name: a string with the filename / path to the parameter file
 #*******************************************************************************
 read.exp.parameters <- function(param_file_name){
+  library(data.table)
   params <- read.csv(param_file_name, header=TRUE, sep=";")
   #remove empty column at the end
   params<- params[,-ncol(params)]
@@ -28,12 +29,12 @@ read.exp.parameters <- function(param_file_name){
 # @param parameters: a previously loaded parameter table
 #*******************************************************************************
 print.exp.parameters <- function(parameters){
-  require(stargazer)
+  library(stargazer)
 
   stargazer(params, title="Simulation Parameters", type="html", align=FALSE, summary = FALSE)
 }
 
-require(ggplot2)
+
 plot.exp.box <- function(data,
                          x_factor,
                          data_y,
@@ -41,6 +42,9 @@ plot.exp.box <- function(data,
                          fill_label,
                          y_label,
                          x_label){
+  
+  library(ggplot2)
+  
   .e <- environment()
   plot <- ggplot(aes(y=data_y,x=x_factor,fill=fill_factor), data=data, environment=.e)  
   plot <- plot + geom_boxplot()
@@ -54,8 +58,7 @@ plot.exp.box <- function(data,
 #
 #***********************************************************************
 plot_opinion <- function(opinion_data){
-  op_run <- as.data.frame(opinion_data)
-  r_op_data <- melt(op_run, id=(c("step")), measure.vars=(c("num.opinion.0","num.opinion.1")))
+  r_op_data <- melt(opinion_data, id=(c("step")), measure.vars=(c("num-opinion-0","num-opinion-1")))
   names(r_op_data)<- c("step", "opinion", "value")
   
   .e <- environment()
@@ -73,8 +76,10 @@ plot_opinion <- function(opinion_data){
 }
 
 read.opinion.progress <- function(filename){
-  opinion_data <- read.csv(filename, sep=";")
-  opinion_data<- opinion_data[,-ncol(opinion_data)]
+  library(data.table)
+  opinion_data <- fread(filename)
+  opinion_data <- as.data.frame(opinion_data)
+  opinion_data<- opinion_data[,-c(ncol(opinion_data))]
   return(opinion_data)
 }
 
@@ -120,9 +125,9 @@ plot_persp_span <- function(x,y,data_matrix,breaks,xlab,ylab,zlab, pallete="YlOr
 #'
 #'
 create_contour_span <- function(span,brks,guide_title,xlab,ylab){
-  require(ggplot2)
-  require(RColorBrewer)
-  require(directlabels)
+  library(ggplot2)
+  library(RColorBrewer)
+  library(directlabels)
   
   jet.colors <- colorRampPalette(brewer.pal(n=9, name="YlOrBr"))  
   nbcol <- 9
@@ -141,6 +146,29 @@ create_contour_span <- function(span,brks,guide_title,xlab,ylab){
   plot <- direct.label(v,method="top.pieces")
   return(plot)
 }
+
+create_tolerance_contour_span <- function(span,brks,guide_title,xlab,ylab){
+  library(ggplot2)
+  library(RColorBrewer)
+  library(directlabels)
+  
+  jet.colors <- colorRampPalette(brewer.pal(n=9, name="YlOrBr"))  
+  nbcol <- 9
+  color <- jet.colors(nbcol)
+  
+  #I have to do this otherwise ggplot cant find the variables in this function environmnet
+  .e <- environment()
+  
+  v <- ggplot(span, aes(x=span$"ct0", y=span$"ct1", z=span$"value"), environment=.e)
+  v <- v + geom_tile(aes(fill = span$"value"),breaks=brks) + scale_fill_gradientn(colours=color)
+  v <- v + guides(fill = guide_colorbar(barwidth = 0.5, barheight = 20, title = guide_title))
+  v <- v + stat_contour(aes(colour = ..level..), breaks=brks) + scale_colour_gradient(low = "black", high ="black")
+  v <- v + labs(x=xlab, y=ylab)
+  
+  plot <- direct.label(v,method="top.pieces")
+  return(plot)
+}
+
 
 
 tabular.cast_df <- function(xx,...)
@@ -197,51 +225,4 @@ tabular.cast_df <- function(xx,...)
   # suppressLabels is in order to remove the value and the v labels (which are added so to make sure the information inside the table is presented)	
   eval(parse(text = txt ))
 }
-
-# Multiple plot function
-#
-# ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
-# - cols:   Number of columns in layout
-# - layout: A matrix specifying the layout. If present, 'cols' is ignored.
-#
-# If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
-# then plot 1 will go in the upper left, 2 will go in the upper right, and
-# 3 will go all the way across the bottom.
-#
-multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
-  require(grid)
-  
-  # Make a list from the ... arguments and plotlist
-  plots <- c(list(...), plotlist)
-  
-  numPlots = length(plots)
-  
-  # If layout is NULL, then use 'cols' to determine layout
-  if (is.null(layout)) {
-    # Make the panel
-    # ncol: Number of columns of plots
-    # nrow: Number of rows needed, calculated from # of cols
-    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
-                     ncol = cols, nrow = ceiling(numPlots/cols))
-  }
-  
-  if (numPlots==1) {
-    print(plots[[1]])
-    
-  } else {
-    # Set up the page
-    grid.newpage()
-    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
-    
-    # Make each plot, in the correct location
-    for (i in 1:numPlots) {
-      # Get the i,j matrix positions of the regions that contain this subplot
-      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
-      
-      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
-                                      layout.pos.col = matchidx$col))
-    }
-  }
-}
-
 
