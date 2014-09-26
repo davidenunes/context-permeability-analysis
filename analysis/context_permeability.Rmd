@@ -5,7 +5,7 @@ In this analysis, we analyse the context permeability model in terms of
 convergence. This is, the percentage of times a simulation has converged to 
 total consensus and how many agent encounters were needed for this to happen. 
 
-We will start by loading the dependencies for this report.
+We will start by loading the dependencies for this analysis.
 ```{r}
 source("../R/read_network.R")
 source("../R/experiment_utils.R")
@@ -24,10 +24,9 @@ library(gridExtra)
 
 # Convergence for K-Regular Networks #
 In this analysis we look at the convergence to consensus for simulations that use 
-regular networks only. We will analyse two things: the *percentage of convergence to total consensus* and the *number of encounters* necessary to achieve concensus.
+regular networks only. We will analyse two things: the *rate of convergence to total consensus* and the *number of encounters* necessary to achieve concensus.
 
-
-We first load the data related to convergence to consensus. In this first dataset, we can find a single boolean variable {1,0} that tells us wheather or not consensus was achieved. 
+We first load the data related to convergence to consensus. In this first dataset, we can find a single boolean variable {1,0} that tells us wheather or not consensus was achieved. Tipically in all our experiments, we perform 100 independent runs, since we felt 100 runs were not enough to give us an accurate convergence ratio, we run an additional experiment in this case, were each configuration was tested in 3000 independent simulation runs.
 ```{r results='asis',message=FALSE}
 
 #read the convergence data
@@ -44,8 +43,6 @@ convergence_data <- melt(convergence_data,id.vars=c("cfg.id","run","num.networks
 convergence_data <- aggregate(data=convergence_data, convergence_data$value~convergence_data$num.networks + convergence_data$network.0.k, FUN=function(x) sum(x)/length(x))
 
 
-
-
 colnames(convergence_data) <- c("networks", "k", "convergence")
 head(convergence_data)
 
@@ -54,7 +51,7 @@ table <- cast(convergence_data, networks~k, value="convergence")
 latex_table <- tabular.cast_df(table)
 ```
 We can now create a table to display the percentage of convergences to total 
-consensus **for each value of k and number of networks**.
+consensus **for each value of k and number of networks**. We use the aggregate function to compute the convergence ratio.
 
 ```{r results='asis'}
 html(latex_table)
@@ -107,7 +104,7 @@ html(fedata_table_full)
 Hmisc::latex(fedata_table_full, file="tex/regular_encounters_full.tex",booktabs=T)
 ```
 
-Now to observe the distribution of the number of encounters, necessary to achieve consensus, we look at the box plots for **k = {1,2,3,4,5}** and **k = {10,20,30,40,50}** respectively. We look at **configurations with a number of networks >= 3** since less networks lead to much worse results. As we have seen in the previous convergence results.
+Now to observe the distribution of the number of encounters, necessary to achieve consensus, we look at the box plots for **k = {1,2,3,4,5}** and **k = {10,20,30,40,50}** respectively. We look at **configurations with a number of networks >= 3** since less networks lead to much worse results. As we have seen in the previous convergence results. We use the ggplot2 library to create the box plots in this case. (you can check the source at ../R/experiment_utils.R)
 ```{r}
 plot <- plot.exp.box(data=fedata_net1,x_factor=as.factor(fedata_net1$num.networks), data_y=fedata_net1$value, fill_factor=as.factor(fedata_net1$network.0.k),fill_label="K", x_label="Number of Networks", y_label="Number of Encounters")
 
