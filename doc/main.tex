@@ -244,7 +244,7 @@
 	
 	\section{Experimental Setup}
 	\label{sec:experimental-setup}
-	In this section, we describe all the tools and processes necessary to produce the current research output. The experiments for our previously described simulation models were developed using the MASON~\cite{Luke2005} simulation framework written in Java. All the code for the simulation models can be found here \cite{Nunes:Software:11067}. Moreover, all the results presented in this paper were made reproducible by using the \textit{statistical computing language R} \cite{R2008} and the R package \textit{knitr} \cite{knitr2014}. Knitr is used for generating reports that contain the code, the results of its execution (plots and tables), and the textual description for such results. All the R code and the configuration files used to produce the analysed data can be found \textbf{in}...\todo{Archive the data, analysis and code used for the analysis, get a doi for it and cite it here}. 
+	In this section, we describe all the tools and processes necessary to produce the current research output. The experiments for our previously described simulation models were developed using the MASON~\cite{Luke2005} simulation framework written in Java. All the code for the simulation models can be found here \cite{Nunes:Software:11067}. Moreover, all the results presented in this paper were made reproducible by using the \textit{statistical computing language R} \cite{R2008} and the R package \textit{knitr} \cite{knitr2014}. Knitr is used for generating reports that contain the code, the results of its execution (plots and tables), and the textual description for such results. All the R code used  to produce the data analysis and the configuration files used to reproduce the data can be found in \cite{NunesAntunes2014:Analysis:11898}.
 
 %recap
 For each configuration in our experiments, we performed 100 independent simulation runs. The results are thus analysed in terms of value distribution, average and standard deviation, or variance over the 100 runs. Like we described in section \ref{sec:sim_consensus}, our models are discrete-event models and in each cycle agents execute 
@@ -313,17 +313,15 @@ Each network is generated in such a way that the node positions are randomised. 
 	\end{tabular} 
 \end{table}
 
-The networks are drawn using the \textit{Kamada-Kawai} Layout \cite{Kamada19897} which regards the desirable ``geometric'' (Euclidean) distance between two vertices in the drawing as the ``graph theoretic'' distance between them in the corresponding graph. We can see by the results of the layout in figure \ref{fig:network_properties_merge_2_10regular}, that the distance between nodes in the network has decreased, this is also confirmed by the reduced average path length of the combined networks (see table \ref{tab:network_properties_merge_2_10regular}). 
-
-\begin{wrapfigure}{r}{0.45\linewidth}
+\begin{wrapfigure}[13]{r}{0.45\textwidth}
 	\includegraphics[width=1\linewidth]{"../analysis/pdf/ network_properties_1_20regular"}
-	\begin{minipage}{0.8\linewidth}
-		\caption{Single k-regular network with k=20. (Drawn using the Kamada-Kawai layout)}
+	\begin{minipage}{0.7\linewidth}
+		\caption{Single k-regular network with k=20. (Kamada-Kawai layout)}
 		\label{fig:network_properties_1_20regular}
 	\end{minipage}
 \end{wrapfigure}
 
-To illustrate our point we analysed one k-regular network with k = 20 (see figure \ref{fig:network_properties_1_20regular} --and the corresponding entry on table \ref{tab:network_properties_merge_2_10regular}). The clustering coefficient of a 20-regular network is approximately the same as the one of a 10-regular network (higher than the combination of 10-regular networks). The average path length also decreases as there are more connections between the nodes. As we will show, these properties may vary. Since the nodes are subjected to random permutations, we can generate different overlaps that lead to distinct structural values.
+The networks are drawn using the \textit{Kamada-Kawai} Layout \cite{Kamada19897} which regards the desirable ``geometric'' (Euclidean) distance between two vertices in the drawing as the ``graph theoretic'' distance between them in the corresponding graph. We can see by the results of the layout in figure \ref{fig:network_properties_merge_2_10regular}, that the distance between nodes in the network has decreased, this is also confirmed by the reduced average path length of the combined networks (see table \ref{tab:network_properties_merge_2_10regular}). To illustrate our point we analysed one k-regular network with k = 20 (see figure \ref{fig:network_properties_1_20regular} --and the corresponding entry on table \ref{tab:network_properties_merge_2_10regular}). The clustering coefficient of a 20-regular network is approximately the same as the one of a 10-regular network (higher than the combination of 10-regular networks). The average path length also decreases as there are more connections between the nodes. As we will show, these properties may vary. Since the nodes are subjected to random permutations, we can generate different overlaps that lead to distinct structural values.
 
 Since we model the agent social space as a multitude of networks, we need to investigate the properties resulting from the merging of these networks. We do this empirically by taking the network instances used in the simulation and analysing the distribution of clustering coefficient and average path length for the different configurations.
 
