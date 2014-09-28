@@ -5,11 +5,12 @@ To reproduce any experiment from the `data` folder
 you just need to run the model written in java with the parameter `-f`
 as follows: 
 
-From a specific folder (with a cfg file) run:
+Run the jar with the -f model inside the folder with the configuration file. 
+This runs the simulation model and generates the data files inside that folder.
 
 ```shell
 
-java -jar ../../models/cp-model.jar -f <cfgfilename>.cfg
+java -jar <pathto>/cp-model.jar -f <cfgfile>.cfg
 
 ```
 
