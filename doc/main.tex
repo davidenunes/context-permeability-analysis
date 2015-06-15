@@ -85,31 +85,91 @@
 	%		Research context
 	%******************************************
 	
-\noindent In most simulations of complex social phenomena, agents are considered to inhabit a space in which structure is very simple, and has little resemblance with the social world it is supposed to depict, and for which the conclusions are supposed to be extrapolated. This simplicity does not come by chance, rather, it is somewhat necessary and desired by the researchers, since the problems to be approached are themselves so complex that whichever factors of complexity can be reduced, or at least postponed, are always welcome. So, as widely visible, geographical space is usually reduced to a two-dimensional grid composed by square patches, and all social relations between  agents are condensed into one abstract relation. Usually, approaches disregard the fact that in real world our relations are multiple, and, moreover, possess very diverse characteristics, including rich information about degree, intensity, frequency, methods associated, asymmetry, and so on.
+        \noindent In most simulations of complex social phenomena, agents are considered to inhabit
+        a space in which structure is very simple. This space has little resemblance with the social
+        world it is supposed to depict and for which conclusions are supposed to be
+        extrapolated. This simplicity does not come by chance, rather, it is necessary and desired
+        by the researchers: the problems to be approached are themselves so complex that whichever
+        factors of complexity can be reduced (or at least postponed), the reduction is always
+        welcome. So, it is common practice that geographical space is reduced to a two-dimensional
+        grid, and all social relations between agents are condensed into one more or less structured
+        abstract relation. Most social simulation and modelling approaches disregard the fact that
+        we engage in multiple social relations. Moreover, each kind of social relation can possess
+        distinctive characteristics that include: rich information such as degree of connectivity,
+        centrality, trust, interactions frequency, asymmetry, and so on.
 	
-To explore the addition of multiple relations and its consequences for the dissemination of phenomena in social simulations, we put forward to reduce the emphasis given on the individual interactions, depicted as a theoretical game. We accomplished this by choosing a simple, and especially, neutral game to represent those interactions. Our main concern was that the game itself would not provide biases or trends in the collective phenomenon being studied, so we chose the consensus formation game, with a straightforward majority rule to decide the outcome of each individual move. 
+        To explore the addition of multiple relations and its consequences for the dissemination of
+        phenomena in social simulations, we put forward to \textit{reduce} the emphasis given on
+        agent individual interactions. We accomplished this by choosing a simple -- and especially
+        neutral -- game to model those interactions. Our main concern was that the game itself would
+        not provide biases or trends in the collective phenomenon being studied, so we chose the
+        \textit{consensus formation game}, with a straightforward majority rule to decide the
+        outcome of each individual move.
 
-	Studying simulation models of consensus formation can advance our understanding of real-world emergent social phenomena. Typically, we can construct models with different levels of abstraction. Simulation methods can range from data-driven paradigms to more abstract descriptions that allow us to create \textit{what-if-scenarios}. While most models are simplified descriptions of the real-world corresponding target phenomena, many constitute complex systems themselves and thus the need for tools and techniques like simulation to explore their properties. In \cite{Emmeche1997}, Emmeche makes a distinction between two types of complexity. He characterises the complexity of real systems as \textit{``ontological complexity''} and the one of models as \textit{``descriptive complexity''}. Examples of real-world target phenomena for social simulation models include for instance the joint assessments of policies or, in the context of economics and politics, \textit{the voting problem}. Herbert Simon's investigations on this problem were also one of the first stepping stones to the field of social simulation \cite{Simon1954}.
-	
-	In agent-based \textit{opinion dynamics}, agent interactions are guided by \textit{social space} abstractions. In some models, dimensionality and structure are irrelevant and any agent can interact with any other agent.
-	Other approaches use an underlying structure to create agent neighbourhoods. Axelrod for instance, in its model of \textit{dissemination of culture} \cite{Axelrod1997}, represents agents in a bi-dimensional grid. Finally, in an attempt to mimic real social systems, some simulation models make use of \textit{complex network models} (see \cite{Weisbuch2004}) to create the infrastructure that guides agent interaction.
-	
+        While most models are simplified descriptions -- reductions -- of real-world phenomena, many
+        constitute complex systems themselves and thus, we need techniques such as simulation to
+        explore their properties. We can make a distinction between two types of complexity: the
+        complexity of real systems (\textit{ontological complexity}) and the complexity of models
+        (\textit{descriptive complexity})~\cite{Emmeche1997}. The levels of abstraction in a
+        simulation model can then range from data-driven paradigms to more abstract descriptions
+        that allow us to create \textit{what-if-scenarios}. The study of this abstract
+        \textit{descriptive complexity} in simulation models is as valuable as its
+        \textit{data-driven} counterpart. We may not be able to make predictions based on the direct
+        application of such models; but, their study can inspire the engineering of artificial
+        complex systems and reveal properties with applications beyond the explanation of observable
+        phenomena. Studying consensus formation can thus advance our understanding of related
+        real-world social phenomena.
 
-	In real-world scenarios, actors engage in a multitude of social relations different in kind and quality. Most simulation models don't explore \textit{social space} designs that take into account the differentiation between coexisting social networks. Modelling multiple concomitant relations was an idea pioneered by Peter Albin in \cite{Albin1975} but without any further development. The complex social structures that result from interacting in these different dimensions form the basis for the formation of social identity \cite{Roccas2002,Ellemers2002}.
+        Examples of thematic real-world phenomena in social simulation models include for instance
+        the joint assessments of policies or, in the context of economics and politics, \textit{the
+          voting problem}. Herbert Simon's investigations on this problem were one of the first
+        stepping stones to the field of social simulation \cite{Simon1954}; which then inspired
+        models (like the one we present in this article) related to evolution and dissemination of
+        opinions, which we call \textit{opinion dynamics}. In agent-based \textit{opinion dynamics},
+        agent interactions are guided by \textit{social space} abstractions. In some models, the
+        dimensionality and structure of this space is irrelevant (any agent can interact with any
+        other agent). Other models use an underlying artefact that structures agent
+        neighbourhoods. Axelrod for instance, represents agent neighbourhoods as a bi-dimensional
+        grid in its model of \textit{dissemination of culture} \cite{Axelrod1997}. In an attempt to
+        mimic real social systems, one can also make use of \textit{complex network models} to
+        create the infrastructure that guides agent interaction (see \cite{Weisbuch2004} for an
+        example).
+	
+	In real-world scenarios, actors engage in a multitude of social relations different in kind
+        and quality. Most simulation models don't explore \textit{social space} designs that take
+        into account the differentiation between coexisting social networks. Modelling multiple
+        coexisting relations was an idea pioneered by Peter Albin in \cite{Albin1975} but without
+        further development. The process of interacting in these different complex social dimensions
+        can be seen as the basis for the formation of our social identity
+        \cite{Roccas2002,Ellemers2002}.
 	
 	%******************************************
 	%		Objectives
 	%******************************************
-	In this article, we explore the possibility of modelling opinion dynamics with multiple social networks. We look at how the properties influence the convergence to opinion consensus. Starting with this premise of 
-	using multiple social networks, we present a series of models that use these networks in different ways, which create distinct emergent dynamics. We want to observe the consequences of using multiple social networks at the same time --- while maintaining the model as simple and abstract as possible, much like what happens with the current contributions on opinion dynamics present in the literature. 
-	
-	In our models agents can: interact at the same time in the multiple networks (choosing partners from any network) or switch between networks (choosing only partners from their current network). While our models seem quite simple, and are quite abstract, they generate quite complex outcomes and thus the need of simulation to understand their dynamics.
+	In this article, we explore the of modelling opinion dynamics with multiple social
+        networks. We look at how the properties of different network models influence the
+        convergence to opinion consensus. We present a series of models that use these networks in
+        different ways: which create distinct emergent dynamics. We want to study the consequences
+        of using multiple social networks at the same time while maintaining the interaction model
+        as simple and abstract as possible (following the methodology in most opinion dynamics
+        literature). We present two models where agents can: interact at the same time in the
+        multiple networks (choosing partners from any network); or switch between networks (choosing
+        only partners from their current network).
 	
 	%******************************************
 	%		Article Structure
 	%******************************************
-	\subsection{article Structure}
-\noindent This article is organised as follows. In the next section, we present work related to \textit{opinion dynamics}, \textit{social space} modelling and \textit{complex network models}. In the following section, we describe our game of consensus and introduce multiple model variations, designed to study the notion of context permeability and the process of consensus formation in multiple social networks. Section \ref{sec:experimental-setup} describes the experimental set-up; the set of tool and methodologies followed to conduct our investigations. In section \ref{sec:results-discussion}, we present and discuss our results and compare the different simulation models. Finally, we conclude by making a summary of what we learned from the simulation models and point out possible future research directions.
+	\subsection{Article Structure}
+        \noindent This article is organised as follows. In the next section, we present the work
+        related to \textit{opinion dynamics}, \textit{social space} modelling and \textit{complex
+          network models}. In the following section, we describe our game of consensus and introduce
+        our multiple model variations. These are designed to study the notion of \textit{context
+          permeability} and consensus formation in multiple social networks. Section
+        \ref{sec:experimental-setup} describes the experimental setup; the set of tool and
+        methodologies followed to conduct our investigations. In section
+        \ref{sec:results-discussion}, we present and discuss our results and compare the different
+        simulation models. Finally, we summarise what we learned from our experiments and point out
+        future research directions.
 	
 	%******************************************
 	%		Related Work
