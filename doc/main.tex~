@@ -176,104 +176,36 @@
 	%******************************************
 	\section{Related Work}
 	\label{sec:relatedwork}
-        \noindent In this section, we present work related to \textit{opinion dynamics},
-        \textit{social space} modelling, and \textit{complex network models}.
+\noindent In this section, we present work related to, \textit{opinion dynamics}, \textit{social space} modelling and \textit{complex network models}.	
 	%******************************************
 	%	Opinion Dynamics
 	%******************************************
 	\subsection{Opinion Dynamics and Consensus Formation}
-        \noindent Formal opinion dynamics models provide an understanding, if not an analysis, of
-        opinion formation processes. An early formulation of such models was created as a way to
-        understand complex phenomena found empirically in groups \cite{French1956}. The work on
-        consensus building (in the context of decision-making) was first studied by DeGroot
-        \cite{Degroot74} and Lehrer \cite{Lehrer1975}. Empirical studies of opinion formation in
-        large populations have methodological limitations. Computational sociology arises with a set
-        of tools -- simulation models in particular -- to cope with such limitations. We use
-        \textit{multi-agent simulation (MAS)} as a methodological framework to study such social
-        phenomena in a larger scale. Most opinion dynamics models make use of binary opinion values
-        \cite{Galam1997,Antunes2009}, or continuous values \cite{Deffuant2000,Deffuant2002}. For a
-        detailed analysis over some opinion dynamics models, refer to \cite{Hegselmann2002}.
+\noindent Formal opinion dynamics models provide an understanding, if not an analysis, of opinion formation processes.  An early formulation of these models was designed to comprehend complex phenomena found empirically in groups \cite{French1956}. In particular, the work on consensus building in the context of decision-making was first studied by DeGroot \cite{Degroot74} and Lehrer \cite{Lehrer1975}. Empirical studies of opinion formation in large populations have methodological limitations, as such, computational sociology arises with a set of tools to cope with those limitations. We use simulation, in particular \textit{multi-agent simulation (MAS)}, as a methodological framework to study such phenomena in a larger scale. Most opinion dynamics simulation models are based either on binary opinions \cite{Galam1997,Antunes2009} or continuous values \cite{Deffuant2000,Deffuant2002}. In these models, agents update their opinions either under social influence or according to their own experience. For a detailed analysis over some opinion dynamics models, refer to \cite{Hegselmann2002}. 
 	
-	Opinion dynamics models allow us to discover under which circumstances a population of
-        agents reaches consensus or polarisation. Agent-based models can have broader application
-        outside social simulation though. In computational distributed systems, consensus is a means
-        by which processes agree on some data~value needed during computation. Typically, this
-        agreement is the result of a negotiation process (often with the aid of a mediator). In
-        human societies, social conventions emerge to deal with coordination and subsequently with
-        cooperation problems \cite{Lewis1969}. These conventions are regularities of behaviour that
-        can turn normative if they come to be persistent solutions to recurrent problems. MAS are
-        also capable of producing emergent conventions in coordination or cooperation problems
-        \cite{Delgado2002}. The decentralised nature of these computational models of consensus is
-        highly desirable for dynamic control problems. In these scenarios, creating conventions
-        before hand (off-line), or developing a central control mechanism for generating them, can
-        be a difficult and intractable task: either due to the uncertainty and complexity associated
-        with the environment, or due to the system scale and heterogeneity (which makes it very
-        difficult to handcraft each component).
+	Opinion dynamics models try to study under which circumstances consensus, or polarisation is reached. Agent-based models can have broader application outside social simulation. In distributed systems in general, consensus is a means by which processes agree on some data value that is needed during computation. Typically, this agreement is the result of a negotiation process often with the aid of a mediator. In human societies, social conventions emerge to deal with coordination and subsequently with cooperation problems \cite{Lewis1969}. These conventions are regularities of behaviour that can turn normative with time, due to there being persistent solutions to such problems. Moreover, conventions typically originate from the necessity to resolve conflict. MAS can also benefit from being capable of produce emergent conventions in coordination or cooperation problems \cite{Delgado2002}. The decentralised nature of these models of consensus is highly desirable for problems where dynamic control is needed. In these scenarios, creating conventions before hand (off-line), or developing a central control mechanism for generating them, can be a difficult and intractable task. MAS can be designed to update their values and strategies based on this local information. Consequently, the guarantee of achieving a global consensus and the efficiency of convergence towards it has been a natural concern in the design of local interaction behaviours. 
 	
-	Consensus models are also investigated as means to create conventions in MAS. Shoham and
-        Tennenholtz create a bridge between economic literature and machine learning by studying a
-        series of models in which multiple agents are engaged in learning a particular convention
-        \cite{Shoham1994}. They call this process \textit{co-learning}. The complexity of these
-        systems comes from its concurrent nature: one agent adapts to the behaviour of another
-        agents it has encountered, these other agents update their behaviour in a similar fashion,
-        which results in a highly non-linear system dynamics. In their work, Shoham and Tennenholtz
-        define the notion of \textit{stochastic social games} and compare different rules with the
-        objective of establishing conventions in a decentralised fashion. In their stochastic games,
-        they present one particular rule that we use in our models:
+	Consensus models are also investigated as means to create conventions in MAS. Shoham and Tennenholtz \cite{Shoham1994} create a bridge between economic literature and machine learning, by studying a series of models in which multiple agents are engaged in learning a particular convention. They call this process \textit{co-learning}. The complexity of these systems derives from its concurrent nature: one agent adapts to the behaviour of another agent it has encountered, and as these agents update their behaviour in a similar fashion, this results in a highly non-linear system dynamics. In their work, Shoham and Tennenholtz define the notion of \textit{stochastic social games} and compare different rules with the objective of establishing conventions in a decentralised fashion. In their stochastic games, they present one particular rule that we use in our models: 
 	
 	\begin{mydef}
 		\label{def:external-majority}
-		\textit{External Majority (EM)} update rule: adopt action $i$ if so far it was
-                observed in other agents more often than other action and remain with your current
-                action in the case of equality.
+		\textit{External Majority (EM)} update rule: adopt action $i$ if so far it was observed in other agents more often than other action and remain with your current action in the case of equality. 
 	\end{mydef}
 	
-	This EM rule was shown to coincide with \textit{Highest Cumulative Reward (HCR)}, which is a
-        simple rule that states that ``an agent should adopt an action that has yielded the highest
-        cumulative reward to date.'' We use the EM rule in our simulation models for its simplicity
-        and success in the evolution of conventions.
+	This EM was shown to coincide with \textit{Highest Cumulative Reward (HCR)}, which is a simple rule that states that ``an agent should adopt an action that has yielded the highest cumulative reward to date.'' We chose to use EM in our simulation models for its simplicity and success in the evolution of conventions. We can see that there is an overlap between opinion dynamics from social simulation and agent based learning---or co-learning, in this case.
 	
 	%******************************************
 	%	Social Structure in Simulation Models
 	%******************************************
 	\subsection{Social Structure in Simulation Models}
-        \noindent The usage of a bi-dimensional grid to represent abstract social spaces in
-        simulation models, is one of the most widely used approaches in the agent-based simulation
-        and modelling literature. This has its origins in the \textit{``checkerboard''} model
-        introduced in computational social sciences by Schelling and Sakoda
-        \cite{Schelling1971,Sakoda1971}. Another famous example that uses bi-dimensional grids as
-        social structure is the social simulation model of dissemination of culture from Axelrod
-        \cite{Axelrod1997}.
+\noindent One of the most widely used approaches to represent social spaces in abstract simulation models is using a  bi-dimensional grid. This approach has its origins in the first \textit{``checkerboard''} model introduced in computational social sciences by Thomas Schelling \cite{Schelling1971} and Sakoda \cite{Sakoda1971}. Another famous example that uses bi-dimensional grids as social structure is the social simulation model of dissemination of culture from Axelrod \cite{Axelrod1997}.
 	
-	Cellular automata (CA) are an example from the area of \textit{artificial life} that also
-        makes use of bi-dimensional structures to model neighbourhood interactions. While these
-        models are idealised frameworks, their exploration can bring us deeper insights than models
-        with high level of descriptive complexity (which would render their analysis very
-        difficult). The work of Flache and Hegselmann relaxes the standard CA assumptions about the
-        regular bi-dimensional grids by considering irregular grid structures (Voronoi diagrams)
-        \cite{FlacheHegselmann2001}. They present results on the robustness of some important
-        general properties in relation to variations in the typical grid structure. There are also
-        contributions that incorporate both the complexity of network models and the behaviour of
-        dynamic processes. One example is the work in \cite{Sullivan2000}, which explores a
-        graph-based cellular automaton to study the relationship between spatial forms of urban
-        systems and the robustness of different process dynamics under spatial change. Moreover,
-        this shows how we can use real geographical information to construct graph-based cellular
-        automata (thus making a connection between purely abstract models and data-driven models).
+	Cellular automata (CA) are an example from the area of artificial life that also makes use of bi-dimensional structures to model neighbourhood interactions. While these models are idealised frameworks, the exploration of simple computational models can bring us deeper insights than models with high level descriptive complexity, which would render their analysis very difficult. The work of Flache and Hegselmann \cite{FlacheHegselmann2001} relaxes the standard CA assumptions about the regular bi-dimensional grids, by considering irregular grid structures (Voronoi diagrams). This work presents results on the robustness of some important general properties in relation to variations in the typical grid structure. We can also find contributions that incorporate both the complexity of network models and the behaviour of dynamic processes. One example of this combination is the work in \cite{Sullivan2000}, which explores a graph-based cellular automaton to study the relationship between spatial form of urban systems and the robustness of different process dynamics under spatial change. Moreover, this allows for the integration of real geographical information to construct the graph-cellular automata. This fact causes that, while the models of dynamic processes are relatively abstract, they are tested in spatial structures based on data from real complex structures and thus making a connection between purely abstract models and data-driven models.
 	
 	%******************************************
 	%	Complex Network Models
 	%******************************************	
-	Finally, another type of social space models are the \textit{random graph/network
-          models}. Each complex network -- or \textit{class} of complex networks -- captures
-        specific topological properties. These properties are found in real-world network
-        structures. One of the first complex network models is the random graph from Erd\H{o}s and
-        Rényi \cite{Erdos1959}. Other examples include the model of preferential attachment
-        \cite{Barabasi1999}, and the small-world networks \cite{Watts1998}. One common issue of
-        these models is the fact that once generated, the network structure is static. The models
-        are not really suitable for the description of highly dynamic groups or communities. An
-        example of a model that takes such dynamics into account is the model of team
-        formation in~\cite{Gaston2005}. A more in-depth review of network models (and their properties)
-        is given in~\cite{Nunes2012}.
+	Finally, another type of social space models are the \textit{random graph/network models}. Networks with different properties can be built using network models. Each complex network or class of complex networks, presents specific topological features. These properties are typically found in---and the models inspired by---real-world network structures. One of the first complex network models is the random graph from Erd\H{o}s and Rényi \cite{Erdos1959}. Other examples include the model of preferential attachment \cite{Barabasi1999} and the small-world network models \cite{Watts1998}. One common problem of these models is the fact that once generated, the network structure is static so these models are not really suitable for the description of highly dynamic groups or communities. An example of a model that takes these dynamics into account is the model of team formation~\cite{Gaston2005}. A more in-depth review of network models and their properties is given in~\cite{Nunes2012}.
 	
 	
 	\section{Multi-context Models}
