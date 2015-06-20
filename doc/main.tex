@@ -464,31 +464,75 @@
 	
 	\section{Experimental Setup}
 	\label{sec:experimental-setup}
-\noindent In this section, we describe all the tools and processes necessary to produce the current research output. The experiments for our previously described simulation models were developed using the MASON~\cite{Luke2005} simulation framework written in Java. All the code for the simulation models can be found here \cite{Nunes:Software:11067}. Moreover, all the results presented in this article were made reproducible by using the \textit{statistical computing language R} \cite{R2008} and the R package \textit{knitr} \cite{knitr2014}. Knitr is used for generating reports that contain the code, the results of its execution (plots and tables), and the textual description for such results. All the R code used  to produce the data analysis and the configuration files used to reproduce the data can be found in \cite{NunesAntunes2014:Analysis:11898}.
+        \noindent In this section, we present all the tools and processes necessary to produce the
+        current research output. The experiments were developed using the MASON~\cite{Luke2005}
+        simulation framework written in Java. All the code for the simulation models can be found
+        here \cite{Nunes:Software:11067}. Moreover, all the results presented in this article were
+        made reproducible by using the \textit{statistical computing language R} \cite{R2008} and
+        the R package \textit{knitr} \cite{knitr2014}. Knitr is used for generating reports that
+        contain the code, the results of its execution (plots and tables), and the textual
+        description for such results. All the R code used to produce the data analysis and the
+        configuration files used to reproduce the data can be found in
+        \cite{NunesAntunes2014:Analysis:11898}.
 
-%recap
-For each configuration in our experiments, we performed 100 independent simulation runs. The results are thus analysed in terms of value distribution, average and standard deviation, or variance over the 100 runs. Like we described in section \ref{sec:sim_consensus}, our models are discrete-event models and in each cycle agents execute 
-a step in a random order: this is so that this dynamical system --our simulation model-- is not influenced by the order in which agents are executed. Simulations end when total consensus is achieved or 2000 steps have passed.  
+        % recap
+        For each configuration in our experiments, we performed 100 independent simulation runs. The
+        results are analysed in terms of value distribution, average and standard deviation, or
+        variance over the 100 runs. Like we described in section \ref{sec:sim_consensus}, our models
+        are discrete-event models. In each cycle agents execute a step in a random order: this is so
+        that this dynamical system --our simulation model-- is not influenced by the order in which
+        agents are executed. Simulations end when total consensus is achieved or 2000 steps have
+        passed.
 
-\subsection{Social Network Models}
-\label{sec:exp-setup_network_models}
-\noindent The social networks used in our models are \textit{k-regular} and \textit{scale-free}. A k-regular network is a network where all the nodes have the same number of connections. These networks are constructed by arranging the nodes in a ring and connecting each node to their next $k$ neighbours. Each network has $2k$ edges per vertex. 
+        \subsection{Social Network Models}
+        \label{sec:exp-setup_network_models}
+        \noindent The social networks used in our models are \textit{k-regular} and
+        \textit{scale-free}. A k-regular network is a network where all the nodes have the same
+        number of connections. These networks are constructed by arranging the nodes in a ring and
+        connecting each node to their next $k$ neighbours. Each network has $2k$ edges per vertex.
 
-Scale-free networks are networks in which the degree distribution follows a power law, at least asymptotically. That is, the fraction $P(k)$ of nodes in the network having $k$ connections to other nodes goes for large values of $k$ as: $ P(k)  \sim  k^{-\gamma}$ where $\gamma$ is a parameter whose value is typically in the range $2 < \gamma < 3$.
+        Scale-free networks are networks in which the degree distribution follows a power law, at
+        least asymptotically. That is, the fraction $P(k)$ of nodes in the network having $k$
+        connections to other nodes goes for large values of $k$ as: $ P(k) \sim k^{-\gamma}$ where
+        $\gamma$ is a parameter whose value is typically in the range $2 < \gamma < 3$.
 
-We use the method proposed in \cite{Barabasi1999} by Barab\'{a}si and Albert to construct the scale-free network instances using a preferential attachment. This model builds upon the perception of a common property of many large networks, a scale-free-power-law distribution of node connectivity. This feature was found to be a consequence of two generic mechanisms: networks expand continuously by the addition of new vertices, and new vertices attach preferentially to sites that are already well connected, being this mechanism more commonly known as ``preferential attachment''. In these networks, the probability $P(k)$ of two nodes being connected to each other decays as a power law, following $P(k) \sim k^{- \gamma}$.
+        We use the method proposed in \cite{Barabasi1999} by Barab\'{a}si and Albert to construct
+        the scale-free network instances using a preferential attachment. This model builds upon the
+        perception of a common property of many large networks: a scale-free-power-law distribution
+        of node connectivity. This feature was found to be a consequence of two generic mechanisms:
+        networks expand continuously by the addition of new vertices, and new vertices attach
+        preferentially to sites that are already well connected (more commonly known as
+        ``preferential attachment''). In these networks, the probability $P(k)$ of two nodes being
+        connected to each other decays as a power law, following $P(k) \sim k^{- \gamma}$.
 
-The network instances were generated using the \textit{b-have network library} \cite{Nunes:Software:11069}. This is a Java library that allows for the manipulation of Network/Graph data structures. It also includes the more commonly used random network models from the literature. 
+        The network instances were generated using the \textit{b-have network library}
+        \cite{Nunes:Software:11069}. This is a Java library that allows the creation and
+        manipulation of network/graph data structures. It also includes the more commonly used
+        random network models from the literature.
 
-\subsection{Measuring Network Properties}
-\noindent We measure two structural properties of our networks: the \textit{average path length} and the \textit{clustering coefficient}. The \textit{average path length} measures the typical separation between two vertices in the graph. The \textit{clustering coefficient} measures the average cliquishness of the graph neighbourhood. This measure quantifies how close the neighbours of a node are to forming a clique. Duncan J. Watts and Steven Strogatz \cite{Watts1998} introduced the measure to characterise a class of complex networks called small-world networks. 
+        \subsection{Measuring Network Properties}
+        \noindent We measure two structural properties of our networks: the \textit{average path
+          length} and the \textit{clustering coefficient}. The \textit{average path length} measures
+        the typical separation between two vertices in the graph. The \textit{clustering
+          coefficient} measures the average cliquishness of the graph neighbourhood. This measure
+        quantifies how close the neighbours of a node are to forming a clique. Duncan J. Watts and
+        Steven Strogatz \cite{Watts1998} introduced the measure to characterise a class of complex
+        networks called small-world networks.
 
-These properties are quite important to study social phenomena as they characterize structures that 
-can be found in the real scenarios. The small-world networks generated by the models of Watts and Strogatz for instance \cite{Watts1998}, tries to model real-world social networks with short average path length, generate local clustering, and triadic closures between the nodes. One shortcoming of this model, is the fact that these networks do not possess node hubs found in many real-world social networks.
+        These properties characterise structures that can be found in the real scenarios. The
+        small-world networks generated by the models of Watts and Strogatz for instance, model
+        real-world social networks with short average path length, local clustering structures, and
+        triadic closures between the nodes \cite{Watts1998}. One shortcoming of this model, is the
+        fact that these networks do not possess node hubs found in many real-world social
+        networks. (Nevertheless, these models are designed to create networks with specific
+        properties, not as general models for all kinds of real social networks)
 
-Since we construct scenarios where we overlap highly clustered k-regular networks and scale-free networks with node hubs, we are interested in what kind of properties emerge from merging these structures and how they are comparable to the existing models. 
-
-The networks produced by the \textit{b-have network library} \cite{Nunes:Software:11069} were exported to files and analysed using the \textit{igraph R package} \cite{igraph2006}. 
+        Since we construct scenarios where we overlap highly clustered k-regular networks and
+        scale-free networks with node hubs, we are interested in the kind of properties that emerge
+        from merging these structures -- and if/how they are comparable to the existing models
+        --. The networks were produced by the \textit{b-have network library}
+        \cite{Nunes:Software:11069}, exported to files, and analysed using the \textit{igraph R
+          package} \cite{igraph2006}.
 
 \section{Results and Discussion}
 \label{sec:results-discussion}
