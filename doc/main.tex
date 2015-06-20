@@ -278,34 +278,88 @@
 	
 	\section{Multi-context Models}
 	\label{sec:multi-context-models} 
-\noindent In this section, we present our modelling approach to explore the concept of permeability between contexts. In our approach, we consider multiple social networks as a way to represent the complex social space in which an agent is inserted. In a simulation, this setting can be seen as a n-dimensional scenario, where each dimension surface represents a different social relation (see figure \ref{img:multiple-relations}). Each relation is instantiated using a social network model. The word ``context'' is used in many different senses and it is subjected to many analysis \cite{Hayes1997}. Here, we use the term \textit{social context} in a simpler and more strict way. Agents belong to distinct social contexts (neighbourhoods) in these multiple networks. The \textit{social context} of an agent is thus a set of neighbours currently available for interaction. \textit{Context Permeability} is the ability of a particular norm, strategy, opinion or trend to permeate from one social relation to another. Agents belonging to disjoint neighbourhoods in different networks foster the creation of bridges between subsets of the population that wouldn't otherwise be influenced by a consensus formed in a distant coalition or in a distinct context. 
-	
-	
+        \noindent In this section, we present our modelling approach to explore the concept of
+        permeability between contexts. We use multiple social networks to represent the complex
+        social space in which an agent is inserted. In a simulation model, this setting can be seen
+        as a n-dimensional scenario where each dimension contains a network that represents a
+        different social relation (see figure \ref{img:multiple-relations}). The word ``context'' is
+        used in many different senses and it is by itself subjected to many analysis
+        \cite{Hayes1997}. Here, we use the term \textit{social context} in a simpler and more strict
+        way. Agents belong to distinct social contexts which are their neighbourhoods in these
+        multiple networks. The \textit{social context} of an agent is thus a set of neighbours
+        currently available for interaction at a particular network or set of
+        networks. \textit{Context permeability} is the ability of a particular norm, strategy,
+        opinion, or trend, to permeate from one social relation to another. Agents belonging to
+        disjoint neighbourhoods in different networks serve as bridges between subsets of the
+        population that wouldn't otherwise be influenced by a consensus formed in a distant
+        coalition.	
 	
 	\begin{figure}[h]
-		\centering
-		\includegraphics[width=0.7\linewidth]{./images/multi-context_model.pdf}
-		\begin{minipage}{0.9\linewidth}
-			\caption{Multiple social network structure that shapes the social space in our simulation models.}
-			\label{img:multiple-relations}
-		\end{minipage}
+          \centering
+          \includegraphics[width=0.7\linewidth]{./images/multi-context_model.pdf}
+          \begin{minipage}{0.9\linewidth}
+            \caption{Multiple social network structure that shapes the social space in our
+              simulation models.}
+            \label{img:multiple-relations}
+          \end{minipage}
 	\end{figure}
 	
 	%Consensus
-	We study the notion of context permeability in different simulation models in which agents interact using a simple consensus game. The society of agents has to adopt a binary \textquotedblleft option\textquotedblright according to a majority rule. We use the speed of consensus as a measure for self-organisation, exploring the relationship between different network topologies and this measure.
+	We study the notion of context permeability in different simulation models in which agents
+        interact using a simple consensus game. The society of agents has to adopt a binary opinion
+        value according to a majority rule. We use the speed of consensus as a measure for
+        self-organisation and explore the relationship between different network topologies and this
+        measure.
 	
-	%Presenting 3 models
-	We partitioned the design space of our experiments using different simulation models. Each model is designed to analyse different aspects of social context permeability. In a first model \cite{Antunes2007, Antunes2010}, we study the notion of permeability by overlapping social networks. In a second model \cite{Antunes2009}, we analyse the dynamics introduced by switching between \textit{social contexts}(neighbourhoods in different networks), adding a temporal component to neighbourhoods within different social relations. 
+	%Presenting 2 models
+	We partitioned the design space of our experiments using different simulation models. Each
+        model is designed to analyse different aspects of context permeability. In a first model
+        \cite{Antunes2007, Antunes2010}, we study the notion of permeability by overlapping social
+        networks. In a second model \cite{Antunes2009}, we analyse the dynamics introduced by
+        switching between \textit{social contexts}(neighbourhoods in different networks). This adds
+        a temporal component that changes the dynamics of the game: agents can only perform
+        encounters with neighbours that are active in their current context. (It also adds the
+        chance for some agents to be isolated during the simulation.)
 	
 	\subsection{Simulation and Consensus Game}
 	\label{sec:sim_consensus}
-\noindent Our agent-based models are designed as \textit{discrete-event} models. On each simulation cycle, every agent executes a simulation step. The agents are selected in a random uniform fashion for execution. This is common practice in agent-based simulation and guarantees that there is no bias caused by the order in which the agents are executed. For each simulation model, we present a description of the individual agent behaviour. Every model we present can be seen as a binary opinion dynamics model, or a consensus game. In this game, the society of agents tries to reach an arbitrary global consensus about two possible choices. Each agent keeps track of the number of choices observed from interaction partners throughout a simulation run. In each iteration, each agent selects an available neighbour to interact with, and observes its current choice. The agent decides to switch its current choice if the observed option becomes the majority of the two possible choices. The objective of the game is to reach a global consensus, but the particular choice that gets collectively selected is irrelevant. What is important is that overall agreement is achieved. In the consensus game we consider, each agent uses the previously presented external majority (EM) rule to update its opinion value (see definition \ref{def:external-majority} in section \ref{sec:relatedwork}).
+        \noindent Our agent-based models are designed as \textit{discrete-event} models. On each
+        simulation cycle, every agent executes a simulation step. The agents are selected in a
+        random uniform fashion for execution. This is common practice in agent-based simulation and
+        guarantees that there is no bias caused by the order in which the agents are executed. For
+        each simulation model, we present a description of the individual agent behaviour. Every
+        model we present can be seen as a binary opinion dynamics model, or a consensus game. In
+        this game, the society of agents tries to reach an arbitrary global consensus about two
+        possible choices or opinion values. During a simulation run, each agent keeps track of the
+        number of each opinion value of their interaction partners. In each iteration, each agent
+        selects an available neighbour to interact with and observes its current opinion value. The
+        agent decides to switch its current opinion choice if the observed opinion value becomes the
+        majority of the two possible choices. The goal of the game is to reach a global consensus,
+        but the particular choice that gets collectively selected is irrelevant. What is important
+        is that overall agreement is achieved. In the consensus game we consider, each agent uses
+        the previously presented external majority (EM) rule to update its opinion value (see
+        definition \ref{def:external-majority} in section \ref{sec:relatedwork}).
 	
-	The reason we are not really interested in which exact option gets selected is the same reason why we chose such a content-neutral game for the individual interactions. From the very beginning, our research questions were focused on the collective properties, the structure of the networks involved, and the dynamical outcomes of the simulations: thus leaving out issues related with individual motivations and desired results, either for any individual agent or the society. Granted, most applications of this research will often include such goals, for inquisition into complex social issues, including possibly policy design, in which the individual rationalities must be considered, and will have a very strong influence on the collective outcomes. We opted not to taint the simulation with such matters, leaving that very interesting approach for future work.
+	The reason we are not interested in which exact option gets selected is the same reason why
+        we chose such a content-neutral game for the individual interactions. From the very
+        beginning, our research questions were focused on the collective properties, the structure
+        of the networks involved, and the dynamical outcomes of the simulations: thus leaving out
+        issues related with individual motivations and desired results (either for any individual
+        agent or the society). Granted, most applications of this research will often include such
+        goals, for inquisition into complex social issues, including possibly policy design, in
+        which the individual rationality must be considered, and will have a very strong influence
+        on the collective outcomes.
 	
-%	\newpage
 	\subsection{Context Permeability}
-\noindent This first model of context permeability \cite{Antunes2007,Antunes2010} is designed to study our first setting for permeability. In most interesting applications, an agent is immersed in a complex social world, where it engages in a multitude of relations with other agents (and even aggregated agents such as institutions or informal groups). In this model, we consider that the \textit{context permeability} is created by agents that can belong simultaneously to several relations. As an example, two agents can be simultaneously family and co-workers, and while some links might not connect two agents directly, others can contain neighbourhoods in which they are related~(either directly or through a common neighbour). Model \ref{model:context_permeability} describes the behaviour of each agent for each simulated step.
+        \noindent The first model of context permeability \cite{Antunes2007,Antunes2010} is designed
+        to study the setting where an agent is immersed in a complex social world: where it engages
+        in a multitude of relations with other agents. In this model, we consider that the
+        \textit{context permeability} is created by agents that can belong \textit{simultaneously}
+        to several relations. As an example, two agents can be simultaneously family and
+        co-workers. While some links might not connect two agents directly, others can contain
+        neighbourhoods in which they are related~(either directly or through a common
+        neighbour). Model \ref{model:context_permeability} describes the behaviour of each agent for
+        each simulated step.
 	%***************************************************
 	%	Context Permeability Model Description
 	%***************************************************
@@ -315,7 +369,7 @@
 		\algsetup{indent=2em}
 		\begin{algorithmic}
 			\vspace{0.5em}
-			\STATE $M$ \COMMENT{Simulation Model / Environmnet}
+			\STATE $M$ \COMMENT{Simulation Model / Environment}
 			\STATE $A$ \COMMENT{Current Agent in Execution}
 			\\ \hrulefill 
 			
@@ -343,7 +397,16 @@
 	
 	\subsection{Context Switching}
 	\label{sec:models_cs}
-\noindent In the context switching model \cite{Antunes2009}, agents are embedded in multiple relations represented as static social networks and they switch \textit{contexts} with a given probability $\zeta_{C_i}$ associated with context $C_i$. The switching probability value is the same for every agent in a given network.  Each agent switches from its current neighbourhood to another network (in which this agent was inactive). The agents are only active in one context at a time, and can only perform encounters with neighbours in the same context. We can think of context switching as a temporary deployment in another place, such as what happens with temporary immigration. The network topology is static; when an agent switches from one network to another, they become inactive in one network and active in their destination. 
+        \noindent In the context switching model \cite{Antunes2009}, agents are embedded in multiple
+        relations represented as static social networks and they switch \textit{contexts} with a
+        probability $\zeta_{C_i}$ associated with context $C_i$. The switching probability is the
+        same for every agent in a given network.  Each agent switches from its current neighbourhood
+        to another network. The agents are only active in one context at a time, and can only
+        perform encounters with neighbours in the same context. We can think of context switching as
+        a temporary deployment in another place, such as what happens with temporary
+        immigration. The network topology is static; when an agent switches from one network to
+        another, they become inactive in one network and active in their destination.
+
 	%***************************************************
 	%	Context Switching Model Description
 	%***************************************************
@@ -353,7 +416,7 @@
 		\algsetup{indent=2em}
 		\begin{algorithmic}
 			\vspace{0.5em}
-			\STATE $M$ \COMMENT{Simulation Model / Environmnet}
+			\STATE $M$ \COMMENT{Simulation Model / Environment}
 			\STATE $A$ \COMMENT{Current Agent in Execution}
 			\\ \hrulefill 
 			
@@ -387,9 +450,17 @@
 			\ENDIF
 		\end{algorithmic}
 	\end{algorithm}
-	\noindent In this model, agents select an (active) partner from their current neighbourhood. If a partner is available, the agents update their opinion value based on EM. At the end of the interaction, the agent switches \textit{from} the current context to a different one with a probability associated with its current network. 
+	\noindent In this model, agents select an (active) partner from their current
+        neighbourhood. If a partner is available, the agents update their opinion value based on
+        EM. At the end of the interaction, the agent switches \textit{from} the current context to a
+        different one with a probability associated with its current context.
 	
-	This model describes an abstract way to represent the time spent on each network using the switching probability $\zeta_{C_i}$. Here, the permeability between contexts is achieved using this temporal component. Context switching introduces one notion that has not been explored in the literature so far: the fact that, although some social contexts can be relatively stable if we consider short to moderate periods of time, our social peers are not always available at all times and spend different amounts of time in distinct social contexts.
+	This model describes an abstract way to represent the time spent on each network using the
+        switching probability $\zeta_{C_i}$. Here, the permeability between contexts is achieved
+        using this temporal component. Context switching introduces a notion that has not been
+        explored in the literature so far: the fact that, although some social contexts can be
+        relatively stable, our social peers are not always available for interaction and spend
+        different amounts of time in distinct social contexts.
 	
 	\section{Experimental Setup}
 	\label{sec:experimental-setup}
