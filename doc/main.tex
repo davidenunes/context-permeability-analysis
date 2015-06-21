@@ -837,26 +837,54 @@
         %           Context Permeability
         % ***************************************************
         \subsection{Context Permeability}
-\label{sec:results:context_permeability}
+        \label{sec:results:context_permeability}
 
-\noindent In this section, we discuss the results for various sets of experiments on the first model we presented --the \textit{context permeability model} \cite{Antunes2007,Antunes2010}. In a first set of experiments, the agent space was structured using \textit{k-regular} and \textit{scale-free }social networks. Each network layer was configured with the same topology. We analyse the context permeability model in terms of convergence to consensus: the ratio of simulations that converged to total consensus over 3000 runs; and how many agent encounters were needed for this to happen. 
+        \noindent In this section, we discuss the results for various sets of experiments on the
+        \textit{context permeability model} \cite{Antunes2007,Antunes2010}. First, we used
+        \textit{k-regular} and \textit{scale-free} networks with our model. Each network layer was
+        configured with the same topology. We analyse the context permeability model in terms of
+        convergence to consensus: the ratio of simulations that converged to total consensus over
+        3000 runs; and how many agent encounters were needed for this to happen.
 
-\subsubsection{Convergence Ratio}
-\label{sec:ctx_perm_convergence}
-\noindent We now analyse the ratio of convergence to consensus for different network configurations. We correlate this ratio with the properties that the combined network structure exhibits. As we have seen in section \ref{sec:network_properties}, the properties don't vary much for different random network instances, so we use the average as the descriptor for these properties in this correlation.
+        \subsubsection{Convergence Ratio}
+        \label{sec:ctx_perm_convergence}
+        \noindent To analyse the ratio of convergence to consensus for different network
+        configurations, we correlate this ratio with the properties that the combined network
+        structure exhibits. As we have seen in section \ref{sec:network_properties}, the properties
+        don't vary much for different random instances, so we use the average as the descriptor for
+        these properties.
 
-The following tables show the results of our simulations. Table ~\ref{tab:regular_convergence} shows the percentage of total consensus achieved with 2000 cycles for 3000 runs. We can see that for k-regular networks with a small $k$, consensus is rarely achieved with a single network. However, as soon as we add more networks, consensus is achieved in a significantly greater number of occasions. These results are especially interesting for the \textit{scale-free }networks (table \ref{tab:scale-free_convergence}): as soon as we add more planes, for a \textit{scale-free} with $d\ge2$, we can achieve consensus in a lot of occasions. This is to show that achieving consensus is not just a matter of connectivity. With \textit{scale-free} networks, we can achieve consensus more often with less clustered networks. This convergence is achieved not because of the clustering coefficient but rather due to lower \textit{average path length}. This is difficult to visualise using only the tables and the previous plots so, to confirm this hypothesis, we measured the \textit{Spearman's correlation}\footnote{The Spearman's rank correlation coefficient is a nonparametric measure of statistical dependence between two variables. It assesses how well the relationship between two variables can be described using a monotonic function.} between the ratio of convergences to consensus, the average of \textit{average path length}, and the average of \textit{clustering coefficient} for the corresponding network configurations (see table \ref{tab:convergence_correlation}).
+        The following tables show the results of our simulations. Table
+        ~\ref{tab:regular_convergence} shows the percentage of total consensus achieved with 2000
+        cycles for 3000 runs. For k-regular networks with a small $k$, consensus is rarely achieved
+        with a single network. However, as soon as we add more networks, consensus is achieved in a
+        significantly greater number of occasions. These results are especially interesting for the
+        \textit{scale-free} networks (table \ref{tab:scale-free_convergence}): as soon as we add
+        more networks, for a \textit{scale-free} with $d\ge2$, we can achieve consensus in a lot of
+        occasions. This is to show that achieving consensus is not just a matter of
+        connectivity. With \textit{scale-free} networks, we can achieve consensus more often with
+        less clustered networks. This convergence is achieved not because of the clustering
+        coefficient but rather due to lower \textit{average path length}. This is difficult to
+        visualise using only the tables and the previous plots so, to confirm this hypothesis, we
+        measured the \textit{Spearman's correlation}\footnote{The Spearman's rank correlation
+          coefficient is a non-parametric measure of statistical dependence between two variables. It
+          assesses how well the relationship between two variables can be described using a
+          monotonic function.} between the ratio of convergences to consensus, the average
+        \textit{average path length}, and the average \textit{clustering coefficient} for the
+        corresponding network configurations (see table \ref{tab:convergence_correlation}).
 
-\begin{table}[H]
-	\centering		
-	\begin{minipage}{0.9\textwidth}
-		\caption{Ratio of convergence to total consensus in 3000 independent runs with with a number of concomitant networks ($\#$ nets.) equal in kind: k-regular networks with $k=\{1,2,3,4,5,10,20,30,40,50\}$.}
+        \begin{table}[H]
+          \centering		
+          \begin{minipage}{0.9\textwidth}
+            \caption{Ratio of convergence to total consensus in 3000 independent runs with with a
+              number of concomitant networks ($\#$ nets.) equal in kind: k-regular networks with
+              $k=\{1,2,3,4,5,10,20,30,40,50\}$.}
 		\label{tab:regular_convergence}
-	\end{minipage}
+              \end{minipage}
 	
 	
-	\setlength{\tabcolsep}{.30000em}
-	\begin{tabular}{c|SSSSSSSSSS}
+              \setlength{\tabcolsep}{.30000em}
+              \begin{tabular}{c|SSSSSSSSSS}
 		
 		\toprule
 		& \multicolumn{10}{c}{value for k} \\ 
@@ -868,33 +896,35 @@ The following tables show the results of our simulations. Table ~\ref{tab:regula
 		4  & 0.8780 & 0.9867 & 0.9966667 & 0.9993 & 1.00000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 \\
 		5  & 0.9497 & 0.9937 & 0.9993333 & 1.0000 & 1.00000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 \\
 		\bottomrule
-	\end{tabular}
-\end{table}
+              \end{tabular}
+            \end{table}
 
 
-\begin{table}[H]
-	\centering
-	\begin{minipage}{0.9\textwidth}
-		\caption{Ratio of convergence to total consensus in 3000 independent runs with a number of concomitant networks ($\#$ nets.) equal in kind: \textit{scale-free} networks with $d=\{1,2,3,4,5\}$.}	
+            \begin{table}[H]
+              \centering
+              \begin{minipage}{0.9\textwidth}
+		\caption{Ratio of convergence to total consensus in 3000 independent runs with a
+                  number of concomitant networks ($\#$ nets.) equal in kind: \textit{scale-free}
+                  networks with $d=\{1,2,3,4,5\}$.}
 		\label{tab:scale-free_convergence}
-	\end{minipage}
+              \end{minipage}
 	
 	\setlength{\tabcolsep}{.30000em}
 	\begin{tabular}{c|SSSSS}
-		\toprule
-		& \multicolumn{5}{c}{value for d} \\ 
-		$\#$ nets.  & 1 & 2 & 3 & 4 & \multicolumn{1}{c}{5} \\ 
-		\midrule
-		1  &  0.0000  &  0.2903  &  0.8590  &  0.9573  &  0.9873  \\
-		2  &  0.2840  &  0.9287  &  0.9877  &  0.9973  &  0.9980  \\
-		3  &  0.7793  &  0.9850  &  0.9970  &  1.0000  &  1.0000  \\
-		4  &  0.9287  &  0.9977  &  0.9997  &  1.0000  &  1.0000  \\
-		5  &  0.9737  &  0.9997  &  1.0000  &  1.0000  &  1.0000  \\
-		\hline 
+          \toprule
+          & \multicolumn{5}{c}{value for d} \\ 
+          $\#$ nets.  & 1 & 2 & 3 & 4 & \multicolumn{1}{c}{5} \\ 
+          \midrule
+          1  &  0.0000  &  0.2903  &  0.8590  &  0.9573  &  0.9873  \\
+          2  &  0.2840  &  0.9287  &  0.9877  &  0.9973  &  0.9980  \\
+          3  &  0.7793  &  0.9850  &  0.9970  &  1.0000  &  1.0000  \\
+          4  &  0.9287  &  0.9977  &  0.9997  &  1.0000  &  1.0000  \\
+          5  &  0.9737  &  0.9997  &  1.0000  &  1.0000  &  1.0000  \\
+          \hline 
 	\end{tabular}
-\end{table}
+      \end{table}
 
-\begin{table}[H]
+      \begin{table}[H]
 	\caption{Spearman's correlation between convergence ratio (CR), average \textit{average path length} (APL) and \textit{clustering coefficient} (CC) along with the respective p-value and confidence interval, for a confidence level of 95\%.}
 	\label{tab:convergence_correlation}
 	
@@ -902,195 +932,286 @@ The following tables show the results of our simulations. Table ~\ref{tab:regula
 	\centering	
 	\begin{tabular}{r|cc|cll}
 		
-		\toprule
-		network model & X & Y & Correlation & CI(95\%) & p-value \\
-		\midrule
-		k-regular & CR & APL & -0.726 & [-0.836, -0.561] & \num[scientific-notation = true]{2.437e-09} \\
-		k-regular & CR & CC & 0.264   &   [-0.015,  0.505]       &    \num[scientific-notation = true]{0.064}     \\
-		\midrule
-		scale-free & CR & APL &    -0.912     &  [-0.961, -0.808]       &   \num[scientific-notation = true]{2.28e-10} \\
-		scale-free & CR & CC & 0.633   &   [0.318, 0.823]  &   \num[scientific-notation = true]{0.0006776} \\
-		\hline
+          \toprule
+          network model & X & Y & Correlation & CI(95\%) & p-value \\
+          \midrule
+          k-regular & CR & APL & -0.726 & [-0.836, -0.561] & \num[scientific-notation = true]{2.437e-09} \\
+          k-regular & CR & CC & 0.264   &   [-0.015,  0.505]       &    \num[scientific-notation = true]{0.064}     \\
+          \midrule
+          scale-free & CR & APL &    -0.912     &  [-0.961, -0.808]       &   \num[scientific-notation = true]{2.28e-10} \\
+          scale-free & CR & CC & 0.633   &   [0.318, 0.823]  &   \num[scientific-notation = true]{0.0006776} \\
+          \hline
 		
-		\hline
+          \hline
 	\end{tabular}
-\end{table}
+      \end{table}
 
-\subsubsection{Number of Encounters to Achieve Consensus}
-\label{sec:ctx_perm_encounters}
-\noindent We now analyse the convergence in terms of average number of meetings during a simulation run. Since the maximum number of simulation cycles is 2000, the maximum number of encounters is 2~000~000 (we have 100 agents and each one performs one encounter per cycle). We show that for some configurations, the average of encounters is not a good descriptor since it varies greatly from run to run. It is better to look at the distributions of these measures rather than considering the average. Nevertheless, we included the data with all the average number of encounters, as well as the respective standard deviations for different network configurations. You can find this data in appendix \ref{append_ctx_permeability}.
+      \subsubsection{Number of Encounters to Achieve Consensus}
+      \label{sec:ctx_perm_encounters}
+      \noindent We now analyse the convergence in terms of average number of meetings during a
+      simulation run. Since the maximum number of simulation cycles is 2000, the maximum number of
+      encounters is 2~000~000 (we have 100 agents and each one performs one encounter per cycle). We
+      show that for some configurations, the average of encounters is not a good descriptor since it
+      varies greatly from run to run. Rather than considering the average, it is better to look at
+      the distributions of these measures. Nevertheless, we included the data with all the average
+      number of encounters, as well as the respective standard deviations for different network
+      configurations. You can find this data in appendix \ref{append_ctx_permeability}.
 
-%boxplots for k-regular networks
-First, we present the results for k-regular networks. To observe the distribution of the number of encounters consider the box plots for $k = \{1,2,3,4,5\}$ (figure \ref{fig:ctx_perm_kreg_12345}) and $k =\{10,20,30,40,50\}$ (figure \ref{fig:ctx_perm_kreg_1020304050}). In figure \ref{fig:ctx_perm_kreg}, we focus on configurations with a number of networks $\ge 3$, since less networks lead to much worse results in terms of convergence speed. These plots still present two types of situations: the typical runs, in which the number of encounters doesn't vary that much, and some ``outlier runs," which present some interesting dynamics, as we will see later on.
+      % boxplots for k-regular networks
+      First, we present the results for k-regular networks. To observe the distribution of the
+      number of encounters, consider the box plots for $k = \{1,2,3,4,5\}$ (figure
+      \ref{fig:ctx_perm_kreg_12345}) and $k =\{10,20,30,40,50\}$ (figure
+      \ref{fig:ctx_perm_kreg_1020304050}). Figure \ref{fig:ctx_perm_kreg} shows the results for
+      configurations with a number of networks $\ge 3$ (since less networks lead to much worse
+      results in terms of convergence speed). These plots reveal two types of situations: the
+      typical runs, in which the number of encounters doesn't vary much, and some ``outlier runs,"
+      which present some interesting dynamics, as we will see later on.
 
-\begin{figure}[H]
-	\centering
+      \begin{figure}[H]
+        \centering
 	\begin{subfigure}{.49\linewidth}
 		\centering
 		\includegraphics[width=1\linewidth]{"../analysis/pdf/context_permeability_encounters_kregular_12345"}
 		\caption{}
 		\label{fig:ctx_perm_kreg_12345}
-	\end{subfigure}%
-	\begin{subfigure}{.49\linewidth}
+              \end{subfigure}%
+              \begin{subfigure}{.49\linewidth}
 		\centering
 		\includegraphics[width=1\linewidth]{"../analysis/pdf/context_permeability_encounters_kregular_1020304050"}
 		\caption{}
 		\label{fig:ctx_perm_kreg_1020304050}
-	\end{subfigure}
-	\begin{minipage}{0.9\linewidth}
+              \end{subfigure}
+              \begin{minipage}{0.9\linewidth}
 		\vspace{0.2cm}
-		\caption{Number of meetings over 100 independent simulation runs for multiple k-regular networks: $k=\{1,2,3,4,5\}$~(\ref{fig:ctx_perm_kreg_12345}) and $k=\{10,20,30,40,50\}$~(\ref{fig:ctx_perm_kreg_1020304050})).}
+		\caption{Number of meetings over 100 independent simulation runs for multiple
+                  k-regular networks: $k=\{1,2,3,4,5\}$~(\ref{fig:ctx_perm_kreg_12345}) and
+                  $k=\{10,20,30,40,50\}$~(\ref{fig:ctx_perm_kreg_1020304050})).}
 		\label{fig:ctx_perm_kreg}
-	\end{minipage}
-\end{figure}
+              \end{minipage}
+      \end{figure}
 
-\noindent Figure~\ref{fig:ctx_perm_kreg} shows us results that are qualitatively similar to what we previously observed for convergence ratios (see section \ref{sec:ctx_perm_convergence}). Networks with lesser connectivity and a greater average path length lead to total convergence less often. Moreover, the simulation outcomes vary much more in comparison with the other configurations ($k>1$ and $networks \ge 3$).
+      \noindent Figure~\ref{fig:ctx_perm_kreg} shows us results qualitatively similar to what we
+      previously observed for convergence ratios (see section
+      \ref{sec:ctx_perm_convergence}). Networks with lesser connectivity and a greater average path
+      length lead to total convergence less often. The simulation outcomes also vary much more in
+      comparison with the other configurations ($k>1$ and $networks \ge 3$).
 
-Notice that for $k=3$ and $networks=3$ (\ref{fig:ctx_perm_kreg_1020304050}), we still have runs that deviate from what we consider the typical behaviour. Instead of disregarding this as a simple outlier, we show that this run allows us to gain an insight into the dynamics of our \textit{External Majority} consensus game.
+      Notice that for $k=3$ and $networks=3$ (\ref{fig:ctx_perm_kreg_1020304050}), we still have
+      runs that deviate from what we consider the typical behaviour. Instead of disregarding this as
+      an outlier, we explore this behaviour to better understand the dynamics of our
+      \textit{External Majority} consensus game.
 
-Before anything else, we analysed the network structure from this run and observed that there were no distinct differences between the network instances from the ``outlier run" and the ones of the ``typical" run. This suggested that this can be a property of the game itself --and of the network structure that leads to this situation -- and what happens is that the agents reach a state from which converging towards consensus is significantly harder. Villatoro \cite{Villatoro2013}  found that some complex network models lead consensus games to form metastable sub-conventions. These are very difficult to break and reaching 100\% agreement is not as straightforward as assumed by previous researchers. We are not concerned with this difficulty but rather with what happens in similar cases. Figure~\ref{fig:ctx_perm_kreg_runs} shows the consensus progression for two simulation runs a typical case and the outlier.
+      We analysed the network structure from this run and observed that there were \textit{no
+        distinct differences} between the network instances from the ``outlier run" and the ones of
+      the ``typical" run. This pointed to the consensus game itself as a possible cause for the
+      irregular behaviour -- not to the network structure --. What happens is that the agents reach
+      a state from which converging towards consensus is significantly harder. Villatoro
+      \cite{Villatoro2013} found that some complex network models lead consensus games to form
+      metastable sub-conventions. These are very difficult to break and reaching 100\% agreement is
+      not as straightforward as assumed by previous researchers. We are not concerned with this
+      difficulty, instead, we want to explore how to describe what happens in similar
+      cases. Figure~\ref{fig:ctx_perm_kreg_runs} shows the consensus progression for two simulation
+      runs a typical case and the outlier.
 
-\begin{figure}[H]
-	\centering
+      \begin{figure}[H]
+        \centering
 	\begin{subfigure}{.49\linewidth}
-		\centering
-		\includegraphics[width=1\linewidth]{"../analysis/pdf/context_permeability_simrun_kregular_k10_normal"}
-		\caption{Typical Run}
-		\label{fig:ctx_perm_kreg_run_normal}
+          \centering
+          \includegraphics[width=1\linewidth]{"../analysis/pdf/context_permeability_simrun_kregular_k10_normal"}
+          \caption{Typical Run}
+          \label{fig:ctx_perm_kreg_run_normal}
 	\end{subfigure}%
 	\begin{subfigure}{.49\linewidth}
-		\centering
-		\includegraphics[width=1\linewidth]{"../analysis/pdf/context_permeability_simrun_kregular_k10_outlier"}
-		\caption{Outlier Run}
-		\label{fig:ctx_perm_kreg_run_outlier}
+          \centering
+          \includegraphics[width=1\linewidth]{"../analysis/pdf/context_permeability_simrun_kregular_k10_outlier"}
+          \caption{Outlier Run}
+          \label{fig:ctx_perm_kreg_run_outlier}
 	\end{subfigure}
 	
 	\begin{minipage}{0.9\linewidth}
-		\vspace{0.2cm}
-		\caption{Number of agents with each opinion during a simulation run: typical run in \ref{fig:ctx_perm_kreg_run_normal} and ``outlier run" in \ref{fig:ctx_perm_kreg_run_outlier}.}
+          \vspace{0.2cm}
+          \caption{Number of agents with each opinion during a simulation run: typical run in
+            \ref{fig:ctx_perm_kreg_run_normal} and ``outlier run" in
+            \ref{fig:ctx_perm_kreg_run_outlier}.}
 		\label{fig:ctx_perm_kreg_runs}
-	\end{minipage}
-\end{figure}
+              \end{minipage}
+      \end{figure}
 
 
-\noindent In our case, we take the outlier in the configuration with $k=3$ and $networks=3$, and look at the memory that agents use in the consensus game. As we described previously, agents record the number of individuals encountered with each opinion value (two opinions in this case). We look at the average difference between the number of opinions observed for all the agents. We also look at the variance to see if the opinion observations evolve in an uniform fashion throughout the simulation. Figure~\ref{fig:ctx_perm_kreg_runs_diff} shows the average difference between opinion memory for the first 10 steps (which was when the simulation converged for the normal run).
+      \noindent We take the outlier in the configuration with $k=3$ and $networks=3$, and look at
+      the memory that agents use in the consensus game. As we described previously, agents record
+      the number of individuals encountered with each opinion value (two possible values in this
+      case). We look at the average difference between the number of values observed for all the
+      agents. We also look at the variance to find how the opinion observations evolve throughout
+      the simulation. Figure~\ref{fig:ctx_perm_kreg_runs_diff} shows the average difference between
+      opinion memory for the first 10 steps (which was when the simulation converged for the normal
+      run).
 
-\begin{figure}[H]
-	\centering
+      \begin{figure}[H]
+        \centering
 	\begin{subfigure}{1\linewidth}
-		\centering
-		\includegraphics[width=1\linewidth]{"../analysis/pdf/cp-regular-normal-run-memory-diff"}
-		\caption{Typical Run}
-		\label{fig:ctx_perm_kreg_run_normal_diff}
+          \centering
+          \includegraphics[width=1\linewidth]{"../analysis/pdf/cp-regular-normal-run-memory-diff"}
+          \caption{Typical Run}
+          \label{fig:ctx_perm_kreg_run_normal_diff}
 	\end{subfigure}%
 	\\
 	\begin{subfigure}{1\linewidth}
-		\centering
-		\includegraphics[width=1\linewidth]{"../analysis/pdf/cp-regular-outlier-run-memory-diff"}
-		\caption{Outlier Run}
-		\label{fig:ctx_perm_kreg_run_outlier_diff}
+          \centering
+          \includegraphics[width=1\linewidth]{"../analysis/pdf/cp-regular-outlier-run-memory-diff"}
+          \caption{Outlier Run}
+          \label{fig:ctx_perm_kreg_run_outlier_diff}
 	\end{subfigure}
 	
 	\begin{minipage}{0.9\linewidth}
-		\vspace{0.2cm}
-		\caption{Average and variance of the difference between opinions observed for the 100 agents: typical run in figure \ref{fig:ctx_perm_kreg_run_normal_diff} and first steps of the``outlier run" in figure \ref{fig:ctx_perm_kreg_run_outlier_diff}.}
+          \vspace{0.2cm}
+          \caption{Average and variance of the difference between opinions observed for the 100
+            agents: typical run in figure \ref{fig:ctx_perm_kreg_run_normal_diff} and first steps of
+            the``outlier run" in figure \ref{fig:ctx_perm_kreg_run_outlier_diff}.}
 		\label{fig:ctx_perm_kreg_runs_diff}
-	\end{minipage}
-\end{figure}
+              \end{minipage}
+      \end{figure}
 
-We can see that both the average difference in the opinion memory and the variance rise faster in the normal run than in the outlier run. This is not enough to establish that there is a significant difference between the two. Moreover, the memory differences are quite similar, but the number of agents for each opinion was quite even. This happens due to the position of agents in the network and their initial opinion values. These circumstances led the agents to a initial stability. Note that the opinion difference continues to rise throughout the simulation along with the variance. The variance starts to increase more rapidly after 200 steps. The exponential growth reveals that the convergence to consensus is not done evenly throughout the network, this is one of the reasons why consensus takes more time to be achieved. Also, the low variance in the first $200$ steps shows us that the opinion strength was evenly distributed --we have almost the same number of agents for each opinion but the memory differences are qualitatively the same for both opinions. As soon as this variance increases, one of the opinions breaks the stable state and the convergence towards global consensus begins. 
+      We can see that both the average difference in the opinion memory and the variance grow faster
+      in the normal run than in the outlier run. This is not enough to establish a significant
+      difference between the two. Moreover, the memory differences are quite similar, but the number
+      of agents for each opinion was quite even. This happens due to the position of agents in the
+      network and their initial opinion values. These circumstances led the agents to a initial
+      stability. Note that the opinion difference continues to rise throughout the simulation along
+      with the variance. The variance starts to increase more rapidly after 200 steps. The
+      exponential growth reveals that the convergence to consensus is not done evenly throughout the
+      network, this is one of the reasons why consensus takes more time to be achieved. Also, the
+      low variance in the first $200$ steps shows us that the opinion strength was evenly
+      distributed: we have almost the same number of agents for each opinion but the memory
+      differences are qualitatively the same for both opinions. As soon as this variance increases,
+      one of the opinions breaks the stable state and convergence towards global consensus begins.
 
-\begin{figure}[H]
+      \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\linewidth]{"../analysis/pdf/cp-regular-outlier-fullrun-memory-diff"}
 	\begin{minipage}{0.9\textwidth}
-		\caption{Average and variance of the difference between opinions observed for the 100 agents throughout the outlier run.}
-		\label{fig:ctx_perm_kreg_run_outlier_diff_full}
+          \caption{Average and variance of the difference between opinions observed for the 100
+            agents throughout the outlier run.}
+          \label{fig:ctx_perm_kreg_run_outlier_diff_full}
 	\end{minipage}
-\end{figure}
+      \end{figure}
 
-\noindent In other words, in some sections of the network, the agents converged towards one opinion and continue to reinforce each other (leading the opinion difference to grow) and the more regions converge, the faster the global convergence is.  
+      \noindent In other words, different neighbourhoods in the network lead to different opinion
+      observation configurations (possibly even creating self-reinforcing structures). Thus, the
+      influence of heterogeneous connectivity is reflected on the growth of opinion difference
+      variance.
 
-\begin{figure}[H]
-	\centering
+      \begin{figure}[H]
+        \centering
 	\begin{subfigure}{.49\linewidth}
-		\centering
-		\includegraphics[width=1\linewidth]{"../analysis/pdf/context_permeability_encounters_sf"}
-		\caption{}
-		\label{fig:ctx_perm_sf_full}
+          \centering
+          \includegraphics[width=1\linewidth]{"../analysis/pdf/context_permeability_encounters_sf"}
+          \caption{}
+          \label{fig:ctx_perm_sf_full}
 	\end{subfigure}%
 	\begin{subfigure}{.49\linewidth}
-		\centering
-		\includegraphics[width=1\linewidth]{"../analysis/pdf/context_permeability_encounters_sf_best"}
-		\caption{}
-		\label{fig:ctx_perm_sf_best}
+          \centering
+          \includegraphics[width=1\linewidth]{"../analysis/pdf/context_permeability_encounters_sf_best"}
+          \caption{}
+          \label{fig:ctx_perm_sf_best}
 	\end{subfigure}
 	\begin{minipage}{0.9\linewidth}
 		\vspace{0.2cm}
-		\caption{Number of meetings over 100 independent simulation runs for multiple \textit{scale-free} networks: with d=\{1,2,3,4,5\} (\ref{fig:ctx_perm_sf_full}) with a zoom on the best configurations in \ref{fig:ctx_perm_sf_best}.}
+		\caption{Number of meetings over 100 independent simulation runs for multiple
+                  \textit{scale-free} networks: with d=\{1,2,3,4,5\} (\ref{fig:ctx_perm_sf_full})
+                  with a zoom on the best configurations in \ref{fig:ctx_perm_sf_best}.}
 		\label{fig:ctx_perm_sf}
-	\end{minipage}
-\end{figure}
+              \end{minipage}
+      \end{figure}
 
 
-\noindent Figure~\ref{fig:ctx_perm_sf} shows the average number of encounters during 100 independent simulation runs for \textit{scale-free} networks. (We don't include the configuration for one network and $d = 1$ because, as we have seen in the convergence results, these never converge. The convergence ratio is very low for the configurations with one network $d = 2$ and 2 networks with $d = 1$; hence the high number of encounters~(see also table \ref{tab:scale-free_convergence}).
+      \noindent Figure~\ref{fig:ctx_perm_sf} shows the average number of encounters during 100
+      independent simulation runs for \textit{scale-free} networks. (We don't include the
+      configuration for one network and $d = 1$ because these never converge.) The convergence ratio
+      is very low for the configurations with one network $d = 2$ and 2 networks with $d = 1$; hence
+      the high number of encounters~(see also table \ref{tab:scale-free_convergence}).
 
-These results are similar to those of \textit{k-regular} in that adding more networks speeds up the convergence to consensus. The difference is that more ``atypical" runs occur with multiple \textit{scale-free} networks. Again, this is the effect of these types of topologies. As we discussed previously, in these less connected topologies, agents are more prone to be arranged in such a way that progression towards consensus is more difficult to attain, due to bottlenecks to regions in the network that converged to different opinion values. 
+      These results are similar to those of \textit{k-regular} in that adding more networks speeds
+      up the convergence to consensus. The difference is that more ``atypical" runs occur with
+      multiple \textit{scale-free} networks. Again, this is the effect of these types of
+      topologies. As we discussed previously, in these less connected topologies, agents are more
+      prone to be arranged in such a way that progression towards consensus is more difficult to
+      attain due to bottlenecks. Different regions in the network might converge towards different
+      opinion values.
 
+      \subsubsection{Heterogeneous Network Configuration}
+      \noindent We also performed experiments with mixed network topologies: we used one
+      \textit{scale-free} and one \textit{k-regular}
+      networks. Table~\ref{tab:regular_scale-free_convergence} shows the convergence ratio for the
+      heterogeneous network configuration with the multiple values for $d$ and $k$ for the
+      \textit{scale-free} and \textit{k-regular} respectively.
 
-
-\subsubsection{Heterogeneous Network Configuration}
-\noindent We also performed experiments where we mixed the network topologies: in this case we used one \textit{scale-free} and one \textit{k-regular} networks. Table~\ref{tab:regular_scale-free_convergence} shows the convergence ratio for the heterogeneous network configuration with the multiple values for $d$ and $k$ for the \textit{scale-free} and \textit{k-regular} respectively. 
-
-\begin{table}[H]
-	\centering
+      \begin{table}[H]
+        \centering
 	\begin{minipage}{0.9\textwidth}
-		\caption{Ratio of convergence to total consensus in 3000 independent runs with two networks: one \textit{k-regular} and one \textit{scale-free} network with different $k$ and $d$ values respectively.}	
-		\label{tab:regular_scale-free_convergence}
+          \caption{Ratio of convergence to total consensus in 3000 independent runs with two
+            networks: one \textit{k-regular} and one \textit{scale-free} network with different $k$
+            and $d$ values respectively.}
+          \label{tab:regular_scale-free_convergence}
 	\end{minipage}
 	\setlength{\tabcolsep}{.30000em}
 	\begin{tabular}{c|SSSSSSSSSS}
 		
-		\toprule
-		& \multicolumn{10}{c}{k} \\ 
-		d  & 1 & 2 & 3 & 4 & 5 & 10 & 20 & 30 & 40 & \multicolumn{1}{c}{50} \\ 
-		\midrule
-		1  & 0.18 & 0.47 & 0.55 & 0.67 & 0.61 & 0.76 & 0.77 & 0.81 & 0.75 & 0.82 \\
-		2  & 0.63 & 0.72 & 0.88 & 0.89 & 0.90 & 0.97 & 1.00 & 1.00 & 0.99 & 1.00 \\
-		3  & 0.77 & 0.86 & 0.87 & 0.97 & 0.98 & 0.99 & 0.98 & 0.99 & 1.00 & 1.00 \\
-		4  & 0.73 & 0.92 & 0.92 & 0.97 & 0.96 & 0.96 & 0.99 & 1.00 & 1.00 & 1.00 \\
-		5  & 0.87 & 0.85 & 0.94 & 0.94 & 0.98 & 0.99 & 1.00 & 1.00 & 1.00 & 1.00 \\
-		\bottomrule
+          \toprule
+          & \multicolumn{10}{c}{k} \\ 
+          d  & 1 & 2 & 3 & 4 & 5 & 10 & 20 & 30 & 40 & \multicolumn{1}{c}{50} \\ 
+          \midrule
+          1  & 0.18 & 0.47 & 0.55 & 0.67 & 0.61 & 0.76 & 0.77 & 0.81 & 0.75 & 0.82 \\
+          2  & 0.63 & 0.72 & 0.88 & 0.89 & 0.90 & 0.97 & 1.00 & 1.00 & 0.99 & 1.00 \\
+          3  & 0.77 & 0.86 & 0.87 & 0.97 & 0.98 & 0.99 & 0.98 & 0.99 & 1.00 & 1.00 \\
+          4  & 0.73 & 0.92 & 0.92 & 0.97 & 0.96 & 0.96 & 0.99 & 1.00 & 1.00 & 1.00 \\
+          5  & 0.87 & 0.85 & 0.94 & 0.94 & 0.98 & 0.99 & 1.00 & 1.00 & 1.00 & 1.00 \\
+          \bottomrule
 	\end{tabular}
-\end{table}
+      \end{table}
 
-\noindent One of the outcome differences between this configuration and the previous ones can be observed in the simulations with $d=1$ and $k=1$. The convergence ratio is higher than with $2$ $1-regular$ networks (see table \ref{tab:regular_convergence}) --but not better than two \textit{scale-free} networks. This happens because with $k=1$ the network is basically a ring and has the maximum possible average path length for a connected graph. Adding two rings improves  the convergence ratio but the underlying structure is still very susceptible to self-reinforcing structures (a connected sub-graph is basically a line). Adding a \textit{scale-free} changes this drastically as we are mixing tree-like network components with this first circle.
+      \noindent One of the differences between this configuration and the previous ones can be
+      observed in the simulations with $d=1$ and $k=1$. The convergence ratio is higher than with
+      $2$ $1-regular$ networks (see table \ref{tab:regular_convergence}) -- but not better than two
+      \textit{scale-free} networks. This happens because with $k=1$ the network is basically a ring
+      and has the maximum possible average path length for a connected graph. Adding two rings
+      improves the convergence ratio but the underlying structure is still very susceptible to
+      self-reinforcing structures (a connected sub-graph is basically a line). Adding a
+      \textit{scale-free} changes this drastically as we are mixing tree-like network components
+      with a ring.
 
 
-\begin{figure}[H]
-	\centering
+      \begin{figure}[H]
+        \centering
 	\begin{subfigure}{.49\linewidth}
-		\centering
-		\includegraphics[width=1\linewidth]{"../analysis/pdf/context_permeability_encounters_sfreg_k1020304050"}
-		\caption{}
-		\label{fig:ctx_perm_sfkreg_1020304050full}
+          \centering
+          \includegraphics[width=1\linewidth]{"../analysis/pdf/context_permeability_encounters_sfreg_k1020304050"}
+          \caption{}
+          \label{fig:ctx_perm_sfkreg_1020304050full}
 	\end{subfigure}%
 	\begin{subfigure}{.49\linewidth}
 		\centering
 		\includegraphics[width=1\linewidth]{"../analysis/pdf/context_permeability_encounters_sfreg_k1020304050_best"}
 		\caption{}
 		\label{fig:ctx_perm_sfkreg_1020304050best}
-	\end{subfigure}
-	\begin{minipage}{0.9\linewidth}
+              \end{subfigure}
+              \begin{minipage}{0.9\linewidth}
 		\vspace{0.2cm}
-		\caption{Number of meetings over 100 independent simulation runs for heterogeneous configuration: one \textit{k-regular} network with  $k=\{1,2,3,4,5\}$ and one \textit{scale-free} network with $d\{1,2,3,4,5\}$. Figure \ref{fig:ctx_perm_sfkreg_1020304050best} shows a zoom on the best configurations.}
+		\caption{Number of meetings over 100 independent simulation runs for heterogeneous
+                  configuration: one \textit{k-regular} network with $k=\{1,2,3,4,5\}$ and one
+                  \textit{scale-free} network with $d\{1,2,3,4,5\}$. Figure
+                  \ref{fig:ctx_perm_sfkreg_1020304050best} shows a zoom on the best configurations.}
 		\label{fig:ctx_perm_sfkreg}
-	\end{minipage}
-\end{figure}
+              \end{minipage}
+      \end{figure}
 
-Figure \ref{fig:ctx_perm_sfkreg} shows the results for the number of encounters necessary for the agents to achieve consensus. We focus on the \textit{k-regular} networks with higher values of $k$. We can see that with these two networks, the configurations with values of $d>=2$ for \textit{scale-free} networks produce drastically better results in terms of speed of convergence.
-
-The data for the average number of encounters, as well as the respective standard deviations referent to the results in figure \ref{fig:ctx_perm_sfkreg}, can be found in appendix \ref{append_ctx_permeability}, table \ref{append_tab:ctx_perm_kreg_sf_encounters}.
+      Figure \ref{fig:ctx_perm_sfkreg} shows the results for the number of encounters necessary for
+      the agents to achieve consensus. We focus on the \textit{k-regular} networks with higher
+      values of $k$. We can see that with these two networks, the configurations with values of
+      $d>=2$ for \textit{scale-free} networks produce drastically better results in terms of speed
+      of convergence. The data for the average number of encounters, as well as the respective
+      standard deviations referent to the results in figure \ref{fig:ctx_perm_sfkreg}, can be found
+      in appendix \ref{append_ctx_permeability}, table \ref{append_tab:ctx_perm_kreg_sf_encounters}.
 
 
 
