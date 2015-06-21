@@ -532,121 +532,182 @@
         from merging these structures -- and if/how they are comparable to the existing models
         --. The networks were produced by the \textit{b-have network library}
         \cite{Nunes:Software:11069}, exported to files, and analysed using the \textit{igraph R
-          package} \cite{igraph2006}.
+          package}~\cite{igraph2006}.
 
-\section{Results and Discussion}
-\label{sec:results-discussion}
+        \section{Results and Discussion}
+        \label{sec:results-discussion}
 
-% Overview
-\noindent In this section, we analyse and discuss the results for different experiments with both the
-context permeability and context switching models. We start by analysing the structural properties
-that arise from combining different networks while maintaining the same set of network nodes. We then perform multiple experiments where we observe the impact of different model configurations in the convergence to consensus. We correlate the outcomes of our context permeability model simulations with the structural properties of the multi-network structures. We also explore how the new dynamics introduced by the context switching model, affect the consensus building process. 
+        % Overview
+        \noindent In this section, we analyse and discuss the results for different experiments with
+        both the context permeability and context switching models. We start by analysing the
+        structural properties that arise from combining different networks. We then observe the
+        impact of different model configurations in the convergence to consensus. We correlate the
+        outcomes of our context permeability model simulations with the structural properties of the
+        multi-network structures. We also explore how the new dynamics introduced by the context
+        switching mechanism affects the consensus building process.
 
-\subsection{Overlapping Network Properties}
-\label{sec:network_properties}
-\noindent In this first analysis, we investigate the properties of different network topologies that we use in our models. 
-One of the parameters in some experiments is the number of networks in which the agents interact. Adding more networks means adding more connections. 
-We show that what is important is not just the the number of connections, but the properties the resulting structure displays when these networks are merged. The way we look at the network properties is as follows.
+        \subsection{Overlapping Network Properties}
+        \label{sec:network_properties}
+        \noindent In this first analysis, we investigate the properties of different network
+        topologies used in our models. One of the parameters in some experiments is the number of
+        networks in which the agents interact. Adding more networks implies the addition of more
+        connections. We show that what is important is \textit{not just} the the number of
+        connections, but the properties of the resulting structure (when we merge the networks). We
+        analyse the networks as follows.
 
-Each network is generated in such a way that the node positions are randomised. This means that we can have multiple networks with the same topology and yet, each node has a different neighbourhood on each network. Also, neighbourhoods do not necessarily overlap due to the node shuffling. Adding more networks to the social space is not the same as creating a single network with twice the number of connections. 
+        Each network is generated in such a way that the node indexes are randomised. This means
+        that we can have multiple networks with the same topology and each node can have different
+        neighbourhoods in different networks. Also, neighbourhoods do not necessarily overlap due to
+        the node shuffling. Adding more networks to the social space is not the same as creating a
+        single network with twice the number of connections.
 
-\noindent Consider figure \ref{fig:network_properties_merge_2_10regular}. We created two random k-regular networks with k=10 and merged them ignoring edges from common neighbours --in the simulation models this edge agglutination is not performed, we use it here for the purposes of network analysis. The common edges are highlighted in a different colour.
+        \noindent Consider figure \ref{fig:network_properties_merge_2_10regular}. We created two
+        random k-regular networks with k=10 and merged them ignoring edges from common neighbours.
+        (In the simulation models this edge agglutination is not performed, we use it here for the
+        purposes of network analysis.) Common edges are highlighted with a different colour.
 
-\begin{figure}
-	\centering
-	\includegraphics[width=1\linewidth]{"../analysis/pdf/network_properties_merge_2_10regular"}
-	\begin{minipage}{0.9\textwidth}
-		\caption{Overlapping of two k-regular networks, each with k=10.}
-		\label{fig:network_properties_merge_2_10regular}
-	\end{minipage}
-\end{figure}
+        \begin{figure}
+          \centering
+          \includegraphics[width=1\linewidth]{"../analysis/pdf/network_properties_merge_2_10regular"}
+          \begin{minipage}{0.9\textwidth}
+            \caption{Overlapping of two k-regular networks, each with k=10.}
+            \label{fig:network_properties_merge_2_10regular}
+          \end{minipage}
+        \end{figure}
 
-\begin{table}
-	\centering
-	\begin{minipage}{0.9\textwidth}
-		\caption{Properties for overlapping of two k-regular networks, each with k=10.}
-		\label{tab:network_properties_merge_2_10regular}
-	\end{minipage}
-	\begin{tabular}{lcccc}
-		& Nodes &  Edges & Clustering Coef.	  &  Avg. Path Length \\ 
-		\hline  10-regular 1 & 100 &  1,000  &  0.711 &  2.980 \\ 
-		\hline  10-regular 2 & 100 & 1,000 & 0.711 &  2.980 \\ 
-		\hline  Combined & 100 & 1,790  & 0.512 &  1.638 \\ 
-		\hline 20-regular & 100 & 2,000	& 0.731	& 1.788 \\
-		\hline 
-	\end{tabular} 
-\end{table}
+        \begin{table}
+          \centering
+          \begin{minipage}{0.9\textwidth}
+            \caption{Properties for overlapping of two k-regular networks, each with k=10.}
+            \label{tab:network_properties_merge_2_10regular}
+          \end{minipage}
+          \begin{tabular}{lcccc}
+            & Nodes &  Edges & Clustering Coef.	  &  Avg. Path Length \\ 
+            \hline  10-regular 1 & 100 &  1,000  &  0.711 &  2.980 \\ 
+            \hline  10-regular 2 & 100 & 1,000 & 0.711 &  2.980 \\ 
+            \hline  Combined & 100 & 1,790  & 0.512 &  1.638 \\ 
+            \hline 20-regular & 100 & 2,000	& 0.731	& 1.788 \\
+            \hline 
+          \end{tabular} 
+        \end{table}
 
-\begin{wrapfigure}[13]{r}{0.45\textwidth}
-	\includegraphics[width=1\linewidth]{"../analysis/pdf/network_properties_1_20regular"}
-	\begin{minipage}{0.7\linewidth}
-		\caption{Single k-regular network with k=20. (Kamada-Kawai layout)}
-		\label{fig:network_properties_1_20regular}
-	\end{minipage}
-\end{wrapfigure}
+        \begin{wrapfigure}[13]{r}{0.45\textwidth}
+          \includegraphics[width=1\linewidth]{"../analysis/pdf/network_properties_1_20regular"}
+          \begin{minipage}{0.7\linewidth}
+            \caption{Single k-regular network with k=20. (Kamada-Kawai layout)}
+            \label{fig:network_properties_1_20regular}
+          \end{minipage}
+        \end{wrapfigure}
 
-The networks are drawn using the \textit{Kamada-Kawai} Layout \cite{Kamada19897} which regards the desirable ``geometric'' (Euclidean) distance between two vertices in the drawing as the ``graph theoretic'' distance between them in the corresponding graph. We can see by the results of the layout in figure \ref{fig:network_properties_merge_2_10regular}, that the distance between nodes in the network has decreased, this is also confirmed by the reduced average path length of the combined networks (see table \ref{tab:network_properties_merge_2_10regular}). To illustrate our point we analysed one k-regular network with k = 20 (see figure \ref{fig:network_properties_1_20regular} --and the corresponding entry on table \ref{tab:network_properties_merge_2_10regular}). The clustering coefficient of a 20-regular network is approximately the same as the one of a 10-regular network (higher than the combination of 10-regular networks). The average path length also decreases as there are more connections between the nodes. As we will show, these properties may vary. Since the nodes are subjected to random permutations, we can generate different overlaps that lead to distinct structural values.
+        The networks are drawn using the \textit{Kamada-Kawai} Layout \cite{Kamada19897} which
+        treats the ``geometric'' (Euclidean) distance between two vertices in the drawing as the
+        ``graph theoretic'' distance between them in the corresponding graph. We can see by the
+        results of the layout in figure \ref{fig:network_properties_merge_2_10regular}, that the
+        distance between nodes in the network has decreased, this is also confirmed by the reduced
+        average path length of the combined networks (see table
+        \ref{tab:network_properties_merge_2_10regular}). To illustrate our point, we analysed one
+        k-regular network with k = 20 (see figure \ref{fig:network_properties_1_20regular} and the
+        corresponding entry on table \ref{tab:network_properties_merge_2_10regular}). The clustering
+        coefficient of a 20-regular network is approximately the same as the one of a 10-regular
+        network (higher than the combination of two 10-regular networks). The average path length
+        also decreases as there are more connections between previously distant nodes. As we will
+        show, these properties may vary due to the node indexes being subjected to random
+        permutations.
 
-Since we model the agent social space as a multitude of networks, we need to investigate the properties resulting from the merging of these networks. We do this empirically by taking the network instances used in the simulation and analysing the distribution of clustering coefficient and average path length for the different configurations.
+        Since we model the agent social space as a multitude of networks, we need to investigate the
+        properties resulting from the merging of these networks. We do this empirically by taking
+        the network instances used in the simulations, and analysing the distribution of clustering
+        coefficient and average path length for the different configurations.
 
-\subsubsection{Properties of Overlapping K-Regular Networks}
-\label{sec:overlapping_kreg}
-\noindent We will now investigate what kind of properties we can get from merging k-regular networks. First, we analysed the distribution for the average path length and the clustering coefficient values over 100 network instances with 100 nodes each. From a box plot preliminary analysis (see figures \ref{append_fig:network_properties_cc_kreg} and \ref{append_fig:network_properties_apl_kreg}), we can see that the average path length does not vary much for the 100 instances, as such, we use the average as a descriptor for different configurations of k values and number of overlapping networks. 
+        \subsubsection{Properties of Overlapping K-Regular Networks}
+        \label{sec:overlapping_kreg}
+        \noindent We will now investigate what kind of properties we can get from merging k-regular
+        networks. First, we analysed the distribution for the average path length and the clustering
+        coefficient values over 100 network instances (each with 100 nodes). From a box plot
+        preliminary analysis (see figures \ref{append_fig:network_properties_cc_kreg} and
+        \ref{append_fig:network_properties_apl_kreg}), we can see that the average path length does
+        not vary much for the 100 instances, as such, the average makes a good descriptor for these
+        properties.
 
-Figure~\ref{fig:network_properties_apl_line_kreg} shows the average value for the \textit{average path length} of 100 k-regular network instances, each with 100 nodes. We can see that the \textit{average path length} changes more drastically when we go from 1 to 2 networks. This is precisely the effect we can see in figure \ref{fig:network_properties_merge_2_10regular}. What we are seeing is that merging these networks at random effectively creates multiple shortcuts between points that were not connected in the original k-regular topology. Beyond this point, adding more networks does not modify this structural property in a significant way. Note that, since each network has 100 nodes, with $k=50$ the network is fully connected (hence the average path length being 1). 
+        Figure~\ref{fig:network_properties_apl_line_kreg} shows the average value for the
+        \textit{average path length} of 100 k-regular network instances (each with 100 nodes). We
+        can see that the \textit{average path length} changes more drastically when we go from 1 to
+        2 networks. This is precisely the effect we can see in figure
+        \ref{fig:network_properties_merge_2_10regular}. Merging these networks at random effectively
+        creates multiple shortcuts between points that were not connected in the original k-regular
+        topology. Beyond this point, adding more networks does not modify this structural property
+        in a significant way. Note that, since each network has 100 nodes, with $k=50$ the network
+        is fully connected (hence the average path length being 1).
 
-\begin{figure}[H]
-	\centering
-	\begin{subfigure}{.5\linewidth}
-		\centering
-		\includegraphics[width=1\linewidth]{"../analysis/pdf/network_properties_apl_line_kreg_12345"}
-		\caption{}
-		\label{fig:network_properties_apl_line_kreg_12345}
-	\end{subfigure}%
-	\begin{subfigure}{.5\linewidth}
-		\centering
-		\includegraphics[width=1\linewidth]{"../analysis/pdf/network_properties_apl_line_kreg_1020304050"}
-		\caption{}
-		\label{fig:network_properties_apl_line_kreg_1020304050}
-	\end{subfigure}
-	\begin{minipage}{0.9\textwidth}
-		\vspace{0.2cm}
-		\caption{Average value for the \textit{average path length} of 100 instances of overlapping k-regular networks (containing 100 nodes each) with k=\{1,2,3,4,5\}~(\ref{fig:network_properties_apl_line_kreg_12345}), and k= ~\{10,20,30,40,50\} (\ref{fig:network_properties_apl_line_kreg_1020304050}).}
+        \begin{figure}[H] \centering
+          \begin{subfigure}{.5\linewidth} \centering
+            \includegraphics[width=1\linewidth]{"../analysis/pdf/network_properties_apl_line_kreg_12345"}
+            \caption{}
+            \label{fig:network_properties_apl_line_kreg_12345}
+          \end{subfigure}%
+          \begin{subfigure}{.5\linewidth} \centering
+            \includegraphics[width=1\linewidth]{"../analysis/pdf/network_properties_apl_line_kreg_1020304050"}
+            \caption{}
+            \label{fig:network_properties_apl_line_kreg_1020304050}
+          \end{subfigure}
+     
+     \begin{minipage}{0.9\textwidth} \vspace{0.2cm}
+            \caption{Average value for the \textit{average path length} of 100 instances of
+              overlapping k-regular networks (containing 100 nodes each) with
+              k=\{1,2,3,4,5\}~(\ref{fig:network_properties_apl_line_kreg_12345}), and k=
+              ~\{10,20,30,40,50\} (\ref{fig:network_properties_apl_line_kreg_1020304050}).}
 		\label{fig:network_properties_apl_line_kreg}
-	\end{minipage}
-\end{figure}
+              \end{minipage}
 
-\noindent Figure~\ref{fig:network_properties_cc_line_kreg} shows the results for the average \textit{clustering coefficient} of 100 instances of overlapping k-regular networks. We can see that adding multiple networks changes the clustering coefficient of the resulting structure. For $k \le 20$, the clustering coefficient drops when we add a second network. This happens because when we merge these networks, their connectivity is not high enough to generate shortcuts with tightly clustered neighbourhoods. The clustering coefficient is computed by taking the average local clustering coefficient of each node in the network. An initial highly clustered k-regular network (with all the nodes having the same structure) is affected when you modify the node neighbourhoods in such a way that some are more clustered than others.
+        \end{figure}
 
-\begin{figure}[H]
-	\centering
-	\begin{subfigure}{.5\linewidth}
+        \noindent Figure~\ref{fig:network_properties_cc_line_kreg} shows the results for the average
+        \textit{clustering coefficient} of 100 instances of overlapping k-regular networks. Adding
+        multiple networks changes the clustering coefficient of the resulting structure. For
+        $k \le 20$, the clustering coefficient drops when we add a second network. This happens
+        because when we merge these networks, their connectivity is not high enough to generate
+        shortcuts with tightly clustered neighbourhoods. The clustering coefficient is computed by
+        taking the average local clustering coefficient of each node in the network. An initial
+        highly clustered k-regular network (with all the nodes having the same structure) is
+        affected when you modify the node neighbourhoods in such a way that some are more clustered
+        than others. Networks with $k=1$ have a ring-like structure, so there are no nodes forming a
+        clique\footnote{A clique is a group of nodes such that every two nodes are connected by an
+          edge.} with their neighbours.
+
+        \begin{figure}[H]
+          \centering
+          \begin{subfigure}{.5\linewidth}
 		\centering
 		\includegraphics[width=1\linewidth]{"../analysis/pdf/network_properties_cc_line_kreg_12345"}
 		\caption{}
 		\label{fig:network_properties_cc_line_kreg_12345}
-	\end{subfigure}%
-	\begin{subfigure}{.5\linewidth}
+              \end{subfigure}%
+              \begin{subfigure}{.5\linewidth}
 		\centering
 		\includegraphics[width=1\linewidth]{"../analysis/pdf/network_properties_cc_line_kreg_1020304050"}
 		\caption{}
 		\label{fig:network_properties_cc_line_kreg_1020304050}
-	\end{subfigure}
-	\begin{minipage}{0.9\textwidth}
+              \end{subfigure}
+              \begin{minipage}{0.9\textwidth}
 		\vspace{0.2cm}
 		\caption{Average value for the \textit{clustering coefficient} of 100 instances of overlapping k-regular networks (containing 100 nodes each) with ~k=\{1,2,3,4,5\}~(\ref{fig:network_properties_cc_line_kreg_12345}), and  k = \{10,20,30,40,50\} (\ref{fig:network_properties_cc_line_kreg_1020304050}).}
 		\label{fig:network_properties_cc_line_kreg}
-	\end{minipage}
-\end{figure}
+              \end{minipage}
+        \end{figure}
 
-The exception is when you merge networks with $k=1$. These have a ring-like structure, so there are no nodes forming a clique\footnote{A clique is a group of nodes such that every two nodes are connected by an edge.} with their neighbours. 
+        \subsubsection{Properties of Overlapping Scale-free Networks}
+        \noindent We also looked at the properties that result from merging scale-free networks (see
+        figure \ref{append_fig:network_properties_sf}). Like the previous results, the properties
+        don't vary much between the 100 different instances. We can then say that specific
+        configurations display a specific \textit{average path length} and \textit{clustering
+          coefficient} both for \textit{k-regular} networks and \textit{scale-free} networks. We
+        plotted the average of the \textit{average path length} (figure
+        \ref{fig:network_properties_apl_line_sf_12345}) and \textit{clustering coefficient} (figure
+        \ref{append_fig:network_properties_cc_sf_12345}) for each overlapping network configuration.
 
-\subsubsection{Properties of Overlapping Scale-free Networks}
-\noindent In a preliminary analysis we looked at the distribution of property values that results from merging scale-free networks (see figure \ref{append_fig:network_properties_sf}). Like in the previous results, the properties don't vary much between the 100 different instances of each overlapping network configuration. We can then say that specific configurations display a specific \textit{average path length} and \textit{clustering coefficient} both for \textit{k-regular} networks and \textit{scale-free} networks. Since the average of these measures is still a good descriptor, we plotted the average of the \textit{average path length} (figure \ref{fig:network_properties_apl_line_sf_12345}) and \textit{clustering coefficient} (figure \ref{append_fig:network_properties_cc_sf_12345}) for each overlapping network configuration.
-
-\begin{figure}[H]
-	\centering
-	\begin{subfigure}{.5\linewidth}
+        \begin{figure}[H]
+          \centering
+          \begin{subfigure}{.5\linewidth}
 		\centering
 		\includegraphics[width=1\linewidth]{"../analysis/pdf/network_properties_apl_line_sf_12345"}
 		\caption{}
@@ -663,73 +724,119 @@ The exception is when you merge networks with $k=1$. These have a ring-like stru
 		\caption{Average value for the \textit{average path length} (\ref{append_fig:network_properties_apl_sf_12345}) and \textit{clustering coefficient} (\ref{append_fig:network_properties_cc_sf_12345}) for 100 instances of overlapping \textit{scale-free} networks (containing 100 nodes each).}
 		\label{fig:network_properties_line_sf}
 	\end{minipage}
-\end{figure}
+        \end{figure}
 
-The parameter $d$ in figure \ref{fig:network_properties_line_sf} dictates how many edges are added by preferential attachment (see section\ref{sec:exp-setup_network_models}) each time a new node is added to a network (during its construction). This means that for $d=1$, the resulting network is a \textit{forest}: a network composed of disjoint tree graphs. Figure~\ref{fig:network_properties_apl_line_sf_12345} shows us that the \textit{average path length} still decreases consistently when we add more networks. One of the characteristics of \textit{scale-free} networks is its short average  path length, thus, for $d \ge 2$ we can see that adding more edges does not make so much difference. Scale-free networks also have a reduced \textit{clustering coefficient} which is evident in figure \ref{fig:network_properties_cc_line_sf_12345}. This is increased when we merge more networks.
+        The parameter $d$ (figure \ref{fig:network_properties_line_sf}) dictates how many edges are
+        added by preferential attachment (see section\ref{sec:exp-setup_network_models}). For $d=1$,
+        the resulting network is a \textit{forest}: a network composed of disjoint tree
+        graphs. Figure~\ref{fig:network_properties_apl_line_sf_12345} shows us that the
+        \textit{average path length} still decreases consistently when we add more networks. One of
+        the characteristics of \textit{scale-free} networks is its short average path length, thus,
+        for $d \ge 2$, adding more edges does not make a significant difference. Scale-free networks
+        also have a reduced \textit{clustering coefficient} (see figure
+        \ref{fig:network_properties_cc_line_sf_12345}). When we add more networks the
+        \textit{clustering coefficient} increases.
 
+        \subsubsection{Merging K-Regular with Scale-Free Networks}
+        \noindent Finally, we look at what happens when we merge k-regular networks with
+        \textit{scale-free} networks. We didn't make an exhaustive analysis for this configuration,
+        but we show what is the resulting structure of such merging. You can see in figure
+        \ref{fig:network_properties_merge_regular_scale-free} that this results in a network with a
+        lower \textit{average path length} due to the shortcuts created by the \textit{scale-free}
+        network. It is also less dense than the structure with two 10-regular networks (figure
+        \ref{fig:network_properties_merge_2_10regular}). We consider only the merging of two
+        networks.
 
-\subsubsection{Merging K-Regular with Scale-Free Networks}
-\noindent Finally, we look at what happens when we merge k-regular networks with \textit{scale-free} networks. We didn't make an exhaustive analysis for this configuration, but we show what is the resulting structure of such merging. You can see in figure \ref{fig:network_properties_merge_regular_scale-free} that this results in a network with a lower \textit{average path length} due to the shortcuts created by the \textit{scale-free} network. It is also less dense than the structure with two 10-regular networks (figure \ref{fig:network_properties_merge_2_10regular}). In this analysis we consider only the merging of two networks.
+        \begin{figure}[H]
+          \centering
+          \includegraphics[width=1\linewidth]{"../analysis/pdf/network_properties_10regular_2scale-free"}
+          \begin{minipage}{0.9\textwidth}
+            \caption{Overlapping of a 10-regular with a \textit{scale-free} network with D=2.}
+            \label{fig:network_properties_merge_regular_scale-free}
+          \end{minipage}
+        \end{figure}
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=1\linewidth]{"../analysis/pdf/network_properties_10regular_2scale-free"}
-	\begin{minipage}{0.9\textwidth}
-		\caption{Overlapping of a 10-regular with a \textit{scale-free} network with D=2.}
-		\label{fig:network_properties_merge_regular_scale-free}
-	\end{minipage}
-\end{figure}
+        \begin{figure}[H]
+          \centering
+          \begin{subfigure}{.5\linewidth}
+            \centering
+            \includegraphics[width=1\linewidth]{"../analysis/pdf/network_properties_apl_line_sf_kreg_12345"}
+            \caption{}
+            \label{fig:network_properties_apl_line_sf_kreg_12345}
+          \end{subfigure}%
+          \begin{subfigure}{.5\linewidth}
+            \centering
+            \includegraphics[width=1\linewidth]{"../analysis/pdf/network_properties_apl_line_sf_kreg_1020304050"}
+            \caption{}
+            \label{fig:network_properties_apl_line_sf_kreg_1020304050}
+          \end{subfigure}
+          \begin{minipage}{0.9\textwidth}
+            \vspace{0.2cm}
+            \caption{Average \textit{average path length} for 100 instances of heterogeneous network
+              configurations: one \textit{scale-free} with $d=\{1,2,3,4,5\}$ and one
+              \textit{k-regular} network with $k=\{1,2,3,4,5\}$
+              (\ref{fig:network_properties_apl_line_sf_kreg_12345}) and $k=\{10,20,30,40,50\}$
+              (\ref{fig:network_properties_apl_line_sf_kreg_1020304050}). (See the respective box
+              plots in the appendix: figure \ref{append_fig:network_properties_apl_sf_kreg}).}
+            \label{fig:network_properties_line_apl_sf_kreg}
+          \end{minipage}
+        \end{figure}
 
-\begin{figure}[H]
-	\centering
-	\begin{subfigure}{.5\linewidth}
-		\centering
-		\includegraphics[width=1\linewidth]{"../analysis/pdf/network_properties_apl_line_sf_kreg_12345"}
-		\caption{}
-		\label{fig:network_properties_apl_line_sf_kreg_12345}
-	\end{subfigure}%
-	\begin{subfigure}{.5\linewidth}
-		\centering
-		\includegraphics[width=1\linewidth]{"../analysis/pdf/network_properties_apl_line_sf_kreg_1020304050"}
-		\caption{}
-		\label{fig:network_properties_apl_line_sf_kreg_1020304050}
-	\end{subfigure}
-	\begin{minipage}{0.9\textwidth}
-		\vspace{0.2cm}
-		\caption{Average \textit{average path  length} for 100 instances of heterogeneous network configurations:  one \textit{scale-free} with $d=\{1,2,3,4,5\}$ and one \textit{k-regular} network with $k=\{1,2,3,4,5\}$ (\ref{fig:network_properties_apl_line_sf_kreg_12345}) and $k=\{10,20,30,40,50\}$ (\ref{fig:network_properties_apl_line_sf_kreg_1020304050}). (See the respective box plots in the appendix: figure \ref{append_fig:network_properties_apl_sf_kreg}).}
-		\label{fig:network_properties_line_apl_sf_kreg}
-	\end{minipage}
-\end{figure}
+        Figure \ref{fig:network_properties_line_apl_sf_kreg} shows the \textit{average path length}
+        of 100 independently generated instances of combinations of one \textit{k-regular} network
+        and one \textit{scale-free} network with different values $k$ and $d$ respectively. For
+        configurations where the \textit{k-regular} networks have low values of $k$ (figure
+        \ref{fig:network_properties_apl_line_sf_kreg_12345}), adding a \textit{scale-free} network
+        always decreases the \textit{average path length}. Moreover, the higher the $d$, the lower
+        the path length (as more connections are formed between different nodes). With higher values
+        of $k$ (figure \ref{fig:network_properties_apl_line_sf_kreg_1020304050}) however, increasing
+        the value of $d$ does not decrease the \textit{average path length}. This is not surprising
+        given the level of connectivity of this structure. The first network is already highly dense
+        and connected, so adding a few extra connections doesn't matter; what does matter is that we
+        have a scale-free network creating shortcuts between nodes that were not previously
+        connected.
 
-Figure \ref{fig:network_properties_line_apl_sf_kreg} shows the \textit{average path length} of 100 independently generated instances of combinations of one \textit{k-regular} network and one \textit{scale-free} network with different values $k$ and $d$, respectively. We can see that for configurations where the \textit{k-regular} networks have low values of $k$ (figure \ref{fig:network_properties_apl_line_sf_kreg_12345}), adding a \textit{scale-free} network always decreases the \textit{average path length}. Moreover, the higher the $d$, the lower the path length, as more connections are formed between different nodes. With higher values of $k$ (figure \ref{fig:network_properties_apl_line_sf_kreg_1020304050}) however, increasing the value of $d$ does not decrease the \textit{average path length}. This is not surprising given that with that level of connectivity, having a more connected \textit{scale-free} network does not make such an impact. The first network is already highly dense and connected, so adding a few extra connections doesn't matter --what does matter in this case is that there is a scale-free network creating the extra shortcuts between nodes that were not connected before.
-
-\begin{figure}[H]
-	\centering
-	\begin{subfigure}{.5\linewidth}
-		\centering
-		\includegraphics[width=1\linewidth]{"../analysis/pdf/network_properties_cc_line_sf_kreg_12345"}
-		\caption{}
-		\label{fig:network_properties_cc_line_sf_kreg_12345}
-	\end{subfigure}%
-	\begin{subfigure}{.5\linewidth}
-		\centering
-		\includegraphics[width=1\linewidth]{"../analysis/pdf/network_properties_cc_line_sf_kreg_1020304050"}
-		\caption{}
-		\label{fig:network_properties_cc_line_sf_kreg_1020304050}
-	\end{subfigure}
-	\begin{minipage}{0.9\textwidth}
-		\vspace{0.2cm}
-		\caption{Average \textit{clustering coefficient} for 100 instances of heterogeneous network configurations:  one \textit{scale-free} with $d=\{1,2,3,4,5\}$ and one \textit{k-regular} network with $k=\{1,2,3,4,5\}$  (\ref{append_fig:network_properties_cc_sf_12345}) and $k=\{10,20,30,40,50\} $ (See the respective box plots in the appending: figure\ref{append_fig:network_properties_cc_sf_kreg}).}
+        \begin{figure}[H]
+          \centering
+          \begin{subfigure}{.5\linewidth}
+            \centering
+            \includegraphics[width=1\linewidth]{"../analysis/pdf/network_properties_cc_line_sf_kreg_12345"}
+            \caption{}
+            \label{fig:network_properties_cc_line_sf_kreg_12345}
+          \end{subfigure}%
+          \begin{subfigure}{.5\linewidth}
+            \centering
+            \includegraphics[width=1\linewidth]{"../analysis/pdf/network_properties_cc_line_sf_kreg_1020304050"}
+            \caption{}
+            \label{fig:network_properties_cc_line_sf_kreg_1020304050}
+          \end{subfigure}
+          \begin{minipage}{0.9\textwidth}
+            \vspace{0.2cm}
+            \caption{Average \textit{clustering coefficient} for 100 instances of heterogeneous
+              network configurations: one \textit{scale-free} with $d=\{1,2,3,4,5\}$ and one
+              \textit{k-regular} network with $k=\{1,2,3,4,5\}$
+              (\ref{append_fig:network_properties_cc_sf_12345}) and $k=\{10,20,30,40,50\} $ (See the
+              respective box plots in the appending:
+              figure\ref{append_fig:network_properties_cc_sf_kreg}).}
 		\label{fig:network_properties_line_cc_sf_kreg}
-	\end{minipage}
-\end{figure}
+              \end{minipage}
+        \end{figure}
 
-\noindent Figure \ref{fig:network_properties_line_cc_sf_kreg} shows the results for the \textit{clustering coefficient}. These are similar to the results we get for \textit{k-regular} networks (see figure \ref{fig:network_properties_cc_line_kreg}). The difference is that we are not adding more networks but rather increasing the parameter $d$ of the scale-free. Curiously, in this case, the effects are qualitatively similar with the ones of merged \textit{k-regular} network with low value of $k$. With high values of $k$ (figure \ref{fig:network_properties_cc_line_sf_kreg_1020304050}) we can see that higher values of $d$ are not enough to make the network more clustered. This happens because scale-free networks are more sparse and have a very low number of triangles between nodes.
+        \noindent Figure \ref{fig:network_properties_line_cc_sf_kreg} shows the results for the
+        \textit{clustering coefficient}. These are similar to the results we get for
+        \textit{k-regular} networks (see figure \ref{fig:network_properties_cc_line_kreg}). The
+        difference is that we are not adding more networks but rather increasing the parameter $d$
+        of the scale-free (number of connections added by preferential attachment for each
+        note). In this case, the effects are qualitatively similar with the ones of merged
+        \textit{k-regular} network with low value of $k$. In contrast, for high values of $k$
+        (figure \ref{fig:network_properties_cc_line_sf_kreg_1020304050}), a higher value of $d$ is
+        not enough to make the network more clustered. This happens because scale-free networks are
+        more sparse and have a very low number of triangles between nodes.
 
-%***************************************************
-%	Context Permeability 
-%***************************************************
-\subsection{Context Permeability}
+        % *************************************************** 
+        %           Context Permeability
+        % ***************************************************
+        \subsection{Context Permeability}
 \label{sec:results:context_permeability}
 
 \noindent In this section, we discuss the results for various sets of experiments on the first model we presented --the \textit{context permeability model} \cite{Antunes2007,Antunes2010}. In a first set of experiments, the agent space was structured using \textit{k-regular} and \textit{scale-free }social networks. Each network layer was configured with the same topology. We analyse the context permeability model in terms of convergence to consensus: the ratio of simulations that converged to total consensus over 3000 runs; and how many agent encounters were needed for this to happen. 
