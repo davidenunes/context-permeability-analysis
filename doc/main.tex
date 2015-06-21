@@ -1482,30 +1482,67 @@
       % ******************************************
       \section{Conclusions}
       \label{sec:conclusion-future}
-\noindent In this article, we analysed and discussed our modelling framework for multi-relational models of social spaces. These results show that not only contexts play an important role in the dissemination of consensus in artificial agent societies, but also that simple mechanisms can generate a great deal of complexity, especially in those scenarios where conventions are being co-learned by multiple agents. Adding more networks to our opinion dynamics model leads to outcomes where consensus was achieved not only more often but also faster. In particular, our results show that achieving convergence (i.e.\ total consensus in a network) is not a matter of connectivity. With scale-free networks we managed to achieve consensus more often and quicker than with less clustered networks. This conclusion is especially important for application with real world social phenomena, many times represented with such networks: full dissemination of a phenomenon (say, gossip-dissemination of a new anti-virus software) may prove impossible with one network only, but is very much eased up by the use of concomitant connections. Moreover, some of the techniques we have rehearsed have proven to speed up even more this now-eased up convergence.
+      \noindent In this article, we analysed and discussed our modelling framework for
+      multi-relational models of social spaces. These results show that not only contexts play an
+      important role in the dissemination of consensus in artificial agent societies, but also that
+      simple mechanisms can generate a great deal of complexity (especially in those scenarios where
+      conventions are being co-learned by multiple agents). Adding more networks to our opinion
+      dynamics model leads to outcomes where consensus was achieved not only more often but also
+      faster. In particular, our results show that achieving convergence (i.e. total consensus in a
+      network) is not a matter of connectivity. With scale-free networks we managed to achieve
+      consensus more often and quicker than with less clustered networks. This conclusion is
+      especially important for application (or models) dealing with real-world social phenomena,
+      many times represented with such networks.
 
-The second innovation presented in this article was the fact that our model describes an abstract way to represent the time spent on each network using the switching probability. This temporal component introduces a new dynamic to the study of opinion dynamics. Considering that in agent neighbourhoods, agents might not be available at all times and spend distinct amounts of time in different neighbourhoods, is an important factor to be included in some simulations from a modelling perspective. 
+      The second innovation presented in this article was the fact that our model describes an
+      abstract way to represent the time spent on each network using the switching probability. This
+      temporal component introduces a new dynamic to the study of opinion dynamics. Considering that
+      in agent neighbourhoods, agents might not be available at all times -- and spend different
+      amounts of time in different neighbourhoods--, this is an important factor to be included in
+      simulation models (either representing real-world systems with different levels of
+      abstraction, or artificial agent societies for particular applications).
 
-Future work includes the analysis of different complex network models. While \textit{k-regular} and \textit{scale-free} networks are two of the most pervasive network examples in these types of simulations, there has been a growing number of models with different properties inspired by real-world phenomena that can be considered. We can also analyse the networks according to different properties such as the present of nodes with high centrality in the network (hubs). Moreover, we  plan to apply what we learned with our consensus games to cooperation problems. Constructing agents that can learn both behaviour and coordination procedures is a difficult task especially when working with large distributed artificial societies. Consensus games such as this one can be used to reduce the search space in problems where agents need to cooperate or coordinate.
+      Future work includes the analysis of different complex network models. While
+      \textit{k-regular} and \textit{scale-free} networks are two of the most pervasive network
+      examples in social simulation, there has been a growing number of models with different
+      properties inspired by real-world phenomena that can be considered. We will also analyse the
+      networks according to different properties such as betweeness centrality of certain
+      nodes. Moreover, we plan to apply what we learned with our consensus games to cooperation
+      problems. Constructing agents that can learn both behaviour and coordination procedures is a
+      difficult task (especially when working with large distributed artificial
+      societies). Consensus games such as this one can be used to reduce the search space in
+      problems where agents need to cooperate or coordinate in a decentralised fashion.
 
-Note that while the convergence and number of encounters seem to be correlated with the average path length, as we have seen previously, this might not be the only property that plays a role in faster convergence to consensus. Correlation is just an informal tool to helps us assert if some monotonic relationship exists. More research is needed to assert, for instance, if self-reinforced structures like the ones reported by \cite{Villatoro2013} exist in our multi-network scenarios. In particular we would be interested to see if permeability mitigates the effects of such structures.
+      While the convergence and number of encounters seem to be correlated with the average path
+      length, this might not be the only property that plays a role in faster convergence to
+      consensus. Correlation is just an informal tool that helps us assert if some monotonic
+      relationship exists. More research is needed to find out, for instance, if self-reinforced
+      structures --like the ones reported by \cite{Villatoro2013}-- exist in our multi-network
+      structures. In particular, we are interested in finding out if permeability mitigates the
+      effects of such phenomenon.
 
-We have seen that context permeability by context overlapping or switching can provide a fairly straightforward modelling methodology that can be used to compose simulation scenarios for more complex social spaces. What remains to be done is to identify more precise contextual structures in real-world networks. While capturing the structure of real social network can be a daunting task, we do have pervasive records of networking activity between social actors: online social networks. Analysing these can lead us to insights about complex structural properties that emerge from user activity, and context that can be identified within those networks. A difficult --but not impossible-- prospect for further research would be to track similar contexts between different real online social networks.
+      We have seen that context permeability by context overlapping or switching can provide a
+      fairly straightforward modelling methodology. This can be used to compose simulation scenarios
+      for more complex social spaces. What remains to be done is to identify more precise contextual
+      structures in real-world networks. While capturing the structure of real social network can be
+      a daunting task, we do have pervasive records of networking activity between social actors:
+      online social networks. Analysing these can lead us to insights about complex structural
+      properties that emerge from user activity, and contexts that can be identified within those
+      networks. A difficult --but not impossible-- prospect for further research would be to track
+      similar contexts between different real online social networks.
 
-\section*{Acknowledgements}
-\noindent This work was supported by the Funda\c{c}\~ao para a Ci\^encia e a Tecnologia under the grant SFRH / BD / 86034 / 2012.
+      \section*{Acknowledgements}
+      \noindent This work was supported by the Funda\c{c}\~ao para a Ci\^encia e a Tecnologia under
+      the grant SFRH / BD / 86034 / 2012.
 
-\newpage
-\begin{appendices}
+      \newpage
+      \begin{appendices}
 	\include{appendix}
-\end{appendices}
+      \end{appendices}
 
 
-\bibliographystyle{elsarticle-num}
-\bibliography{main}
-
-
-
+      \bibliographystyle{elsarticle-num} 
+      \bibliography{main}
 
 \end{document}
 
