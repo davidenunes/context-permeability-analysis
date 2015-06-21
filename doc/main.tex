@@ -1214,182 +1214,274 @@
       in appendix \ref{append_ctx_permeability}, table \ref{append_tab:ctx_perm_kreg_sf_encounters}.
 
 
+      % ***************************************************
+      % Context Switching
+      % ***************************************************
+      
+      \subsection{Context Switching}
+      \noindent In this section, we present the results relative to the context switching model. The
+      difference between this model and the previous one is that the agents no longer interact in
+      multiple networks at the same time (being able to select any neighbour at a given simulation
+      step). In this model, they become active in a single network at a time. Agents can switch to a
+      different network at the end of each step. The switching mechanism uses a probability
+      associated with each network. With this new idea of swapping contexts, we covered some space
+      left undeveloped in Antunes and colleagues original work \cite{Antunes2007,Antunes2010}.
 
-\subsection{Context Switching}
-\noindent In this section, we present the results relative to the context switching model. The difference between this model and the previous one is that the agents no longer interact in the multiple networks at the same time (being able to select any neighbour at a given simulation step). In this model, they become active in a single network at a time. Agents can switch to a different network at the end of each step. The switching mechanism uses a probability associated with the current network in which the agent is currently active. With this new idea of swapping contexts, we covered some space left undeveloped in Antunes and colleagues original work \cite{Antunes2007,Antunes2010}. 
+      As we discussed in section \ref{sec:models_cs} (see model \ref{model:context_switching}), the
+      switching probability dictates the frequency with which an agent switches \textit{from} the
+      current network \textit{after} an encounter has been performed. In an abstract manner, this
+      allows us to model how much time agents spend on each network. A further development of this
+      model will be to assign different preferences to different networks for each agent. This can
+      help us model phenomena such as real-world agents that dedicate more or less time consuming
+      content from different social networks. For now, we attribute this probability to the network
+      to restrain the model complexity.
 
-As we discussed previously in section \ref{sec:models_cs} (see model \ref{model:context_switching}), the switching probability dictates the frequency with which an agent switches \textit{from} the current network after an encounter has been performed. In an abstract manner, this allows us to model how much time agents spend on each network. A further development of this model will be to assign different preferences to different networks for each agent. This can help us model phenomena such as real-world agents that dedicate more or less time consuming content from different social networks. For now, we attribute this probability to the network to restrain the model complexity.
 
+      \subsubsection{Exploring the Switching Probability}
+      \noindent We first look at the influence of the new parameter (switching probability) in the
+      convergence to consensus. We span the switching probability between $0$ and $1$ in intervals
+      of $0.05$. We do this for 2 networks with \textit{k-regular} and \textit{scale-free}
+      topologies. Figure \ref{fig:ctx_cs_2_kregular} shows the results for two \textit{k-regular}
+      networks: one configuration with $k = 10$ and one configuration with $k = 30$. We use these
+      two configurations to study the relationship between the number of encounters, the switching
+      probability parameter, and the connectivity of the networks. Remember that with $k=30$ the
+      average path length is also lower (section \ref{sec:overlapping_kreg}).
 
-\subsubsection{Exploring the Switching Probability}
-\noindent We first look at the influence of the new parameter (switching probability) in the convergence to consensus. We span the switching probability between $0$ and $1$ in intervals of $0.05$. We do this for 2 networks with \textit{k-regular} and \textit{scale-free} topologies. Figure \ref{fig:ctx_cs_2_kregular} shows the results for two \textit{k-regular} networks: one configuration with $k = 10$ and one configuration with $k = 30$. We use these two configurations to observe the relationship between the number of encounters to achieve consensus, the switching probability parameter and the connectivity of the networks. Remember that with $k=30$ the average path length is also lower (see section \ref{sec:overlapping_kreg}). 
-
-\begin{figure}[H]
-	\centering
+      \begin{figure}[H]
+        \centering
 	\begin{subfigure}{0.49\linewidth}
-		\centering
-		\includegraphics[width=1\linewidth]{"../analysis/pdf/context_switching_2_10_regular_switching_contour"}
-		\caption{10-regular Networks}
-		\label{fig:ctx_cs_2_10kreg}
+          \centering
+          \includegraphics[width=1\linewidth]{"../analysis/pdf/context_switching_2_10_regular_switching_contour"}
+          \caption{10-regular Networks}
+          \label{fig:ctx_cs_2_10kreg}
 	\end{subfigure}%
 	\begin{subfigure}{0.49\linewidth}
-		\centering
-		\includegraphics[width=1\linewidth]{"../analysis/pdf/context_switching_2_30_regular_switching_contour"}
-		\caption{30-regular Networks}
-		\label{fig:ctx_cs_2_30kreg}
+          \centering
+          \includegraphics[width=1\linewidth]{"../analysis/pdf/context_switching_2_30_regular_switching_contour"}
+          \caption{30-regular Networks}
+          \label{fig:ctx_cs_2_30kreg}
 	\end{subfigure}
 	
 	\begin{minipage}{0.9\linewidth}
-		\vspace{0.2cm}
-		\caption{Contour plot for the average number of meets during a simulation for 100 independent runs: 2 \textit{10-regular} networks (\ref{fig:ctx_cs_2_10kreg}) and \textit{30-regular} networks (\ref{fig:ctx_cs_2_30kreg}). See the perspective plots in appendix \ref{append_ctx_switching}.}
-		\label{fig:ctx_cs_2_kregular}
+          \vspace{0.2cm}
+          \caption{Contour plot for the average number of meets during a simulation for 100
+            independent runs: 2 \textit{10-regular} networks (\ref{fig:ctx_cs_2_10kreg}) and
+            \textit{30-regular} networks (\ref{fig:ctx_cs_2_30kreg}). See the perspective plots in
+            appendix \ref{append_ctx_switching}.}
+          \label{fig:ctx_cs_2_kregular}
 	\end{minipage}
-\end{figure}
+      \end{figure}
 
-\noindent We note that with smaller values of $k$, symmetry in the context switching probability is more important (having the same probability in both networks) if the agent switches less from one of them. This is the case because switching less from one network means spending more time in that network. This means that switching more from the other network can be disruptive to a neighbourhood that has already converged to a sub-convention. This can be observed in configurations with \textit{k-regular} networks (figure \ref{fig:ctx_cs_2_10kreg}) but it is especially apparent in \textit{scale-free} networks (figure \ref{fig:ctx_cs_2_sf_d1}).
+      \noindent For smaller values of $k$, symmetry in the context switching probability (having the
+      same probability in both networks) is more important if the agent switches less from one of
+      the networks. Switching less from one network means spending more time in that network. This
+      means that switching more from the other network can be disruptive to a neighbourhood that has
+      already converged to a sub-convention. This can be observed in configurations with
+      \textit{k-regular} networks (figure \ref{fig:ctx_cs_2_10kreg}) but it is especially apparent
+      in \textit{scale-free} networks (figure \ref{fig:ctx_cs_2_sf_d1}).
 
-\begin{figure}[H]
-	\centering
+      \begin{figure}[H]
+        \centering
 	\begin{subfigure}{0.49\linewidth}
-		\centering
-		\includegraphics[width=1\linewidth]{"../analysis/pdf/context_switching_2_sf_d1_switching_contour"}
-		\caption{\textit{Scale-Free} $d=1$}
-		\label{fig:ctx_cs_2_sf_d1}
+          \centering
+          \includegraphics[width=1\linewidth]{"../analysis/pdf/context_switching_2_sf_d1_switching_contour"}
+          \caption{\textit{Scale-Free} $d=1$}
+          \label{fig:ctx_cs_2_sf_d1}
 	\end{subfigure}%
 	\begin{subfigure}{0.49\linewidth}
-		\centering
-		\includegraphics[width=1\linewidth]{"../analysis/pdf/context_switching_2_sf_d5_switching_contour"}
-		\caption{\textit{Scale-Free} $d=5$}
-		\label{fig:ctx_cs_2_sf_d5}
+          \centering
+          \includegraphics[width=1\linewidth]{"../analysis/pdf/context_switching_2_sf_d5_switching_contour"}
+          \caption{\textit{Scale-Free} $d=5$}
+          \label{fig:ctx_cs_2_sf_d5}
 	\end{subfigure}
 	
 	\begin{minipage}{0.9\linewidth}
-		\vspace{0.2cm}
-		\caption{Contour plot for the average number of meets during a simulation for 100 independent runs: 2 \textit{scale-free} networks with $d=1$ (\ref{fig:ctx_cs_2_sf_d1}) and $d=5$ (\ref{fig:ctx_cs_2_sf_d5}). See the perspective plots in  appendix \ref{append_ctx_switching}.}
-		\label{fig:ctx_cs_2_sf}
+          \vspace{0.2cm}
+          \caption{Contour plot for the average number of meets during a simulation for 100
+            independent runs: 2 \textit{scale-free} networks with $d=1$ (\ref{fig:ctx_cs_2_sf_d1})
+            and $d=5$ (\ref{fig:ctx_cs_2_sf_d5}). See the perspective plots in appendix
+            \ref{append_ctx_switching}.}
+          \label{fig:ctx_cs_2_sf}
 	\end{minipage}
-\end{figure}
+      \end{figure}
 
-When we increase the connectivity (and lower the average path length), both in \textit{k-regular} and \textit{scale-free} networks, the switching probability becomes ``irrelevant:'' in the sense that you can use any probability you want and the results in terms of speed of convergence will be the same. The exception is obviously when considering the switching probability with value $0$. In this case, agents are isolated (they are initially equally distributed throughout the networks) and reaching consensus becomes very hard. --Especially hard since agents are active only in one network: being active in all the networks creates the possibly of disconnected graphs in the networks they are not currently active.
+      When we increase the connectivity (and lower the average path length), both in
+      \textit{k-regular} and \textit{scale-free} networks, the switching probability becomes
+      ``irrelevant'' --for any probability value, the speed of convergence will be the same--. The
+      exception is obviously when considering the switching probability with value $0$. In this
+      case, agents are isolated (they are initially equally distributed throughout the networks) and
+      reaching consensus becomes very hard. (Especially because agents are active only in one network
+      and this can create disconnected graphs.)
 
-One major difference from the previous model is that the agents no longer can select a neighbour for interaction from any network. The selection has to be made from the network they are currently active in. This causes that agents spending different amounts of time in distinct network topologies are influenced differently -- an agent can be very influential in one network, being a very central node in that context, and marginally important in the other one: in a sense its opinion in one network can be more important to overall convergence than in other network,  due to its position in the network.
+      One major difference from the previous model is that the agents no longer interact with a
+      neighbour from any network at any time. The neighbour selection has to be made from the
+      network they are currently active in. This causes the agents to spend different amounts of
+      time in different networks. An agent can be very influential in one network -- being a very
+      central node in that context -- and marginally important in another: in a sense its opinion in
+      one network can be more important to overall convergence than in other network, due to its
+      position in the network.
 
-To check the influence of connectivity in the new switching dynamics we setup two \textit{scale-free} networks; one with $d=1$ and the other with $d=5$. We then performed the 
-same span of switching probability similarly to the previous experiments. The results can be seen in figure \ref{fig:ctx_cs_sf_d5_d1}.
+      To explore the contribution of connectivity to the new context switching dynamics, we setup
+      two \textit{scale-free} networks; one with $d=1$ and the other with $d=5$. We then spanned the
+      switching probability in increments of $0.05$. The results can be seen in figure
+      \ref{fig:ctx_cs_sf_d5_d1}.
 
-\begin{figure}[H]
+      \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\linewidth]{"../analysis/pdf/context_switching_sf_d5_d1_switching_contour"}
 	\begin{minipage}{0.9\textwidth}
-		\caption{Contour plot for the average number of meets during a simulation for 100 independent runs: 2 \textit{scale-free} networks, the first with $d=5$ and the second with $d=1$. See the perspective plots in  appendix \ref{append_ctx_switching} (figure \ref{append_fig:ctx_cs_sf_d5_d1}).
-		}
+          \caption{Contour plot for the average number of meets during a simulation for 100
+            independent runs: 2 \textit{scale-free} networks, the first with $d=5$ and the second
+            with $d=1$. See the perspective plots in appendix \ref{append_ctx_switching} (figure
+            \ref{append_fig:ctx_cs_sf_d5_d1}).  }
 		\label{fig:ctx_cs_sf_d5_d1}
-	\end{minipage}
-\end{figure}
+              \end{minipage}
+      \end{figure}
 
-We see that in this case it is more important to switch \textit{from} the network with lower average path length and a forest-like composition ($d=1$) with a probability of at least the same value or more than the one of the other network (with $d=5$). The same can be observed when we mix the two topologies (\textit{k-regular} with \textit{scale-free}), as we can see in figure \ref{fig:ctx_cs_kreg10_sfd1}.
+      In this case it is more important (to convergence speed) to switch \textit{from} the network
+      with lower average path length and a forest-like composition (and a probability of at least
+      the same value or more than the one of the other network with $d=5$). The same can be observed
+      when we mix \textit{k-regular} with \textit{scale-free} networks (see figure
+      \ref{fig:ctx_cs_kreg10_sfd1}).
 
-It seems that basically switching less from the less connected network is bad in both cases: spending more time in the network with bigger neighbourhoods allows for a stabler convergence. Sub-conventions can emerge in \textit{scale-free} networks with $d=1$ because usually some network regions are isolated by a single node --the root of the sub-tree they belong to. 
+      Switching less from the less connected network is bad in both cases: it is possible that
+      spending more time in the network with bigger neighbourhoods allows for a stabler
+      convergence. Sub-conventions can emerge in \textit{scale-free} networks with $d=1$ because
+      usually some network regions are isolated by a single node -- the root of the sub-tree they
+      belong to.
 
-\begin{figure}[H]
-	\centering
+      \begin{figure}[H]
+        \centering
 	\includegraphics[width=1\linewidth]{"../analysis/pdf/context_switching_1_10regular_1_scale-free_d1_switching_contour"}
 	\begin{minipage}{0.9\textwidth}
-		\caption{Contour plot for the average number of meets during a simulation for 100 independent runs: one \textit{10-regular} network (k=10) and a \textit{scale-free} network with $d=1$. See the perspective plots in  appendix \ref{append_ctx_switching} (figure \ref{append_fig:ctx_cs_kreg10_sfd1}).
-		}
-		\label{fig:ctx_cs_kreg10_sfd1}
+          \caption{Contour plot for the average number of meets during a simulation for 100
+            independent runs: one \textit{10-regular} network (k=10) and a \textit{scale-free}
+            network with $d=1$. See the perspective plots in appendix \ref{append_ctx_switching}
+            (figure \ref{append_fig:ctx_cs_kreg10_sfd1}).  }
+          \label{fig:ctx_cs_kreg10_sfd1}
 	\end{minipage}
-\end{figure}
+      \end{figure}
 
 
-\subsubsection{Comparison with Context Permeability}
-\noindent Finally, to compare the context switching model with the previous model of context permeability, we constructed the following experiment. We froze the switching probabilities in the values $\zeta={0.25,0.5,0.75}$ and varied the number of networks. (We considered these values because they conveniently characterise the probability in low, medium and high switching) We compare the results with the context permeability in terms of average number of encounters to achieve consensus. Note that we have seen that in some cases, due to the distribution of the number of encounters, the average is not an accurate descriptor for the convergence. Nonetheless, normally the configurations with highly variable outcomes also produce an average that is qualitatively distinct from the rest of the configurations (see for example figure \ref{fig:ctx_perm_kreg} in section \ref{sec:ctx_perm_encounters}). As such, we took the average number of encounters during the simulations to compare what happens in the context switching model with the context permeability model.
+      \subsubsection{Comparison with Context Permeability}
+      \noindent Finally, to compare the context switching model with the previous model of context
+      permeability, we froze the switching probabilities with values $\zeta={0.25,0.5,0.75}$ and
+      varied the number of networks. (We considered these values because they conveniently
+      characterise the probability in low, medium and high switching.) We compare the results with
+      the context permeability in terms of average number of encounters to achieve consensus. Note
+      that in some cases, due to the distribution of the number of encounters, the average is not an
+      accurate descriptor for the convergence. Nonetheless, configurations with highly variable
+      outcomes usually produce an average that is qualitatively distinct from the rest (see figure
+      \ref{fig:ctx_perm_kreg} in section \ref{sec:ctx_perm_encounters}). We took the average number
+      of encounters during the simulations to compare the context switching model with the context
+      permeability model.
 
-\begin{figure}[H]
-	\centering
+      \begin{figure}[H]
+        \centering
 	\begin{subfigure}{.49\linewidth}
-		\centering
-		\includegraphics[width=1\linewidth]{"../analysis/pdf/context_switching_encounters_comp_kregular_groupedbynets_2"}
-		\caption{}
-		\label{fig:ctx_switching_comp_kreg_2}
+          \centering
+          \includegraphics[width=1\linewidth]{"../analysis/pdf/context_switching_encounters_comp_kregular_groupedbynets_2"}
+          \caption{}
+          \label{fig:ctx_switching_comp_kreg_2}
 	\end{subfigure}%
 	\begin{subfigure}{.5\linewidth}
-		\centering
-		\includegraphics[width=1\linewidth]{"../analysis/pdf/context_switching_encounters_comp_kregular_groupedbynets_3"}
-		\caption{}
-		\label{fig:ctx_switching_comp_kreg_3}
+          \centering
+          \includegraphics[width=1\linewidth]{"../analysis/pdf/context_switching_encounters_comp_kregular_groupedbynets_3"}
+          \caption{}
+          \label{fig:ctx_switching_comp_kreg_3}
 	\end{subfigure}\\
 	\begin{subfigure}{.49\linewidth}
-		\centering
-		\includegraphics[width=1\linewidth]{"../analysis/pdf/context_switching_encounters_comp_kregular_groupedbynets_4"}
-		\caption{}
-		\label{fig:ctx_switching_comp_kreg_4}
+          \centering
+          \includegraphics[width=1\linewidth]{"../analysis/pdf/context_switching_encounters_comp_kregular_groupedbynets_4"}
+          \caption{}
+          \label{fig:ctx_switching_comp_kreg_4}
 	\end{subfigure}
 	\begin{subfigure}{.5\linewidth}
-		\centering
-		\includegraphics[width=1\linewidth]{"../analysis/pdf/context_switching_encounters_comp_kregular_groupedbynets_5"}
-		\caption{}
-		\label{fig:ctx_switching_comp_kreg_5}
+          \centering
+          \includegraphics[width=1\linewidth]{"../analysis/pdf/context_switching_encounters_comp_kregular_groupedbynets_5"}
+          \caption{}
+          \label{fig:ctx_switching_comp_kreg_5}
 	\end{subfigure}
 	\begin{minipage}{0.9\textwidth}
-		\vspace{0.2cm}
-		\caption{Average number of encounters during a simulation for 100 independent runs with \textit{k-regular} topologies in all the network layers. We compare the results of context switching with context permeability with a $number of networks = \{2,3,4,5\}$. The switching probability is the same in all the networks. }
+          \vspace{0.2cm}
+          \caption{Average number of encounters during a simulation for 100 independent runs with
+            \textit{k-regular} topologies in all the network layers. We compare the results of
+            context switching with context permeability with a $number of networks =
+            \{2,3,4,5\}$. The switching probability is the same in all the networks. }
 		\label{fig:ctx_switching_comp_kreg}
 	\end{minipage}
-\end{figure}
+      \end{figure}
 
-Figure \ref{fig:ctx_switching_comp_kreg} shows us that for 2 networks the results in terms of number of encounters for the context switching approximate those we got for context permeability. When we increase the number of networks ($n\ge3$) the configurations with higher switching probability lead the results to be more close to what happens in context permeability. This is no surprise since more switching makes agents switch more often between networks and consequently allows them too choose more often from different neighbourhoods. This is almost the same as having a larger neighbourhood to choose from, which is what happened in the context permeability model. 
+      Figure \ref{fig:ctx_switching_comp_kreg} shows that for 2 networks the results in terms of
+      number of encounters for the context switching approximate those for context
+      permeability. When we increase the number of networks ($n\ge3$), the configurations with
+      higher switching probability lead the results to be closer to what happens in context
+      permeability. This is no surprise since more switching makes agents switch more often between
+      networks and consequently allows them too choose more often from different
+      neighbourhoods. This is almost the same as having a larger neighbourhood to choose from, which
+      is what happened in the context permeability model.
 
-The surprise was that for values of $k \ge 20$, the results where practically the same for both
-models independently of the switching probability -- even when we increased the number of networks, the number of encounters remained around $2000$ on average for all the models. Above a certain level of neighbourhood size (and overlapping, which causes the average path length to drop), the switching probability becomes less influential. It is still important that we get comparable results because we are introducing a temporal component that was never explored before in these types of opinion dynamics models: the fact that the agents can become active in different networks at different points in time.
+      The surprise was that for values of $k \ge 20$, the results where practically the same for
+      both models independently of the switching probability -- even when we increased the number of
+      networks, the number of encounters remained around $2000$ on average for all the models. Above
+      a certain level of neighbourhood size (and overlapping, which causes the average path length
+      to drop), the switching probability becomes less influential. It is still important that we
+      get comparable results because we are introducing a temporal component that was never explored
+      before in these types of opinion dynamics models: the fact that the agents can become active
+      in different networks at different points in time.
 
 
-\begin{figure}[H]
+      \begin{figure}[H]
 	\centering
 	\begin{subfigure}{.49\linewidth}
-		\centering
-		\includegraphics[width=1\linewidth]{"../analysis/pdf/context_switching_encounters_comp_sf_groupedbynets_2"}
-		\caption{}
-		\label{fig:ctx_switching_comp_sf_2}
+          \centering
+          \includegraphics[width=1\linewidth]{"../analysis/pdf/context_switching_encounters_comp_sf_groupedbynets_2"}
+          \caption{}
+          \label{fig:ctx_switching_comp_sf_2}
 	\end{subfigure}%
 	\begin{subfigure}{.5\linewidth}
-		\centering
-		\includegraphics[width=1\linewidth]{"../analysis/pdf/context_switching_encounters_comp_sf_groupedbynets_3"}
-		\caption{}
-		\label{fig:ctx_switching_comp_sf_3}
+          \centering
+          \includegraphics[width=1\linewidth]{"../analysis/pdf/context_switching_encounters_comp_sf_groupedbynets_3"}
+          \caption{}
+          \label{fig:ctx_switching_comp_sf_3}
 	\end{subfigure}\\
 	\begin{subfigure}{.49\linewidth}
-		\centering
-		\includegraphics[width=1\linewidth]{"../analysis/pdf/context_switching_encounters_comp_sf_groupedbynets_4"}
-		\caption{}
-		\label{fig:ctx_switching_comp_sf_4}
+          \centering
+          \includegraphics[width=1\linewidth]{"../analysis/pdf/context_switching_encounters_comp_sf_groupedbynets_4"}
+          \caption{}
+          \label{fig:ctx_switching_comp_sf_4}
 	\end{subfigure}
 	\begin{subfigure}{.5\linewidth}
-		\centering
-		\includegraphics[width=1\linewidth]{"../analysis/pdf/context_switching_encounters_comp_sf_groupedbynets_5"}
-		\caption{}
-		\label{fig:ctx_switching_comp_sf_5}
+          \centering
+          \includegraphics[width=1\linewidth]{"../analysis/pdf/context_switching_encounters_comp_sf_groupedbynets_5"}
+          \caption{}
+          \label{fig:ctx_switching_comp_sf_5}
 	\end{subfigure}
 	\begin{minipage}{0.9\textwidth}
-		\vspace{0.2cm}
-		\caption{}
-		\label{fig:ctx_switching_comp_sf}
+          \vspace{0.2cm}
+          \caption{}
+          \label{fig:ctx_switching_comp_sf}
 	\end{minipage}
-\end{figure}
+      \end{figure}
 
-For \textit{scale-free} networks, figure \ref{fig:ctx_switching_comp_sf} shows us similar
-results. It seems that switching with a higher probability displays results similar with those of
-context permeability. In this case, adding more networks makes so that lowering switching
-probabilities displays slightly worse results. This influence is due to the fact that the
-neighbourhoods are considerably smaller in \textit{scale-free} networks -- even with values of $d=5$ -- so the impact of low switching was bound to be noticed.
+      For \textit{scale-free} networks, figure \ref{fig:ctx_switching_comp_sf} shows us similar
+      results. Switching with a higher probability displays results similar with those of context
+      permeability. In this case, adding more networks makes so that lowering switching
+      probabilities displays slightly worse results. This influence comes from the neighbourhoods
+      being considerably smaller in \textit{scale-free} networks -- even with values of $d=5$ -- so
+      the impact of low switching was bound to be noticed.
 
-An increasing number of networks seems to always reduce the number of encounters to achieve consensus in both models. This happens due to what we have called \textit{permeability}. Having multiple points of dissemination that permeate between different social networks enhances the overall convergence to consensus. With permeability there are more previously isolated nodes being reached in sparsely connected networks such as scale-free networks. 
+      An increasing number of networks seems to always reduce the number of encounters to achieve
+      consensus in both models. This happens due to what we called \textit{permeability}. Having
+      multiple points of dissemination that permeate between different social networks enhances the
+      overall convergence to consensus. With permeability there are more previously isolated nodes
+      being reached in sparsely connected networks such as scale-free networks.
 
-%*****************************************
-%	Conclusion
-%******************************************
-\section{Conclusions}
-\label{sec:conclusion-future}
+      % *****************************************
+      % Conclusion
+      % ******************************************
+      \section{Conclusions}
+      \label{sec:conclusion-future}
 \noindent In this article, we analysed and discussed our modelling framework for multi-relational models of social spaces. These results show that not only contexts play an important role in the dissemination of consensus in artificial agent societies, but also that simple mechanisms can generate a great deal of complexity, especially in those scenarios where conventions are being co-learned by multiple agents. Adding more networks to our opinion dynamics model leads to outcomes where consensus was achieved not only more often but also faster. In particular, our results show that achieving convergence (i.e.\ total consensus in a network) is not a matter of connectivity. With scale-free networks we managed to achieve consensus more often and quicker than with less clustered networks. This conclusion is especially important for application with real world social phenomena, many times represented with such networks: full dissemination of a phenomenon (say, gossip-dissemination of a new anti-virus software) may prove impossible with one network only, but is very much eased up by the use of concomitant connections. Moreover, some of the techniques we have rehearsed have proven to speed up even more this now-eased up convergence.
 
 The second innovation presented in this article was the fact that our model describes an abstract way to represent the time spent on each network using the switching probability. This temporal component introduces a new dynamic to the study of opinion dynamics. Considering that in agent neighbourhoods, agents might not be available at all times and spend distinct amounts of time in different neighbourhoods, is an important factor to be included in some simulations from a modelling perspective. 
