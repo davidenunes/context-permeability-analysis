@@ -4,6 +4,7 @@
 # ignore everything in analysis except Rmd files
 /analysis/*
 !/analysis/*.Rmd
+!/analysis/pdf
 
 # ignore data
 *.csv

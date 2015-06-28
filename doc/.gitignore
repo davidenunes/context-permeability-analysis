@@ -24,4 +24,6 @@
 *.blg
 *.bib.bak
 
+#emacs tmp
 _region_.tex
+*.*~
