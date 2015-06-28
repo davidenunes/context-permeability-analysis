@@ -6,6 +6,9 @@
  
 # PDF output, we don't want this on git
 *.pdf
+
+#we might want to hold on to images we created for the paper
+!/images/*.pdf
  
 # SyncTeX
 *.synctex.gz
@@ -20,3 +23,7 @@
 *.bbl
 *.blg
 *.bib.bak
+
+#emacs tmp
+_region_.tex
+*.*~
